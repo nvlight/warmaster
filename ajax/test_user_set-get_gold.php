@@ -1,0 +1,26 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: user
+ * Date: 12.05.2019
+ * Time: 16:06
+ */
+
+session_start();
+
+require '../db/mysql.config.php';
+require '../db/mysql.connect.php';
+require '../vendor/autoload.php';
+require '../lib/functions.php';
+require '../ajax/user_db_functions.php';
+
+$user_id = 69;
+$dbh = $mysql['connect'];
+
+$curr_gold = user_get_gold($dbh, $user_id);
+echo Debug::d($curr_gold,'',2);
+
+$custom_gold = intval($curr_gold['res'][0]['gold']) - 100;
+//echo $custom_gold; die;
+$uss = user_set_gold($dbh, $user_id, $custom_gold);
+echo Debug::d($uss);

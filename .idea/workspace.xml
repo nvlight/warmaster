@@ -1,0 +1,674 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="877ca231-2e0b-4fc4-9efc-9af8359f1d7e" name="Default Changelist" comment="" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings">
+    <execution>
+      <executable />
+    </execution>
+  </component>
+  <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_DATA_SOURCES" value="true" />
+    <option name="GROUP_SCHEMA" value="true" />
+    <option name="GROUP_CONTENTS" value="false" />
+    <option name="SORT_POSITIONED" value="false" />
+    <option name="SHOW_EMPTY_GROUPS" value="false" />
+    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
+    <option name="HIDDEN_KINDS">
+      <set />
+    </option>
+    <expand>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="warmaster1@localhost" type="feb32156:DbDataSourceImpl" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/js/auth.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="442">
+              <caret line="26" column="34" selection-start-line="26" selection-start-column="34" selection-end-line="26" selection-end-column="34" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/js/main.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="136">
+              <caret line="8" column="37" selection-start-line="8" selection-start-column="37" selection-end-line="8" selection-end-column="37" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ajax/user_logout.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="153">
+              <caret line="14" column="22" selection-start-line="14" selection-start-column="21" selection-end-line="14" selection-end-column="22" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/web/layouts/main.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="3060">
+              <caret line="180" column="32" selection-start-line="180" selection-start-column="32" selection-end-line="180" selection-end-column="32" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="das://217b7c1d-129f-48df-9464-097bc0d69481/schema/warmaster1/table/user">
+          <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
+            <state projectRestartId="70b6db28-e8f5-4a36-adc9-1ae2e9c94ff3">
+              <filtering />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/web/layouts/auth.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="75">
+              <caret line="75" column="4" selection-start-line="75" selection-start-column="4" selection-end-line="75" selection-end-column="4" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/js/timer.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="170">
+              <caret line="10" column="16" selection-start-line="10" selection-start-column="16" selection-end-line="10" selection-end-column="16" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/css/style.css">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="15878">
+              <caret line="934" column="1" selection-start-line="934" selection-start-column="1" selection-end-line="934" selection-end-column="1" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>user-top-menu</find>
+      <find>hero_golrd</find>
+      <find>user_logout</find>
+      <find>get_user</find>
+      <find>get_</find>
+      <find>get_user_resourses</find>
+      <find>get_user_resourses()</find>
+      <find>get_user_res_by_key2</find>
+      <find>user_get</find>
+      <find>gold</find>
+      <find>get_user_res_by_key2(</find>
+      <find>bye</find>
+      <find>user_get_resourses.php</find>
+      <find>user-auth</find>
+      <find>done(</find>
+      <find>не на</find>
+      <find>не найден</find>
+      <find>пользователь не на</find>
+      <find>warmaster_user_auth</find>
+      <find>ajax</find>
+      <find>gane</find>
+      <find>&lt;script src=&quot;js/ajax_functions.js&quot; defer&gt;&lt;/script&gt;</find>
+      <find>box-item hero border</find>
+      <find>box-item dn</find>
+      <find>toggleClass</find>
+      <find>dn</find>
+      <find>box-item</find>
+      <find>#user_logout</find>
+      <find>box</find>
+      <find>animation</find>
+    </findStrings>
+    <replaceStrings>
+      <replace>$array</replace>
+      <replace>box-item dn</replace>
+      <replace>box-item</replace>
+    </replaceStrings>
+    <dirStrings>
+      <dir>C:\SRV\nginx1158\html\test.loc\html\warmaster102\ajax</dir>
+      <dir>C:\SRV\nginx1158\html\test.loc\html\warmaster102</dir>
+    </dirStrings>
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/lib/singleton.php" />
+        <option value="$PROJECT_DIR$/ajax/get_curr_stage.php" />
+        <option value="$PROJECT_DIR$/ajax/go2stage2.php" />
+        <option value="$APPLICATION_CONFIG_DIR$/consoles/db/f27bc4f0-3a7d-4ca0-8fb3-7aebcec1505d/console.sql" />
+        <option value="$PROJECT_DIR$/db/mysql.config.php" />
+        <option value="$PROJECT_DIR$/test/add_new_user.php" />
+        <option value="$PROJECT_DIR$/ajax/test_send_email.php" />
+        <option value="$PROJECT_DIR$/ajax/test_is_email_duplicate.php" />
+        <option value="$PROJECT_DIR$/db/mysql.connect.php" />
+        <option value="$PROJECT_DIR$/ajax/test_login.php" />
+        <option value="$PROJECT_DIR$/ajax/logout_user.php" />
+        <option value="$PROJECT_DIR$/ajax/test_resourses_json_encode.php" />
+        <option value="$PROJECT_DIR$/ajax/auth_user.php" />
+        <option value="$PROJECT_DIR$/ajax/test_go_2_stage.php" />
+        <option value="$PROJECT_DIR$/ajax/test_set_res1.php" />
+        <option value="$PROJECT_DIR$/ajax/user_get_res.php" />
+        <option value="$PROJECT_DIR$/ajax/register_user.php" />
+        <option value="$PROJECT_DIR$/ajax/send_reg_mail.php" />
+        <option value="$PROJECT_DIR$/js/create_js1.js" />
+        <option value="$PROJECT_DIR$/js/create_js1.php" />
+        <option value="$PROJECT_DIR$/lib/create_js.php" />
+        <option value="$PROJECT_DIR$/lib/unkown_js1.php" />
+        <option value="$PROJECT_DIR$/index.php" />
+        <option value="$PROJECT_DIR$/lib/warmaster/shops.php" />
+        <option value="$PROJECT_DIR$/ajax/test_set_get_zhournal.php" />
+        <option value="$PROJECT_DIR$/ajax/go2stage.php" />
+        <option value="$PROJECT_DIR$/ajax/user_get_resourses.php" />
+        <option value="$PROJECT_DIR$/ajax/user_get_zhournal.php" />
+        <option value="$PROJECT_DIR$/ajax/show_info.php" />
+        <option value="$APPLICATION_CONFIG_DIR$/consoles/db/63845364-9729-4310-9441-9dd13b359710/console.sql" />
+        <option value="$PROJECT_DIR$/ajax/test_user_set-get_stage.php" />
+        <option value="$APPLICATION_CONFIG_DIR$/consoles/.datagrid/cell" />
+        <option value="$PROJECT_DIR$/ajax/test_user_set-get_gold.php" />
+        <option value="$PROJECT_DIR$/ajax/user_get_gold.php" />
+        <option value="$PROJECT_DIR$/js/ajax_functions.js" />
+        <option value="$PROJECT_DIR$/ajax/user_set_gold.php" />
+        <option value="$PROJECT_DIR$/js/jquery-3.3.1.js" />
+        <option value="$PROJECT_DIR$/ajax/user_db_functions.php" />
+        <option value="$PROJECT_DIR$/ajax/user_register.php" />
+        <option value="$PROJECT_DIR$/ajax/user_auth.php" />
+        <option value="$PROJECT_DIR$/lib/create_js1.php" />
+        <option value="$PROJECT_DIR$/web/layouts/main.php" />
+        <option value="$PROJECT_DIR$/js/main.js" />
+        <option value="$PROJECT_DIR$/css/style.css" />
+        <option value="$PROJECT_DIR$/js/auth.js" />
+        <option value="$PROJECT_DIR$/web/layouts/auth.php" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="325" />
+    <option name="y" value="140" />
+    <option name="width" value="869" />
+    <option name="height" value="697" />
+  </component>
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="Scope" />
+      <pane id="ProjectPane" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="DatabaseDriversLRU" value="mysql" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="database.console.LAST_STATE" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../event.loc/html" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="settings.editor.selected.configurable" value="reference.webide.settings.project.settings.php" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\SRV\nginx1158\html\test.loc\html\warmaster102\js" />
+      <recent name="C:\SRV\nginx1158\html\test.loc\html\warmaster102\ajax" />
+      <recent name="C:\SRV\nginx1158\html\test.loc\html\warmaster102\config" />
+      <recent name="C:\SRV\nginx1158\html\test.loc\html\warmaster102" />
+      <recent name="C:\SRV\nginx1158\html\test.loc\html\warmaster102\img" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\SRV\nginx1158\html\test.loc\html\warmaster102\ajax" />
+      <recent name="C:\SRV\nginx1158\html\test.loc\html\warmaster102\lib" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="877ca231-2e0b-4fc4-9efc-9af8359f1d7e" name="Default Changelist" comment="" />
+      <created>1556641627296</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1556641627296</updated>
+      <workItem from="1556641628447" duration="12878000" />
+      <workItem from="1556869088083" duration="3307000" />
+      <workItem from="1556873627813" duration="54551000" />
+      <workItem from="1557005561570" duration="1365000" />
+      <workItem from="1557083824845" duration="6783000" />
+      <workItem from="1557159169841" duration="10533000" />
+      <workItem from="1557607654897" duration="15381000" />
+      <workItem from="1558042324148" duration="3215000" />
+      <workItem from="1558047245631" duration="135000" />
+      <workItem from="1558047392017" duration="475000" />
+      <workItem from="1558047899546" duration="450000" />
+      <workItem from="1558048757196" duration="9868000" />
+      <workItem from="1558369878236" duration="6448000" />
+      <workItem from="1558732155862" duration="210000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="125599000" />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-8" y="-8" width="1456" height="834" extended-state="6" />
+    <editor active="true" />
+    <layout>
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.08882522" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32952926" />
+      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Database Changes" order="8" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" order="9" />
+      <window_info anchor="bottom" id="Terminal" order="10" />
+      <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" weight="0.32952926" />
+      <window_info anchor="bottom" id="Database Console" order="12" weight="0.3266762" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="Database" order="3" visible="true" weight="0.19555874" />
+    </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/lib/create_js.php" />
+    <entry file="file://$PROJECT_DIR$/lib/unkown_js1.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="42">
+          <caret line="2" column="30" selection-start-line="2" selection-start-column="11" selection-end-line="2" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ajax/send_reg_mail.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="168">
+          <caret line="8" column="40" lean-forward="true" selection-start-line="8" selection-start-column="40" selection-end-line="8" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ajax/show_info.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="252">
+          <caret line="17" selection-start-line="17" selection-end-line="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/warmaster/shops.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="172">
+          <caret line="36" column="20" selection-start-line="36" selection-start-column="20" selection-end-line="36" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ajax/test_set_get_zhournal.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="42">
+          <caret line="2" selection-start-line="2" selection-end-line="8" selection-end-column="40" />
+          <folding>
+            <element signature="n#zhournal_set#0;n#!!top" />
+            <element signature="n#zhournal_get#0;n#!!top" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ajax/test_set_res1.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="168">
+          <caret line="8" column="2" lean-forward="true" selection-start-line="8" selection-start-column="2" selection-end-line="8" selection-end-column="2" />
+          <folding>
+            <element signature="n#update_user_resourses#0;n#!!top" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/db/mysql.connect.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="5" column="19" selection-start-line="5" selection-start-column="12" selection-end-line="5" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/consoles/db/63845364-9729-4310-9441-9dd13b359710/console.sql" />
+    <entry file="file://$PROJECT_DIR$/ajax/test_user_set-get_stage.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="63">
+          <caret line="8" selection-start-line="8" selection-end-line="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/db/mysql.config.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="399">
+          <caret line="24" column="44" selection-start-line="24" selection-start-column="44" selection-end-line="24" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ajax/user_get_zhournal.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="294">
+          <caret line="19" column="22" selection-start-line="19" selection-start-column="10" selection-end-line="19" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ajax/user_get_resourses.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="672">
+          <caret line="32" lean-forward="true" selection-start-line="32" selection-end-line="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ajax/go2stage.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="494">
+          <caret line="73" column="22" lean-forward="true" selection-start-line="10" selection-end-line="73" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/ajax_functions.js" />
+    <entry file="file://$PROJECT_DIR$/ajax/user_set_gold.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="220">
+          <caret line="22" column="19" selection-start-line="22" selection-start-column="19" selection-end-line="22" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ajax/user_get_gold.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="24" column="1" selection-start-line="24" selection-start-column="1" selection-end-line="24" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/index.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="612">
+          <caret line="36" column="2" selection-start-line="36" selection-start-column="2" selection-end-line="36" selection-end-column="2" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ajax/test_user_set-get_gold.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="8" column="16" selection-start-line="8" selection-start-column="16" selection-end-line="8" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/jquery-3.3.1.min.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" column="86841" selection-start-line="1" selection-start-column="86841" selection-end-line="1" selection-end-column="86841" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ajax/add_new_user.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="16" column="27" lean-forward="true" selection-start-line="16" selection-start-column="27" selection-end-line="16" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ajax/get_curr_stage.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="16" column="22" lean-forward="true" selection-start-line="16" selection-start-column="22" selection-end-line="16" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="das://63845364-9729-4310-9441-9dd13b359710/schema/warmaster1/table/user" />
+    <entry file="das://63845364-9729-4310-9441-9dd13b359710/schema/warmaster1/table/hero_spec" />
+    <entry file="das://63845364-9729-4310-9441-9dd13b359710/schema/warmaster1/table/hero_spec_type" />
+    <entry file="das://63845364-9729-4310-9441-9dd13b359710/schema/warmaster1/table/shop" />
+    <entry file="das://63845364-9729-4310-9441-9dd13b359710/schema/warmaster1/table/itemtype" />
+    <entry file="file://$APPLICATION_CONFIG_DIR$/consoles/db/b15a565d-1393-4592-916c-bf4fd7e94a2c/console.sql">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="das://b15a565d-1393-4592-916c-bf4fd7e94a2c/schema/events/table/ev_user" />
+    <entry file="das://63845364-9729-4310-9441-9dd13b359710/schema/warmaster1/table/chest" />
+    <entry file="file://$APPLICATION_CONFIG_DIR$/consoles/db/217b7c1d-129f-48df-9464-097bc0d69481/console.sql">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="das://217b7c1d-129f-48df-9464-097bc0d69481/schema/warmaster1/table/table_name">
+      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
+        <state projectRestartId="2669cd52-53b6-4059-ba3c-3e34cec93875">
+          <filtering>
+            <filter text="" />
+          </filtering>
+        </state>
+      </provider>
+    </entry>
+    <entry file="das://217b7c1d-129f-48df-9464-097bc0d69481/schema/warmaster1/table/user2">
+      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
+        <state projectRestartId="2669cd52-53b6-4059-ba3c-3e34cec93875">
+          <filtering>
+            <filter text="" />
+          </filtering>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ajax/user_register.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="952">
+          <caret line="56" column="42" selection-start-line="56" selection-start-column="42" selection-end-line="56" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="das://217b7c1d-129f-48df-9464-097bc0d69481/schema/warmaster1/table/hero_spec_type">
+      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
+        <state projectRestartId="f8f2a946-e837-4c4a-846d-4eb0958adfcd">
+          <filtering>
+            <filter text="" />
+          </filtering>
+        </state>
+      </provider>
+    </entry>
+    <entry file="das://217b7c1d-129f-48df-9464-097bc0d69481/schema/warmaster1/table/itemtype">
+      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
+        <state projectRestartId="f8f2a946-e837-4c4a-846d-4eb0958adfcd">
+          <filtering>
+            <filter text="" />
+          </filtering>
+        </state>
+      </provider>
+    </entry>
+    <entry file="das://217b7c1d-129f-48df-9464-097bc0d69481/schema/warmaster1/table/shop">
+      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
+        <state projectRestartId="f8f2a946-e837-4c4a-846d-4eb0958adfcd">
+          <filtering>
+            <filter text="" />
+          </filtering>
+        </state>
+      </provider>
+    </entry>
+    <entry file="das://217b7c1d-129f-48df-9464-097bc0d69481/schema/warmaster1/table/hero_spec">
+      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
+        <state projectRestartId="f8f2a946-e837-4c4a-846d-4eb0958adfcd">
+          <filtering>
+            <filter text="" />
+          </filtering>
+        </state>
+      </provider>
+    </entry>
+    <entry file="das://217b7c1d-129f-48df-9464-097bc0d69481/schema/warmaster1/table/chest">
+      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
+        <state projectRestartId="f8f2a946-e837-4c4a-846d-4eb0958adfcd">
+          <filtering>
+            <filter text="" />
+          </filtering>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/create_js1.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="403">
+          <caret line="67" selection-start-line="67" selection-end-line="67" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="das://217b7c1d-129f-48df-9464-097bc0d69481/schema/warmaster1/table/hero_info">
+      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
+        <state projectRestartId="f8f2a946-e837-4c4a-846d-4eb0958adfcd">
+          <filtering>
+            <filter text="" />
+          </filtering>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ajax/user_db_functions.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="472">
+          <caret line="296" column="82" selection-start-line="296" selection-start-column="75" selection-end-line="296" selection-end-column="82" />
+          <folding>
+            <element signature="n#check_params#0;n#!!top" />
+            <element signature="n#mySendMailMessage#0;n#!!top" />
+            <element signature="n#add_new_warmaster_user#0;n#!!top" />
+            <element signature="n#update_user_resourses#0;n#!!top" />
+            <element signature="n#get_user_by_mail#0;n#!!top" />
+            <element signature="n#get_user_resourses#0;n#!!top" />
+            <element signature="n#zhournal_set#0;n#!!top" />
+            <element signature="n#zhournal_get#0;n#!!top" />
+            <element signature="n#user_set_stage#0;n#!!top" />
+            <element signature="n#user_get_stage#0;n#!!top" />
+            <element signature="n#user_set_gold#0;n#!!top" />
+            <element signature="n#user_get_gold#0;n#!!top" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ajax/user_auth.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="177">
+          <caret line="44" column="35" selection-start-line="44" selection-start-column="35" selection-end-line="44" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/auth.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="442">
+          <caret line="26" column="34" selection-start-line="26" selection-start-column="34" selection-end-line="26" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/main.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="8" column="37" selection-start-line="8" selection-start-column="37" selection-end-line="8" selection-end-column="37" />
+          <folding>
+            <element signature="n#style#0;n#ul#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#li#0;n#ul#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#ul#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#ul#0;n#ul#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#li#1;n#ul#0;n#ul#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#4;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#a#0;n#i#0;n#li#4;n#ul#0;n#ul#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#button#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#button#1;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#ul#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#li#0;n#ul#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#ul#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#i#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#ul#0;n#ul#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#a#0;n#i#0;n#li#5;n#ul#0;n#ul#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#span#0;n#p#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#span#0;n#p#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#span#0;n#p#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#button#0;n#div#5;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#button#0;n#div#6;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#li#3;n#ul#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ajax/user_logout.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="14" column="22" selection-start-line="14" selection-start-column="21" selection-end-line="14" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/layouts/main.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3060">
+          <caret line="180" column="32" selection-start-line="180" selection-start-column="32" selection-end-line="180" selection-end-column="32" />
+          <folding>
+            <element signature="n#style#0;n#button#2;n#div#1;n#div#1;n#div#2;n#div#3;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="das://217b7c1d-129f-48df-9464-097bc0d69481/schema/warmaster1/table/user">
+      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
+        <state projectRestartId="70b6db28-e8f5-4a36-adc9-1ae2e9c94ff3">
+          <filtering />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/timer.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="10" column="16" selection-start-line="10" selection-start-column="16" selection-end-line="10" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/css/style.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15878">
+          <caret line="934" column="1" selection-start-line="934" selection-start-column="1" selection-end-line="934" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/layouts/auth.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="75" column="4" selection-start-line="75" selection-start-column="4" selection-end-line="75" selection-end-column="4" />
+          <folding>
+            <element signature="n#style#0;n#div#1;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>
