@@ -1,6 +1,9 @@
 //window.onload = function() {
 $(document).ready(function(){
 
+    var curr_year = (new Date()).getFullYear();
+    $('.s_year').html(curr_year);
+
     var user_stage = -1;
 
     // Окно оповещений

@@ -354,7 +354,11 @@
 
     <?php //echo "$js1"; ?>
 
-    <h3 class="user_bottom_dev_caption">&copy; Martin German && Aslan Bers@rk</h3>
+    <h3 class="user_bottom_dev_caption">&copy; <span class="s_year"></span> All rights reserved
+        <br>
+        <span class="devs_span">Martin German && Aslan Bers@rk</span>
+    </h3>
+
 
 </body>
 

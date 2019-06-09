@@ -1004,8 +1004,13 @@ button:hover {
 }
 
 .user_bottom_dev_caption{
-    background-color: gray;
+    margin-top: 20px;
+    background-color: #2B2B2B;
     color: #ffffff;
     padding: 20px;
     text-align: center;
+}
+
+.devs_span{
+    font-size: 15px;
 }
