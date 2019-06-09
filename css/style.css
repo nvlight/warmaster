@@ -1002,3 +1002,10 @@ button:hover {
         border-radius: 0%;
     }
 }
+
+.user_bottom_dev_caption{
+    background-color: gray;
+    color: #ffffff;
+    padding: 20px;
+    text-align: center;
+}

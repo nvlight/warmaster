@@ -354,6 +354,7 @@
 
     <?php //echo "$js1"; ?>
 
+    <h3 class="user_bottom_dev_caption">&copy; Martin German && Aslan Bers@rk</h3>
 
 </body>
 

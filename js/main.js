@@ -912,8 +912,10 @@ $(document).ready(function(){
                     $('#hero_gold').html(dt['gold']);
                     $('#hero_hp').html(dt['health']);
 
-                }else if(dt['success'] == 1){
-                    SelinaAnswers($dt['message']);
+                }else if(dt['success'] == 3){
+                    SelinaAnswers(dt['message']);
+                } else if(dt['success'] == 1){
+                    SelinaAnswers(dt['message']);
                 }
             }).fail(function () {
                 console.log('error');

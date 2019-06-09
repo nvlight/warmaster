@@ -27,22 +27,32 @@ $eating_cost = $params['eating_cost'];
 
 try{
     //
-    if ( ($curr_gold - $eating_cost) >= 0){
-        $new_gold = $curr_gold - $eating_cost;
-        $max_health = $params['max_health'];
-        user_set_gold($dbh, $user_id, $new_gold);
-        user_set_health($dbh, $user_id, $max_health);
+    $user_curr_health = 0;
+    $user_curr_health = user_get_health($dbh, $user_id)['res'][0]['health'] * 1;
+
+    if ($user_curr_health === 100){
         $rs = [
-            'success' => 2,
-            'message' => 'Здоровье полностью восстановлено!',
-            'gold' => $new_gold,
-            'health' => $max_health,
+            'success' => 3,
+            'message' => 'Здоровье и так полное, приходите, когда проголодаетесь!',
         ];
     }else{
-        $rs = [
-            'success' => 1,
-            'message' => 'Селина: твоих денег не достаточно для оплаты :) ',
-        ];
+        if ( ($curr_gold - $eating_cost) >= 0){
+            $new_gold = $curr_gold - $eating_cost;
+            $max_health = $params['max_health'];
+            user_set_gold($dbh, $user_id, $new_gold);
+            user_set_health($dbh, $user_id, $max_health);
+            $rs = [
+                'success' => 2,
+                'message' => 'Здоровье полностью восстановлено!',
+                'gold' => $new_gold,
+                'health' => $max_health,
+            ];
+        }else{
+            $rs = [
+                'success' => 1,
+                'message' => 'Селина: твоих денег не достаточно для оплаты :) ',
+            ];
+        }
     }
 
 }catch (Exception $e){
