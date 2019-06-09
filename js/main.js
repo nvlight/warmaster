@@ -1,7 +1,39 @@
-
 //window.onload = function() {
 $(document).ready(function(){
 
+    var user_stage = -1;
+
+    // Окно оповещений
+    var messWindow = document.getElementById('messWindow'),
+        messWindowInner = document.getElementById('messWindowInner'),
+
+        // Персонаж ============================================================
+        // HeroPowerAbility = 5,
+        weapon = false,
+        HeroPower = document.getElementById('hero_power'),
+        HeroGold = document.getElementById('hero_gold'),
+        HeroAtack = document.getElementById('hero_atack'),
+        HeroArmor = document.getElementById('hero_armor'),
+        HeroCriticalAtack = document.getElementById('hero_krit'),
+        HeroHP = document.getElementById('hero_hp'),
+
+        HeroGoldInner = 0,
+        HeroHPInner = 100,
+        HeroPowerInner = 0,
+        HeroDamageInner = 10,
+        HeroAtackInner = HeroDamageInner + HeroPowerInner,
+        HeroCritInner = 20,
+        HeroArmorBase = 0,
+        HeroArmorInner = HeroArmorBase;
+
+    HeroArmor.innerHTML = HeroArmorInner;
+    HeroAtack.innerHTML = HeroAtackInner;
+    HeroCriticalAtack.innerHTML = HeroCritInner + '%';
+    HeroPower.innerHTML = HeroPowerInner;
+    HeroGold.innerHTML = HeroGoldInner;
+    HeroHP.innerHTML = HeroHPInner;
+
+    // logout
     $('#user_logout').on('click', function (e) {
         e.preventDefault();
         console.log('user_logout...');
@@ -31,21 +63,66 @@ $(document).ready(function(){
         return false;
     });
 
-    //gameStart();
+    function user_start_stage(){
+        console.log('user_get_stage...');
+        user_stage = -1;
+        var user_logout = $(this);
+        var url = './ajax/user_get_stage.php';
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: '',
+            dataType: 'json', // ! important string!
+            beforeSend: function( xhr ) {
+                console.log('before_send')
 
-    $('.player').click(function() {
-        if (jQuery(this).hasClass('on')) {
-            jQuery(this).removeClass('on');
-            jQuery('#my-hidden-player').get(0).pause();
-        } else {
-            jQuery('.button').removeClass('on');
-            jQuery(this).addClass('on');
-            var pl = jQuery('#my-hidden-player').get(0);
-            pl.pause();
-            pl.src = jQuery(this).attr('data-src');
-            pl.play();
-        }
-    });
+            },
+            complete: function( xhr ) {
+                console.log('after_send')
+            },
+        }).done(function (dt) {
+            console.log('request is done');
+            if (dt['success'] == 1){
+                user_stage = dt['res'][0]['stage'];
+                console.log('in Done function - user_stage: ' + user_stage);
+                if (user_stage == 0){
+                    gameStart();
+                }else{
+                    $('.main_div').removeClass('dn');
+                }
+            }
+        }).fail(function () {
+            console.log('error');
+        });
+        console.log('before return - user_stage: ' + user_stage);
+        return user_stage;
+    }
+
+    function user_set_stage(stage){
+        console.log('user_set_stage...');
+        var user_logout = $(this);
+        var url = './ajax/user_set_stage.php';
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: 'stage='+stage,
+            dataType: 'json', // ! important string!
+            beforeSend: function( xhr ) {
+                console.log('before_send')
+
+            },
+            complete: function( xhr ) {
+                console.log('after_send')
+            },
+        }).done(function (dt) {
+            console.log('request is done');
+            if (dt['success'] == 1){
+                console.log(dt['message']);
+            }
+        }).fail(function () {
+            console.log('error');
+        });
+    }
 
     function gameStart() {
         //$('.box-item').toggleClass('dn');
@@ -78,7 +155,7 @@ $(document).ready(function(){
                 '<li class="question-2" style="display:none;"> > <i><a href="#tab3">Ладно, мне жилье не помешает для отдыха и моего барахла</a></i></li>' +
                 '</ul>' +
                 '</ul>' +
-                '<div class="question-3" style="display:none;"> > <i><a href="#">Пройти в город</a></i></div>'
+                '<div class="question-3" style="display:none;"> > <i><a class="go2city" href="#">Пройти в город</a></i></div>'
             );
             tabsDialog();
             $('.question-1').click(function() {
@@ -92,7 +169,13 @@ $(document).ready(function(){
             $('.question-3').click(function() {
                 $('.OnarDialogBox').fadeOut();
                 $('.overlay').fadeOut();
-                $('.player').trigger('click');
+                //$('.player').trigger('click');
+
+                // !
+                user_set_stage(1);
+
+                $('.main_div').removeClass('dn');
+                // теперь нужно сделать для героя стартовые характеристики
                 var Horinis = '<span class="QuestTitle">' + 'Хоринис' + '</span>';
                 var HorinisTxt = '<ul class="Horinis">' + '<li>' + Horinis + '<br>' + ' - Чертов охранник содрал с меня 200 золотых, чтобы я мог попасть в город, нужно искать работу' + '</li>' + '</ul>';
                 QuestListArr(Horinis, HorinisTxt, '#journal_box__inner');
@@ -103,36 +186,106 @@ $(document).ready(function(){
         DialogBox('.OnarDialogBox');
         //$('.box-item').toggleClass('dn');
     }
-    // Окно оповещений
-    var messWindow = document.getElementById('messWindow'),
-        messWindowInner = document.getElementById('messWindowInner'),
 
-        // Персонаж ============================================================
-        // HeroPowerAbility = 5,
-        weapon = false,
-        HeroPower = document.getElementById('hero_power'),
-        HeroGold = document.getElementById('hero_gold'),
-        HeroAtack = document.getElementById('hero_atack'),
-        HeroArmor = document.getElementById('hero_armor'),
-        HeroCriticalAtack = document.getElementById('hero_krit'),
-        HeroHP = document.getElementById('hero_hp'),
+    //
+    function user_set_gold_html(){
+        console.log('user_get_gold...');
+        var url = './ajax/user_get_gold.php';
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: '',
+            dataType: 'json', // ! important string!
+            beforeSend: function( xhr ) {
+                console.log('before_send')
+            },
+            complete: function( xhr ) {
+                console.log('after_send')
+            },
+        }).done(function (dt) {
+            console.log('request is done');
+            if (dt['success'] == 1){
+                console.log(dt['message']);
+                //
+                let gold = dt['res'][0]['gold'] + 0;
+                $('#hero_gold').html(gold);
+                HeroGoldInner = gold;
+            }
+        }).fail(function () {
+            console.log('error');
+        });
+    }
 
-        HeroGoldInner = 100,
-        HeroHPInner = 100,
-        HeroPowerInner = 0,
-        HeroDamageInner = 10,
-        HeroAtackInner = HeroDamageInner + HeroPowerInner,
-        HeroCritInner = 20,
-        HeroArmorBase = 0,
-        HeroArmorInner = HeroArmorBase;
+    //
+    $('.player').click(function() {
+        if (jQuery(this).hasClass('on')) {
+            jQuery(this).removeClass('on');
+            jQuery('#my-hidden-player').get(0).pause();
+        } else {
+            jQuery('.button').removeClass('on');
+            jQuery(this).addClass('on');
+            var pl = jQuery('#my-hidden-player').get(0);
+            pl.pause();
+            pl.src = jQuery(this).attr('data-src');
+            pl.play();
+        }
+    });
 
-    HeroArmor.innerHTML = HeroArmorInner;
-    HeroAtack.innerHTML = HeroAtackInner;
-    HeroCriticalAtack.innerHTML = HeroCritInner + '%';
-    HeroPower.innerHTML = HeroPowerInner;
-    HeroGold.innerHTML = HeroGoldInner;
-    HeroHP.innerHTML = HeroHPInner;
+    //
+    $('a.go2city').on('click', function () {
+        $('.main_div').removeClass('dn');
+        console.log('go2 city');
+    });
 
+    // start - go to Horinis
+    user_start_stage();
+
+    // perehod na level 0
+    $('#set_stage_0').on('click', function () {
+        user_set_stage(0);
+        window.location.reload();
+    });
+
+    // set_gold_html
+    user_set_gold_html();
+
+    // user_hero_chars
+    function uset_set_user_chars_html(){
+        console.log('user_get_gold...');
+        var url = './ajax/user_get_hero_chars.php';
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: '',
+            dataType: 'json', // ! important string!
+            beforeSend: function( xhr ) {
+                console.log('before_send')
+            },
+            complete: function( xhr ) {
+                console.log('after_send')
+            },
+        }).done(function (dt) {
+            console.log('request is done');
+            if (dt['success'] == 1){
+                console.log(dt['message']);
+                //console.log(dt);
+                $('#hero_power').html(dt['res']['']);
+                $('#hero_atack').html(dt['res']['attack']);
+                $('#hero_armor').html(dt['res']['armor']);
+                $('#hero_krit').html(dt['res']['critical']);
+                $('#hero_hp').html(dt['res']['health']);
+            }
+        }).fail(function () {
+            console.log('error');
+        });
+    }
+
+    //
+    uset_set_user_chars_html();
+
+
+
+    //
     function HeroBaseAtack() {
         HeroAtackInner = HeroDamageInner + HeroPowerInner;
         HeroAtack.innerHTML = HeroAtackInner;
@@ -177,13 +330,11 @@ $(document).ready(function(){
 
     // Дерек ===============================================================
     DerekHPBase = 100,
-        DerekHP = DerekHPBase,
-        DerekPower = 30,
-        DerekDamage = DerekPower + 5,
-        DerekCrit = 10,
-        DerekArmor = 0;
-
-
+    DerekHP = DerekHPBase,
+    DerekPower = 30,
+    DerekDamage = DerekPower + 5,
+    DerekCrit = 10,
+    DerekArmor = 0;
 
     // Работа с объектом event =================================================
     function ProductfadeOut(class_1, class_2) {
@@ -240,7 +391,12 @@ $(document).ready(function(){
         }
         // Покупка
         if (HeroGoldInner >= itemPrice) {
+            console.log('HeroGoldInner: ' + HeroGoldInner);
+            console.log('itemPrice: ' + itemPrice);
+
             HeroGoldInner = HeroGoldInner - itemPrice;
+            console.log('HeroGoldInner: ' + HeroGoldInner);
+
             HeroGold.innerHTML = HeroGoldInner;
             // Если предмет уже куплен увеличиваем счетчик
             if (HeroItemIndex != -1) {
@@ -726,17 +882,42 @@ $(document).ready(function(){
         SelinaAnswers('Селина: Лучшее жаркое в Хоринисе, всего за 110 монет!' + '<br>' + '<button class="ToEat" style="margin-top:10px;">' + 'Кушать' + '</button>' + '<button class="CancelToEat" style="margin-left:10px; margin-top:10px;">' + 'Отмена' + '</button>');
         $('.taverna .db_1').fadeIn();
         $('.ToEat').click(function() {
-            if (HeroGoldInner >= PriceOfFood) {
-                HeroHPInner = 100;
-                HeroHP.innerHTML = HeroHPInner;
-                HeroGoldInner = HeroGoldInner - PriceOfFood;
-                HeroGold.innerHTML = HeroGoldInner;
-                SelinaAnswers('Здоровье полностью восстановлено!');
-                return;
-            }
-            if (HeroGoldInner < PriceOfFood) {
-                SelinaAnswers('Селина: твоих денег не достаточно для оплаты :) ');
-            }
+            // if (HeroGoldInner >= PriceOfFood) {
+            //     HeroHPInner = 100;
+            //     HeroHP.innerHTML = HeroHPInner;
+            //     HeroGoldInner = HeroGoldInner - PriceOfFood;
+            //     HeroGold.innerHTML = HeroGoldInner;
+            //     SelinaAnswers('Здоровье полностью восстановлено!');
+            //     return;
+            // }
+            // if (HeroGoldInner < PriceOfFood) {
+            //     SelinaAnswers('Селина: твоих денег не достаточно для оплаты :) ');
+            // }
+            let urlEating = './ajax/user_eat.php';
+            $.ajax({
+                url: urlEating,
+                method: 'POST',
+                data: '',
+                dataType: 'json', // ! important string!
+                beforeSend: function( xhr ) {
+                    console.log('before_send')
+                },
+                complete: function( xhr ) {
+                    console.log('after_send')
+                },
+            }).done(function (dt) {
+                console.log('request is done');
+                if (dt['success'] == 2){
+                    SelinaAnswers(dt['message']);
+                    $('#hero_gold').html(dt['gold']);
+                    $('#hero_hp').html(dt['health']);
+
+                }else if(dt['success'] == 1){
+                    SelinaAnswers($dt['message']);
+                }
+            }).fail(function () {
+                console.log('error');
+            });
         });
         $('.CancelToEat').click(function() {
             $('.taverna .db_1').fadeOut();

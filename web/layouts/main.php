@@ -26,10 +26,7 @@
     <div class="user-top-menu">
         <div class="logo">
             <button id="set_stage_0">
-                go to start!
-            </button>
-            <button id="user_go2stage">
-                go 2 stage!
+                go to stage 0
             </button>
         </div>
 
@@ -56,7 +53,7 @@
         </div>
 
     </div>
-	<div class="container <?php if ($_SESSION['user']['stage'] === 0) echo 'dn'; ?>">
+	<div class="container main_div dn">
 		<!-- <div class="timer_box border">
 			<span id="my_timer" style="color: #f00; font-size: 150%; font-weight: bold;">10:00</span>
 
@@ -355,7 +352,8 @@
     <!-- Таймер -->
     <script src="js/timer.js"></script>
 
-    <?php echo "$js1"; ?>
+    <?php //echo "$js1"; ?>
+
 
 </body>
 

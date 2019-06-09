@@ -6,11 +6,13 @@ defined('app_start') or define('app_start', 1);
 $_SESSION['app_start'] = 1;
 
 require 'config/main.php';
-require 'config/params.php';
+$params = require 'config/params.php';
 require 'lib/singleton.php';
 require 'lib/functions.php';
 require 'db/mysql.config.php';
 require 'db/mysql.connect.php';
+require 'ajax/user_db_functions.php';
+
 
 $app = WarMaster::app();
 $app->set('username', 'ivan');
@@ -26,7 +28,7 @@ $main_filename = "web/layouts/auth.php";
 //
 if (array_key_exists('user', $_SESSION)){
     // т.е. у нас экран приветствия,
-    $js1 = require 'lib/create_js1.php';
+    //$js1 = require 'lib/create_js1.php';
     require './lib/warmaster/shops.php';
     $main_filename = "web/layouts/main.php";
 }

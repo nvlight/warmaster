@@ -1,4 +1,10 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: user
+ * Date: 12.05.2019
+ * Time: 16:43
+ */
 
 session_start();
 
@@ -8,45 +14,36 @@ require '../vendor/autoload.php';
 require '../lib/functions.php';
 require '../ajax/user_db_functions.php';
 
+
 if (!array_key_exists('app_start', $_SESSION)){
     $rs = ['success' => 0, 'message' => 'something gone wrong!'];
     die(json_encode($rs));
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST'){
-    $rs = ['success' => 0, 'message' => 'There is no POST!'];
+    $rs = ['success' => 0, 'message' => 'something gone wrong again!'];
     die(json_encode($rs));
 }
 
+
 // prepare need form keys and patterns for checking...
 $need_form_keys = [
-    ['User mail','mail','^[a-zA-Z_]+@[a-zA-Z\d_]+\.[a-zA-Z\d_]+', 'Мейл'],
-    ['User password','userpassword','^([a-zA-Z\d@!_-]+){4,33}$', 'Пароль'],
+    //['stage','stage','^\d{1,5}$','Введите текущий прогресс!'],
     //['Captcha','sup_captcha','^[a-z\d]+$'],
+
 ];
 $additional_form_keys = [
-// empty
+    // empty
 
 ];
 
-//
+//echo Debug::d($_POST);
+
+/////
 check_params($need_form_keys, $additional_form_keys);
 
 //
-$mail     = $_POST['mail'];
-$userpassword = $_POST['userpassword'];
-
-//$username = '1KeP';
-//$userpassword = '1111';
-
-$logined = login($mysql, $mail, $userpassword);
-if ($logined['success'] === 1){
-    foreach($logined['rs'] as $k => $v){
-        $_SESSION['user'][$k] = $v;
-    }
-}
-
-//echo Debug::d($logined,'logined', 1);
-die(json_encode($logined));
-
-?>
+$dbh = $mysql['connect'];
+$user_id = $_SESSION['user']['id'];
+$rs = user_get_stage($dbh,$user_id);
+die(json_encode($rs));

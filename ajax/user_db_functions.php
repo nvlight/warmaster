@@ -160,7 +160,7 @@ function mySendMailMessage($subject, $msg_header, $need_form_keys, $additional_f
 //
 function add_new_warmaster_user($mysql, $user_data, $need_form_keys, $additional_form_keys, $subject, $msg_header)
 {
-    $sql = $mysql['connect']->prepare('INSERT INTO user (username, userpassword, mail, i_group) VALUES (?,?,?,?)' );
+    $sql = $mysql->prepare('INSERT INTO `user` (username, userpassword, mail, i_group) VALUES (?,?,?,?)' );
     try{
         //$rs = $sql->execute(['ivan','iPaa@@Sss1', 'ivi@gmail.com']);
         $rs = $sql->execute($user_data);
@@ -206,7 +206,7 @@ function update_user_resourses($dbh, $user_id, $res)
 function get_user_by_mail($dbh, $mail)
 {
     //
-    $sql = "SELECT id, username, userpassword, mail FROM user WHERE mail = '{$mail}'";
+    $sql = "SELECT id, username, mail FROM user WHERE mail = '{$mail}'";
     try{
         $sql_rs1  = $dbh->query($sql);
         $sql_rs2 = ($sql_rs1->fetchAll(MYSQLI_NUM));
@@ -282,7 +282,13 @@ function set_startup_resourses($dbh, $user_mail)
 function login($mysql, $mail, $userpassword){
     $dbh = $mysql['connect'];
 
-    $sql = $dbh->prepare('SELECT id, username, mail, userpassword FROM user WHERE mail = ? and userpassword = ?' );
+    $sql = $dbh->prepare('SELECT 
+            user.id, user.username, user.mail,
+            hi.armor, hi.critical, hi.gold, hi.health, hi.power, hi.stage, hi.attack
+        FROM user 
+        LEFT JOIN `hero_info` hi on hi.i_user = user.id      
+        WHERE mail = ? and userpassword = ?'
+    );
     try{
         $rs = $sql->execute([$mail, $userpassword]);
         $rs_sql = ($sql->fetchAll(MYSQLI_NUM));
@@ -307,10 +313,10 @@ function login($mysql, $mail, $userpassword){
 }
 
 //
-function get_user_resourses($dbh, $user_id)
+function get_hero_chars($dbh, $user_id)
 {
     //
-    $sql = "SELECT resourses as `res` FROM user WHERE id = $user_id";
+    $sql = "SELECT * FROM hero_info WHERE i_user = " . intval($user_id);
     try{
         $sql_rs1  = $dbh->query($sql);
         $sql_rs2 = ($sql_rs1->fetchAll(MYSQLI_NUM));
@@ -399,11 +405,31 @@ function user_set_res_by_key($key){
 }
 
 //
+function user_set_startup_chars($dbh, $user_id)
+{
+    //
+    // $rs = ['success' => 0, 'message' => 'Запрос выполнен, стартовые характеристики героя НЕ заданы!',];
+    $sql = "INSERT INTO hero_info VALUE(NULL,$user_id,700,0,100,0,20,0)";
+    try{
+        $dbh->exec($sql);
+        $rs = ['success' => 1, 'message' => 'Запрос выполнен, стартовые характеристики героя заданы!',];
+
+    }catch (Exception $e){
+        $rs = [
+            'success' => 0,
+            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
+            'message' => 'Ошибка при запросе. Попробуйте позднее.'
+        ];
+    }
+    return $rs;
+}
+
+//
 function user_set_stage($dbh, $user_id, $stage=0)
 {
     //
     $rs = ['success' => 0, 'message' => 'Запрос выполнен, уровень НЕ обновлен!',];
-    $sql = "UPDATE user SET stage = $stage WHERE id = " . intval($user_id);
+    $sql = "UPDATE hero_info SET stage = $stage WHERE i_user = " . intval($user_id);
     try{
         $dbh->exec($sql);
         $rs = ['success' => 1, 'message' => 'Запрос выполнен, уровень обновлен!',];
@@ -422,7 +448,7 @@ function user_set_stage($dbh, $user_id, $stage=0)
 function user_get_stage($dbh, $user_id=0)
 {
     //
-    $sql = "SELECT user.stage FROM user WHERE id = " . intval($user_id);
+    $sql = "SELECT hi.stage FROM user Left Join hero_info hi on hi.i_user = user.id WHERE user.id = " . intval($user_id);
     try{
         $sql_rs1  = $dbh->query($sql);
         $sql_rs2 = ($sql_rs1->fetchAll(MYSQLI_NUM));
@@ -457,7 +483,8 @@ function user_set_gold($dbh, $user_id, $gold=0)
 {
     //
     $rs = ['success' => 0, 'message' => 'Запрос выполнен, золото НЕ установлено!',];
-    $sql = "UPDATE user SET gold = $gold WHERE id = " . intval($user_id);
+    $sql = "UPDATE hero_info SET gold = $gold WHERE i_user = " . intval($user_id);
+    //echo $sql;
     try{
         $dbh->exec($sql);
         $rs = ['success' => 1, 'message' => 'Запрос выполнен, золото установлено!',];
@@ -476,7 +503,7 @@ function user_set_gold($dbh, $user_id, $gold=0)
 function user_get_gold($dbh, $user_id=0)
 {
     //
-    $sql = "SELECT user.gold FROM user WHERE id = " . intval($user_id);
+    $sql = "SELECT gold FROM hero_info WHERE i_user = " . intval($user_id);
     try{
         $sql_rs1  = $dbh->query($sql);
         $sql_rs2 = ($sql_rs1->fetchAll(MYSQLI_NUM));
@@ -493,6 +520,61 @@ function user_get_gold($dbh, $user_id=0)
             $rs = [
                 'success' => 0,
                 'message' => 'Запрос выполнен, золото НЕ найдено!',
+            ];
+        }
+    }catch (Exception $e){
+        $rs = [
+            'success' => 0,
+            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
+            'message' => 'Ошибка при запросе. Попробуйте позднее.'
+        ];
+    }
+
+    return $rs;
+}
+
+//
+function user_set_health($dbh, $user_id, $health)
+{
+    //
+    $rs = ['success' => 0, 'message' => 'Запрос выполнен, золото НЕ установлено!',];
+    $sql = "UPDATE hero_info SET health = $health WHERE i_user = " . intval($user_id);
+    //echo $sql;
+    try{
+        $dbh->exec($sql);
+        $rs = ['success' => 1, 'message' => 'Запрос выполнен, золото установлено!',];
+
+    }catch (Exception $e){
+        $rs = [
+            'success' => 0,
+            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
+            'message' => 'Ошибка при запросе. Попробуйте позднее.'
+        ];
+    }
+    return $rs;
+}
+
+//
+function user_get_health($dbh, $user_id=0)
+{
+    //
+    $sql = "SELECT health FROM hero_info WHERE i_user = " . intval($user_id);
+    try{
+        $sql_rs1  = $dbh->query($sql);
+        $sql_rs2 = ($sql_rs1->fetchAll(MYSQLI_NUM));
+        //echo Debug::d($sql);
+        //echo Debug::d($sql_rs1,'',2);
+        //echo Debug::d($sql_rs2,'',2);
+        if (count($sql_rs2)){
+            $rs = [
+                'success' => 1,
+                'message' => 'Запрос выполнен, найдено!',
+                'res' => $sql_rs2
+            ];
+        }else{
+            $rs = [
+                'success' => 0,
+                'message' => 'Запрос выполнен, НЕ найдено!',
             ];
         }
     }catch (Exception $e){

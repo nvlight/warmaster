@@ -49,8 +49,6 @@ if ($_POST['userpassword'] !== $_POST['userpassword_re']){
     die(json_encode($rs));
 }
 
-
-
 $is_email_duplicate = is_email_duplicate($mysql, $_POST['mail']);
 //
 if ($is_email_duplicate['success'] === 0){
@@ -62,17 +60,21 @@ if ($is_email_duplicate['success'] === 0){
 $user_data['username']     = $_POST['username'];
 $user_data['userpassword'] = $_POST['userpassword'];
 $user_data['mail']         = $_POST['mail'];
+$mail = $user_data['mail'];
 $user_data = [];
 $i_user_group = 2; // pust budet 2!
 $user_data = [ $_POST['username'], $_POST['userpassword'], $_POST['mail'], $i_user_group ];
 
-$result = add_new_warmaster_user($mysql, $user_data, $need_form_keys, $additional_form_keys, $subject, $msg_header);
+$dbh = $mysql['connect'];
 
-//$set_start_resourses = set_startup_resourses($mysql['connect'], $_POST['mail']);
-//if ($set_start_resourses['success'] !== 1){
-//    die(json_encode($set_start_resourses));
-//}
+$result = add_new_warmaster_user($dbh, $user_data, $need_form_keys, $additional_form_keys, $subject, $msg_header);
 
-die(json_encode($result));
+$user_id = get_user_by_mail($dbh, $mail)['res'][0]['id'];
+//echo Debug::d($user_id);
+
+$set_st_chars = user_set_startup_chars($dbh, $user_id);
+//echo Debug::d($set_st_chars);
+
+die(json_encode($set_st_chars));
 
 ?>
