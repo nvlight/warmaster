@@ -63,6 +63,7 @@ $(document).ready(function(){
         return false;
     });
 
+    //
     function user_start_stage(){
         console.log('user_get_stage...');
         user_stage = -1;
@@ -98,6 +99,7 @@ $(document).ready(function(){
         return user_stage;
     }
 
+    //
     function user_set_stage(stage){
         console.log('user_set_stage...');
         var user_logout = $(this);
@@ -124,6 +126,7 @@ $(document).ready(function(){
         });
     }
 
+    //
     function gameStart() {
         //$('.box-item').toggleClass('dn');
         $('.OnarDialogBox').css({
@@ -216,39 +219,6 @@ $(document).ready(function(){
         });
     }
 
-    //
-    $('.player').click(function() {
-        if (jQuery(this).hasClass('on')) {
-            jQuery(this).removeClass('on');
-            jQuery('#my-hidden-player').get(0).pause();
-        } else {
-            jQuery('.button').removeClass('on');
-            jQuery(this).addClass('on');
-            var pl = jQuery('#my-hidden-player').get(0);
-            pl.pause();
-            pl.src = jQuery(this).attr('data-src');
-            pl.play();
-        }
-    });
-
-    //
-    $('a.go2city').on('click', function () {
-        $('.main_div').removeClass('dn');
-        console.log('go2 city');
-    });
-
-    // start - go to Horinis
-    user_start_stage();
-
-    // perehod na level 0
-    $('#set_stage_0').on('click', function () {
-        user_set_stage(0);
-        window.location.reload();
-    });
-
-    // set_gold_html
-    user_set_gold_html();
-
     // user_hero_chars
     function uset_set_user_chars_html(){
         console.log('user_get_gold...');
@@ -279,6 +249,95 @@ $(document).ready(function(){
             console.log('error');
         });
     }
+
+    //
+    $('.player').click(function() {
+        if (jQuery(this).hasClass('on')) {
+            jQuery(this).removeClass('on');
+            jQuery('#my-hidden-player').get(0).pause();
+        } else {
+            jQuery('.button').removeClass('on');
+            jQuery(this).addClass('on');
+            var pl = jQuery('#my-hidden-player').get(0);
+            pl.pause();
+            pl.src = jQuery(this).attr('data-src');
+            pl.play();
+        }
+    });
+
+    //
+    function go2Hollow(){
+        console.log('user_go2Hollow...');
+        var url = './ajax/user_go2Hollow.php';
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: '',
+            dataType: 'json', // ! important string!
+            beforeSend: function( xhr ) {
+                console.log('before_send')
+            },
+            complete: function( xhr ) {
+                console.log('after_send')
+            },
+        }).done(function (dt) {
+            console.log('request is done');
+            if (dt['success'] == 1){
+                console.log(dt['message']);
+                //console.log(dt);
+                $('#hero_hp').html(dt['health']);
+                $('#dinamicTxtHollow').html(dt['message']);
+            }
+        }).fail(function () {
+            console.log('error');
+        });
+    }
+
+    //
+    function go2Rest(){
+        console.log('user_go2Rest...');
+        var url = './ajax/user_go2rest.php';
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: '',
+            dataType: 'json', // ! important string!
+            beforeSend: function( xhr ) {
+                console.log('before_send')
+            },
+            complete: function( xhr ) {
+                console.log('after_send')
+            },
+        }).done(function (dt) {
+            console.log('request is done');
+            if (dt['success'] == 1){
+                console.log(dt['message']);
+                TimerFunc(15, HeroHP, 1, 'Отдых: ', dt['message']);
+                dialogBg('url(./img/bad.jpg) no-repeat top center');
+                $('#hero_hp').html(dt['health']);
+            }
+        }).fail(function () {
+            console.log('error');
+        });
+    }
+
+    //
+    $('a.go2city').on('click', function () {
+        $('.main_div').removeClass('dn');
+        console.log('go2 city');
+    });
+
+    // start - go to Horinis
+    user_start_stage();
+
+    // perehod na level 0
+    $('#set_stage_0').on('click', function () {
+        user_set_stage(0);
+        window.location.reload();
+    });
+
+    // set_gold_html
+    user_set_gold_html();
 
     //
     uset_set_user_chars_html();
@@ -1078,7 +1137,7 @@ $(document).ready(function(){
             BtnFarmeGuard.addEventListener('click', afterFirstDialog);
             BtnWorkFarm.disabled = false;
             var FarmQuest = '<span class="QuestTitle">' + 'Ферма Онара' + '</span>';
-            var FarmQuestTxt = '<ul class="OnarsFarm">' + '<li>' + FarmQuest + '<br>' + ' - Меня пропустили на ферму, теперь я могу заработать не много денег в полях. Но для этого пришлось отвалить Сентезе 100 золотых, чертов ублюдок!' + '</li>' + '</ul>';
+            var FarmQuestTxt = '<ul class="OnarsFarm">' + '<li>' + FarmQuest + '<br>' + ' - Меня пропустили на ферму, теперь я могу заработать немного денег в полях. Но для этого пришлось отвалить Сентезе 100 золотых, чертов ублюдок!' + '</li>' + '</ul>';
             QuestListArr(FarmQuest, FarmQuestTxt, '#journal_box__inner');
         } else if (HeroGoldInner < 100) {
             dinamicTxtSenteza.innerHTML = '<p>' + 'Сентеза: У тебя и 100 монет не наберется, пошел прочь оборванец!' + '</p>';
@@ -1098,7 +1157,7 @@ $(document).ready(function(){
         HeroGoldInner = 0;
         HeroGold.innerHTML = HeroGoldInner;
         var FarmQuest = '<span class="QuestTitle">' + 'Ферма Онара' + '</span>';
-        var FarmQuestTxt = '<ul class="OnarsFarm">' + '<li>' + FarmQuest + '<br>' + ' - Меня пропустили на ферму, теперь я могу заработать не много денег в полях. Этот ублюдок, Сентеза навалял мне по полной и отжал все бабло!' + '</li>' + '</ul>';
+        var FarmQuestTxt = '<ul class="OnarsFarm">' + '<li>' + FarmQuest + '<br>' + ' - Меня пропустили на ферму, теперь я могу заработать немного денег в полях. Этот ублюдок, Сентеза навалял мне по полной и отжал все бабло!' + '</li>' + '</ul>';
         QuestListArr(FarmQuest, FarmQuestTxt, '#journal_box__inner');
     }
 
@@ -1235,15 +1294,20 @@ $(document).ready(function(){
     rest.addEventListener('click', ToRest);
 
     function ToRest() {
-        if (HeroHPInner < 50) {
-            TimerFunc(15, HeroHP, 50, 'Отдых: ', 'Часть здоровья восстановлена');
-            dialogBg('url(./img/bad.jpg) no-repeat top center');
-            HeroHPInner = 50;
-        } else {
-            var heroHPnow = $('#hero_hp').html();
-            TimerFunc(15, HeroHP, heroHPnow, 'Отдых: ', 'Ты отдохнул. Сон восстанавливает не более 50% здоровья');
-            dialogBg('url(./img/bad.jpg) no-repeat top center');
-        }
+
+        // if (HeroHPInner < 50) {
+        //     TimerFunc(15, HeroHP, 50, 'Отдых: ', 'Часть здоровья восстановлена');
+        //     dialogBg('url(./img/bad.jpg) no-repeat top center');
+        //     HeroHPInner = 50;
+        //     $('#hero_hp').html(HeroHPInner);
+        // } else {
+        //     var heroHPnow = $('#hero_hp').html();
+        //     TimerFunc(15, HeroHP, heroHPnow, 'Отдых: ', 'Ты отдохнул. Сон восстанавливает не более 50% здоровья');
+        //     dialogBg('url(./img/bad.jpg) no-repeat top center');
+        //     $('#hero_hp').html(HeroHPInner);
+        // }
+        go2Rest();
+
     }
 
     // Функция смены фона у больших диалоговых окон
@@ -1302,7 +1366,7 @@ $(document).ready(function(){
             timeOfwork.innerHTML = number;
             if (number == 0) {
                 window.clearInterval(window.timerId);
-                parameter1.innerHTML = parameter2;
+                //parameter1.innerHTML = parameter2;
                 timeOfwork.innerHTML = '';
                 timeStop.innerHTML = messAfter;
                 $('.close').html('x');
@@ -1642,22 +1706,29 @@ $(document).ready(function(){
                 $('.dialog_box').fadeOut();
             });
             $('.GoToHollow').click(function() {
-                var HeroWeaponBattle = $('#hero_weapon span').html(),
-                    HeroArmorBattle = $('#hero_armor_equiped span').html();
-                if (HeroWeaponBattle != 'Пусто') {
-                    LostTheItem(HeroWeaponBattle);
-                }
-                if (HeroArmorBattle != 'Пусто') {
-                    LostTheItem(HeroArmorBattle);
-                }
-                if (HeroWeaponBattle != 'Пусто' || HeroArmorBattle != 'Пусто') {
-                    $('#dinamicTxtHollow').html('<p>' + 'Ты почти захлебнулся в трясине, но чудом спасся освободившись от тянущего на дно снаряжения. Здоровье на минимуме!' + '</p>');
-                }
-                if (HeroWeaponBattle == 'Пусто' && HeroArmorBattle == 'Пусто') {
-                    $('#dinamicTxtHollow').html('<p>Ты едва не захлебнулся в трясине. Здоровье на минимуме!</p>');
-                }
-                HeroHPInner = 1;
-                HeroHP.innerHTML = HeroHPInner;
+
+                // var HeroWeaponBattle = $('#hero_weapon span').html(),
+                //     HeroArmorBattle = $('#hero_armor_equiped span').html();
+                // if (HeroWeaponBattle != 'Пусто') {
+                //     LostTheItem(HeroWeaponBattle);
+                // }
+                // if (HeroArmorBattle != 'Пусто') {
+                //     LostTheItem(HeroArmorBattle);
+                // }
+                // if (HeroWeaponBattle != 'Пусто' || HeroArmorBattle != 'Пусто') {
+                //     $('#dinamicTxtHollow').html('<p>' + 'Ты почти захлебнулся в трясине, но чудом спасся освободившись от тянущего на дно снаряжения. Здоровье на минимуме!' + '</p>');
+                // }
+                // if (HeroWeaponBattle == 'Пусто' && HeroArmorBattle == 'Пусто') {
+                //     $('#dinamicTxtHollow').html('<p>Ты едва не захлебнулся в трясине. Здоровье на минимуме!</p>');
+                // }
+                // HeroHPInner = 1;
+                // HeroHP.innerHTML = HeroHPInner;
+
+                // теперь исходя из текущего здоровья и экипировки обработать.
+                // если есть экиппировка, выбросить все,
+                // здоровье свести на минимум.
+                go2Hollow();
+
             });
         }
         if (MapHollow == true && DefeatOrk == false) {

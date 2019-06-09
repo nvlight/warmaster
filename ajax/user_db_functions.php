@@ -537,12 +537,12 @@ function user_get_gold($dbh, $user_id=0)
 function user_set_health($dbh, $user_id, $health)
 {
     //
-    $rs = ['success' => 0, 'message' => 'Запрос выполнен, золото НЕ установлено!',];
+    $rs = ['success' => 0, 'message' => 'Запрос выполнен!',];
     $sql = "UPDATE hero_info SET health = $health WHERE i_user = " . intval($user_id);
     //echo $sql;
     try{
         $dbh->exec($sql);
-        $rs = ['success' => 1, 'message' => 'Запрос выполнен, золото установлено!',];
+        $rs = ['success' => 1, 'message' => 'Запрос выполнен!', 'health' => $health];
 
     }catch (Exception $e){
         $rs = [
