@@ -14,6 +14,6 @@ return [
     'sw_subject' => 'we have new message',
     'eating_cost' => 110,
     'max_health' => 100,
-    // some small things...
+    
 
 ];
