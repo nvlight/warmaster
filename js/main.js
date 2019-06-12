@@ -182,9 +182,31 @@ $(document).ready(function(){
 
                 $('.main_div').removeClass('dn');
                 // теперь нужно сделать для героя стартовые характеристики
-                var Horinis = '<span class="QuestTitle">' + 'Хоринис' + '</span>';
-                var HorinisTxt = '<ul class="Horinis">' + '<li>' + Horinis + '<br>' + ' - Чертов охранник содрал с меня 200 золотых, чтобы я мог попасть в город, нужно искать работу' + '</li>' + '</ul>';
-                QuestListArr(Horinis, HorinisTxt, '#journal_box__inner');
+
+                // следующие 3 строки комментирую, т.к. нужно их формировать с сервера
+                // var Horinis = '<span class="QuestTitle">' + 'Хоринис' + '</span>';
+                // var HorinisTxt = '<ul class="Horinis">' + '<li>' + Horinis + '<br>' + ' - Чертов охранник содрал с меня 200 золотых, чтобы я мог попасть в город, нужно искать работу' + '</li>' + '</ul>';
+                // QuestListArr(Horinis, HorinisTxt, '#journal_box__inner');
+                //journal_box__inner
+                console.log('user_2journal_set_start_message...');
+                var url = './ajax/user_2journal_set_start_message.php';
+                $.ajax({
+                    url: url,
+                    method: 'POST',
+                    data: '',
+                    dataType: 'json', // ! important string!
+                    beforeSend: function( xhr ) {
+                        console.log('before_send')
+                    },
+                    complete: function( xhr ) {
+                        console.log('after_send')
+                    },
+                }).done(function (dt) {
+                    console.log(dt['message']);
+                }).fail(function () {
+                    console.log('error');
+                });
+
             });
 
         });
@@ -722,6 +744,29 @@ $(document).ready(function(){
     }
     $('#journal').click(function() {
         $('.overlay, .journal_box').fadeIn();
+        // nuzhno eto delo obrabotat
+        console.log('user_get_journal_messages...');
+        var url = './ajax/user_get_journal_messages.php';
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: '',
+            dataType: 'json', // ! important string!
+            beforeSend: function( xhr ) {
+                console.log('before_send')
+            },
+            complete: function( xhr ) {
+                console.log('after_send')
+            },
+        }).done(function (dt) {
+            console.log('request is done');
+            if (dt['success'] == 1){
+                $('#journal_box__inner').html(dt['res']);
+            }
+        }).fail(function () {
+            console.log('error');
+        });
+
     });
     $('.close').click(function journalClose() {
         $('.overlay, .messWindow, .FarmWorker').fadeOut();
