@@ -112,5 +112,10 @@ $WM_shops[] = $santino_shop;
 
 // # 1 new ---> test user_add_item
 // добавление и обновление итемов по ИД работает!
-//$ruai = user_inventory_add_item($dbh, 6);
+//$ruai = user_inventory_add_item($dbh, 5);
 //die;
+
+// # 2 new ---> test user_del_item_by_ID
+// удаление и обновление итемов по ИД тоже работает!
+$ruai = user_inventory_del_item($dbh, 5);
+die;

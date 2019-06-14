@@ -712,8 +712,31 @@ function user_inventory_add_item($dbh, $i_item)
 }
 
 //
-function user_inventory_del_item($dbh, $i_item){
-
+function user_inventory_del_item($dbh, $i_item)
+{
+//
+    $is_item_exists = user_inventory_is_item_exists($dbh, $i_item);
+    echo Debug::d($is_item_exists,'',2); //die;
+    //echo Debug::d(count($is_item_exists['result']));
+    if ($is_item_exists['success'] === 1 && (intval($is_item_exists['result'][0]['count']) - 1) > 0 ){
+        $new_count =  intval($is_item_exists['result'][0]['count']);
+        $new_count--;
+        echo Debug::d($new_count,'new_count');
+        return user_inventory_update_item($dbh, $i_item, $new_count);
+    }
+    //
+    $sql = "DELETE FROM inventory WHERE i_item = " . intval($i_item);
+    try{
+        $dbh->exec($sql);
+        $rs = ['success' => 1, 'message' => 'Запрос выполнен!',];
+    }catch (Exception $e){
+        $rs = [
+            'success' => 0,
+            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
+            'message' => 'Ошибка при запросе. Попробуйте позднее.'
+        ];
+    }
+    return $rs;
 }
 
 //
