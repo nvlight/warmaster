@@ -21,7 +21,7 @@ $(document).ready(function(){
         HeroHP = document.getElementById('hero_hp'),
 
         HeroGoldInner = '',
-        HeroHPInner = 100,
+        HeroHPInner = '',
         HeroPowerInner = 0,
         HeroDamageInner = 10,
         HeroAtackInner = HeroDamageInner + HeroPowerInner,

@@ -587,3 +587,150 @@ function user_get_health($dbh, $user_id=0)
 
     return $rs;
 }
+
+//
+function user_get_shops_with_childs($dbh)
+{
+    //
+    $sql = "
+        SELECT
+            shi.id i_item,
+            shop.id i_shop,
+            shop.name,
+            shi.name,
+            shi.attack,
+            shi.armor,
+            shi.cost,
+            shi.spec_type
+        FROM
+             shop_item shi
+        LEFT JOIN shop ON shop.id = shi.i_shop
+        LIMIT 100
+";
+    try{
+        $sql_rs1  = $dbh->query($sql);
+        $sql_rs2 = ($sql_rs1->fetchAll(MYSQLI_NUM));
+        //echo Debug::d($sql);
+        //echo Debug::d($sql_rs1,'',2);
+        //echo Debug::d($sql_rs2,'',2);
+        if (count($sql_rs2)){
+            $rs = [
+                'success' => 1,
+                'message' => 'Запрос выполнен, найдено!',
+                'result' => $sql_rs2
+            ];
+        }else{
+            $rs = [
+                'success' => 0,
+                'message' => 'Запрос выполнен, НЕ найдено!',
+            ];
+        }
+    }catch (Exception $e){
+        $rs = [
+            'success' => 0,
+            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
+            'message' => 'Ошибка при запросе. Попробуйте позднее.'
+        ];
+    }
+
+    return $rs;
+}
+
+// далее нужны 2 функции для добавления и удаления предметов героя
+// можно пойти двумя путями.
+// 1. заносить каждый раз новую запись по ИД итема и также удалять по 1 разу. Реализация кажется легкой
+// 2. занести под отдельный итем ИД конкретный и увеличивать счетчик. И уменьшать 1 если счетчик больше 1.
+// 2.1 есть ли итем с заданным ИД?
+// 2.2 если итем есть и счетчик больше 1 уменьшить счетчик на 1
+// 2.3 если счетчик = 1 удалить итем.
+
+//
+function user_inventory_is_item_exists($dbh, $i_item)
+{
+//
+    $sql = "SELECT count FROM inventory WHERE i_item = " . intval($i_item);
+
+    try{
+        $sql_rs1  = $dbh->query($sql);
+        $sql_rs2 = ($sql_rs1->fetchAll(MYSQLI_NUM));
+        //echo Debug::d($sql);
+        //echo Debug::d($sql_rs1,'',2);
+        //echo Debug::d($sql_rs2,'',2);
+        if (count($sql_rs2)){
+            $rs = [
+                'success' => 1,
+                'message' => 'Запрос выполнен, найдено!',
+                'result' => $sql_rs2
+            ];
+        }else{
+            $rs = [
+                'success' => 0,
+                'message' => 'Запрос выполнен, НЕ найдено!',
+            ];
+        }
+    }catch (Exception $e){
+        $rs = [
+            'success' => 0,
+            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
+            'message' => 'Ошибка при запросе. Попробуйте позднее.'
+        ];
+    }
+
+    return $rs;
+}
+
+//
+function user_inventory_add_item($dbh, $i_item)
+{
+    //
+    $new_count = 1;
+    $is_item_exists = user_inventory_is_item_exists($dbh, $i_item);
+    echo Debug::d($is_item_exists,'',2); //die;
+    //echo Debug::d(count($is_item_exists['result']));
+    if ($is_item_exists['success'] === 1 && count($is_item_exists['result']) ){
+        $new_count =  intval($is_item_exists['result'][0]['count']);
+        $new_count++;
+        return user_inventory_update_item($dbh, $i_item, $new_count);
+    }
+
+    $sql = $dbh->prepare("INSERT INTO inventory(i_item, count) VALUES (?, $new_count)");
+    try{
+        $str = $sql->execute([$i_item]);
+        $rs = [
+            'success' => 1,
+            'message' => 'Запись добавлена!',
+        ];
+
+    }catch (Exception $e){
+        $rs = [
+            'success' => 0,
+            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
+            'message' => 'Ошибка. Попробуйте позднее.'
+        ];
+    }
+    return $rs;
+}
+
+//
+function user_inventory_del_item($dbh, $i_item){
+
+}
+
+//
+function user_inventory_update_item($dbh, $i_item, $new_count)
+{
+    //
+    $sql = "UPDATE inventory SET count = $new_count WHERE i_item = " . intval($i_item);
+    try{
+        $dbh->exec($sql);
+        $rs = ['success' => 1, 'message' => 'Запрос выполнен!',];
+    }catch (Exception $e){
+        $rs = [
+            'success' => 0,
+            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
+            'message' => 'Ошибка при запросе. Попробуйте позднее.'
+        ];
+    }
+    return $rs;
+}
+

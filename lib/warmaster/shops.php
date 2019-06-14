@@ -29,6 +29,7 @@ $WM_shops = [
 //<input class="name" type="radio" value="Охотничий нож" name="shopItem"> Охотничий нож - <span>120</span> (<em>Охота</em>)
 //<input class="name" type="radio" value="Сырая сталь" name="shopItem"> Сырая сталь - <span>110</span> (<em>Сырье</em>)
 
+# 1 изначально у нас магазин сантино в виде статического массива, внизу берем данные из БД
 $santino_shop = [
 
 
@@ -51,6 +52,49 @@ $santino_shop = [
     ],
     'html' => '',
 ];
+
+# 2
+// try to get shops_with_childs
+$dbh = $mysql['connect'];
+$shop_with_childs_rs = user_get_shops_with_childs($dbh);
+//echo Debug::d($shop_with_childs_rs,'',1);
+//die;
+
+$new_santito_items = [];
+foreach($shop_with_childs_rs['result'] as $k => $v)
+if ( intval($v['i_shop']) === 1)
+{
+    $item = [];
+
+    $item['name'] = $v['name'];
+    $item['cost'] = $v['cost'];
+    if ($v['spec_type'] !== ''){
+        $item['type'] = 3;
+        $item['value'] = $v['spec_type'];
+        $item['type_caption'] = $item['value'];
+    }else{
+        $armor  = $v['armor'] + 0;
+        $attack = $v['attack'] + 0;
+        //echo Debug::d($armor,'',2);
+        //echo Debug::d($attack,'',2);
+        // die;
+        if ($attack > 0){
+            $item['type'] = 1;
+            $item['value'] = $attack;
+            $item['type_caption'] = 'Урон';
+        }else{
+            $item['type'] = 2;
+            $item['value'] = $armor;
+            $item['type_caption'] = 'Броня';
+        }
+    }
+
+    $new_santito_items[] = $item;
+}
+$santino_shop['items'] = $new_santito_items;
+//die;
+
+
 $santino_shop_html = '';
 foreach($santino_shop['items'] as $k => $v){
     $tmp = <<<INPUT
@@ -64,5 +108,9 @@ $santino_shop['html'] = "<ul>" . $santino_shop_html ." </ul>" ;
 $WM_shops[] = $santino_shop;
 //echo Debug::d($WM_shops[0]['html']); die;
 
-?>
 
+
+// # 1 new ---> test user_add_item
+// добавление и обновление итемов по ИД работает!
+//$ruai = user_inventory_add_item($dbh, 6);
+//die;
