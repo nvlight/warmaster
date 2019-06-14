@@ -26,13 +26,15 @@
     <div class="user-top-menu">
         <div class="logo">
             <button id="set_stage_0">
-                go to stage 0
+                Начать игру заново
             </button>
         </div>
 
         <div class="user-items">
             <span>
-                <span class="dollar1">$</span>
+                <span class="herohp1">Health: </span>
+                <span id="hero_hp"></span>
+                <span class="dollar1">Gold: </span>
                 <span id="hero_gold">
                     <?php
                     $user_id = intval($_SESSION['user']['id']);
@@ -44,6 +46,7 @@
                     ?>
                 </span>
             </span>
+            <span class="username1">Username: </span>
             <span class="username-class">
                 <?=$_SESSION['user']['username']?>
             </span>
@@ -97,7 +100,7 @@
 								<p>Крит: <span id="hero_krit"></span></p>
 							</div>
 						</div>
-						<p>Здоровье: <span id="hero_hp"></span></p>
+<!--						<p>Здоровье: <span id="hero_hp"></span></p>-->
 						<p class="hero_st hero_item__eqiped" id="hero_weapon">Оружие: <br> <span>Пусто</span></p>
 						<p class="hero_st hero_item__eqiped" id="hero_armor_equiped">Доспех: <br> <span>Пусто</span></p>
 					</div>

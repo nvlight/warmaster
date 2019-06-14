@@ -20,7 +20,7 @@ $(document).ready(function(){
         HeroCriticalAtack = document.getElementById('hero_krit'),
         HeroHP = document.getElementById('hero_hp'),
 
-        HeroGoldInner = 0,
+        HeroGoldInner = '',
         HeroHPInner = 100,
         HeroPowerInner = 0,
         HeroDamageInner = 10,
@@ -235,7 +235,7 @@ $(document).ready(function(){
             if (dt['success'] == 1){
                 console.log(dt['message']);
                 //
-                let gold = dt['res'][0]['gold'] + 0;
+                let gold = dt['res'][0]['gold'] * 1;
                 $('#hero_gold').html(gold);
                 HeroGoldInner = gold;
             }

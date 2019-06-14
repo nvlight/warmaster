@@ -882,6 +882,7 @@ button:hover {
 
 .username-class{
     color: #F0653E;
+    font-size: 17px;
 }
 
 /* animation form - 1*/
@@ -1013,4 +1014,20 @@ button:hover {
 
 .devs_span{
     font-size: 15px;
+}
+
+#hero_hp{
+    color: yellow;
+}
+.herohp1{
+    color: #F3B222;
+    font-size: 20px;
+}
+.username1{
+    color: #F3B222;
+    font-size: 20px;
+}
+
+#hero_hp, #hero_gold, .username-class{
+    padding-right: 10px;
 }
