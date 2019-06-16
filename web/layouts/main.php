@@ -126,8 +126,12 @@
 				<div class="bg_inner">
 					<p class="hero_st">Сундук:</p>
 					<div class="inventory" id="inventory">
-						<div id="counter"></div>
-						<ul id="inventory"></ul>
+<!--						<div id="counter"></div>-->
+<!--						<ul id="inventory"></ul>-->
+                        <?php if ($WM_user_inventory['success'] !== 0): ?>
+                            <?php //echo Debug::d($WM_user_inventory,'',2); ?>
+                            <?=$WM_user_inventory['result']?>
+                        <?php endif; ?>
 					</div>
 				</div>
 				<div class="master_btn__box">

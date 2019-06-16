@@ -439,7 +439,8 @@ $(document).ready(function(){
         []
     ];
     var bye = document.getElementById('bye');
-    bye.addEventListener('click', BuyFromSeller);
+    //bye.addEventListener('click', BuyFromSeller);
+    bye.addEventListener('click', BuyFromSeller2);
 
     // Разговор с продавцом
     talkToSellerBtn = document.getElementById('talkToSeller');
@@ -456,6 +457,48 @@ $(document).ready(function(){
         BuyItem(itemCheck, itemCheckVal);
     }
 
+    // my variation
+    function BuyFromSeller2() {
+        var t = $('input[name=shopItem]:checked').data('itemid');
+        if (t === undefined){
+            $('.dialog_box.db.db_market .dinamicTxt').html('<p>' + 'Торговец: Ты не выбрал предмет для покупки :)' + '</p>');
+            $('.marketPlace .db').fadeIn();
+            return;
+        }
+        console.log('item_id: '+t);
+
+        console.log('user_buy_item_by_id.php...');
+        var url = './ajax/user_buy_item_by_id.php';
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: 'item_id='+t,
+            dataType: 'json', // ! important string!
+            beforeSend: function( xhr ) {
+                console.log('before_send')
+            },
+            complete: function( xhr ) {
+                console.log('after_send')
+            },
+        }).done(function (dt) {
+            console.log('request is done');
+            if (dt['success'] == 5){
+                console.log(dt['message']);
+                $('#hero_gold').html(dt['gold']);
+                if (dt['inventory']['success'] == 1){
+                    $('#inventory').html(dt['inventory']['result']);
+                }
+            }else if (dt['success'] == 6){
+                //console.log(dt['message']);
+                $('.dialog_box.db.db_market .dinamicTxt').html(dt['message']);
+                $('.marketPlace .db').fadeIn();
+            }
+        }).fail(function () {
+            console.log('error');
+        });
+    }
+
+    //
     function BuyItem(parameter1, parameter2) {
         var itemPrice = parameter1.next().html(),
             damage = parameter1.next().siblings('em').html(),

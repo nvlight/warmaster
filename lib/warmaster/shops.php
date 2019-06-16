@@ -11,49 +11,29 @@ $WM_shops = [
 
 ];
 
-
-//    <li>
-//        <label>
-//            <input class="name" type="radio"
-//                value="Кожаная броня"
-//                name="shopItem">
-//
-//                    Кожаная броня - <span>200</span> (Броня <em>5</em>)
-//        </label>
-//    </li>
-
-//<input class="name" type="radio" value="Дубинка" name="shopItem"> Дубинка - <span>130</span> (Урон <em>5</em>)
-//<input class="name" type="radio" value="Пластинчатый доспех" name="shopItem"> Пластинчатый доспех - <span>600</span> (Броня <em>10</em>)
-//<input class="name" type="radio" value="Полуторный меч" name="shopItem"> Полуторный меч - <span>250</span> (Урон <em>10</em>)
-//<input class="name" type="radio" value="Двуручный меч" name="shopItem"> Двуручный меч - <span>500</span> (Урон <em>15</em>)
-//<input class="name" type="radio" value="Охотничий нож" name="shopItem"> Охотничий нож - <span>120</span> (<em>Охота</em>)
-//<input class="name" type="radio" value="Сырая сталь" name="shopItem"> Сырая сталь - <span>110</span> (<em>Сырье</em>)
-
 # 1 изначально у нас магазин сантино в виде статического массива, внизу берем данные из БД
 $santino_shop = [
-
 
     'input_classes' => ' name ',
     'input_name' => 'shopItem',
     'input_type' => 'radio',
-    'items' => [
-        // types --> 1 - damage, 2 - armour, 3 - kuznica-resourse
+//    'items' => [
+//        [ 'name' => 'Дубинка', 'cost' => 130, 'type' => 1, 'value' => 5, 'type_caption' => 'Урон'],
+//        [ 'name' => 'Полуторный меч', 'cost' => 250, 'type' => 1, 'value' => 10, 'type_caption' => 'Урон'],
+//        [ 'name' => 'Двуручный меч', 'cost' => 500, 'type' => 1, 'value' => 15, 'type_caption' => 'Урон'],
+//        [ 'name' => 'Охотничий нож', 'cost' => 120, 'type' => 1, 'value' => 'Охота', 'type_caption' => 'Урон'],
+//
+//        [ 'name' => 'Пластинчатый доспех', 'cost' => 600, 'type' => 2, 'value' => 10, 'type_caption' => 'Броня'],
+//        [ 'name' => 'Кожаная броня', 'cost' => 200, 'type' => 2, 'value' => 5, 'type_caption' => 'Броня' ],
+//
+//        [ 'name' => 'Сырая сталь', 'cost' => 110, 'type' => 3, 'value' => 'Сырье', 'type_caption' => 'Сырье'],
+//    ],
 
-        [ 'name' => 'Дубинка', 'cost' => 130, 'type' => 1, 'value' => 5, 'type_caption' => 'Урон'],
-        [ 'name' => 'Полуторный меч', 'cost' => 250, 'type' => 1, 'value' => 10, 'type_caption' => 'Урон'],
-        [ 'name' => 'Двуручный меч', 'cost' => 500, 'type' => 1, 'value' => 15, 'type_caption' => 'Урон'],
-        [ 'name' => 'Охотничий нож', 'cost' => 120, 'type' => 1, 'value' => 'Охота', 'type_caption' => 'Урон'],
-
-        [ 'name' => 'Пластинчатый доспех', 'cost' => 600, 'type' => 2, 'value' => 10, 'type_caption' => 'Броня'],
-        [ 'name' => 'Кожаная броня', 'cost' => 200, 'type' => 2, 'value' => 5, 'type_caption' => 'Броня' ],
-
-        [ 'name' => 'Сырая сталь', 'cost' => 110, 'type' => 3, 'value' => 'Сырье', 'type_caption' => 'Сырье'],
-        //[ 'name' => '', 'cost' => '', 'type' => '', 'value' => ''],
-    ],
     'html' => '',
 ];
 
 # 2
+// подготовим элементы для магазина
 // try to get shops_with_childs
 $dbh = $mysql['connect'];
 $shop_with_childs_rs = user_get_shops_with_childs($dbh);
@@ -68,6 +48,7 @@ if ( intval($v['i_shop']) === 1)
 
     $item['name'] = $v['name'];
     $item['cost'] = $v['cost'];
+    $item['item_id'] = $v['i_item'];
     if ($v['spec_type'] !== ''){
         $item['type'] = 3;
         $item['value'] = $v['spec_type'];
@@ -98,7 +79,7 @@ $santino_shop['items'] = $new_santito_items;
 $santino_shop_html = '';
 foreach($santino_shop['items'] as $k => $v){
     $tmp = <<<INPUT
-<input class="{$santino_shop['input_classes']}" type="{$santino_shop['input_type']}" value="{$v['name']}" name="{$santino_shop['input_name']}"> {$v['name']} - <span>{$v['cost']}</span> ({$v['type_caption']} <em>{$v['value']}</em>)
+<input class="{$santino_shop['input_classes']}" data-itemid="{$v['item_id']}" type="{$santino_shop['input_type']}" value="{$v['name']}" name="{$santino_shop['input_name']}"> {$v['name']} - <span>{$v['cost']}</span> ({$v['type_caption']} <em>{$v['value']}</em>)
 INPUT;
     $santino_shop_html .= '<li><label>' . $tmp . "." . "</label></li>\n";
 }
@@ -110,12 +91,48 @@ $WM_shops[] = $santino_shop;
 
 
 
-// # 1 new ---> test user_add_item
-// добавление и обновление итемов по ИД работает!
-//$ruai = user_inventory_add_item($dbh, 5);
-//die;
 
-// # 2 new ---> test user_del_item_by_ID
-// удаление и обновление итемов по ИД тоже работает!
-$ruai = user_inventory_del_item($dbh, 5);
-die;
+//
+$WM_user_inventory = user_inventory_get($dbh);
+//echo Debug::d($WM_user_inventory); die;
+
+
+
+/// # TMP -
+/// уже занесено в основной файл с функциями
+/// $i_item = 7; $user_id = $_SESSION['user']['id'];
+//tmp_inventory_buy_item($dbh, $user_id, $i_item);
+function tmp_inventory_buy_item($dbh, $user_id, $i_item)
+{
+    /// ####
+    ///
+    //echo Debug::d($_SESSION);
+    $curr_shop_item['id'] = $i_item;
+    $curr_shop_item['inner'] = user_get_shopitem_by_id($dbh, $curr_shop_item['id']);
+    //echo Debug::d($curr_shop_item); die;
+    $curr_shop_item['price'] = $curr_shop_item['inner']['result'][0]['cost'] * 1;
+    //echo Debug::d($curr_shop_item['price']);
+
+    // # 1 new ---> test user_add_item
+    // добавление и обновление итемов по ИД работает!
+    $ruait = user_inventory_add_item($dbh, $curr_shop_item['id']);
+    //echo Debug::d($ruait,'');
+    if ($ruait['success'] === 1){
+        $user['curr_gold'] = user_get_gold($dbh, $user_id);
+        //echo Debug::d($user['curr_gold'],'',1);
+        if ($user['curr_gold']['success'] === 1){
+            $cu_gold = $user['curr_gold']['res'][0]['gold'] * 1;
+            $nu_gold = $cu_gold - $curr_shop_item['price'];
+            //echo Debug::d($cu_gold,'$cu_gold',2);
+            //echo Debug::d($nu_gold,'$nu_gold',2);
+            $usg = user_set_gold($dbh, $user_id, $nu_gold);
+            //echo Debug::d($usg,'',2);
+        }
+    }
+    //die;
+
+    // # 2 new ---> test user_del_item_by_ID
+    // удаление и обновление итемов по ИД тоже работает!
+    //$ruaig = user_inventory_del_item($dbh, 5);
+    //die;
+}

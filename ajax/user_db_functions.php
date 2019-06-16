@@ -487,7 +487,7 @@ function user_set_gold($dbh, $user_id, $gold=0)
     //echo $sql;
     try{
         $dbh->exec($sql);
-        $rs = ['success' => 1, 'message' => 'Запрос выполнен, золото установлено!',];
+        $rs = ['success' => 5, 'message' => 'Запрос выполнен, золото установлено!', 'gold' => $gold];
 
     }catch (Exception $e){
         $rs = [
@@ -685,7 +685,7 @@ function user_inventory_add_item($dbh, $i_item)
     //
     $new_count = 1;
     $is_item_exists = user_inventory_is_item_exists($dbh, $i_item);
-    echo Debug::d($is_item_exists,'',2); //die;
+    //echo Debug::d($is_item_exists,'',2); //die;
     //echo Debug::d(count($is_item_exists['result']));
     if ($is_item_exists['success'] === 1 && count($is_item_exists['result']) ){
         $new_count =  intval($is_item_exists['result'][0]['count']);
@@ -693,14 +693,13 @@ function user_inventory_add_item($dbh, $i_item)
         return user_inventory_update_item($dbh, $i_item, $new_count);
     }
 
-    $sql = $dbh->prepare("INSERT INTO inventory(i_item, count) VALUES (?, $new_count)");
+    $sql = $dbh->prepare("INSERT INTO inventory(i_user, i_item, count) VALUES (?, ?, $new_count)");
     try{
-        $str = $sql->execute([$i_item]);
+        $str = $sql->execute([$_SESSION['user']['id'] * 1, $i_item]);
         $rs = [
             'success' => 1,
             'message' => 'Запись добавлена!',
         ];
-
     }catch (Exception $e){
         $rs = [
             'success' => 0,
@@ -757,3 +756,201 @@ function user_inventory_update_item($dbh, $i_item, $new_count)
     return $rs;
 }
 
+// получение итема под ИД
+function user_get_shopitem_by_id($dbh, $i_item)
+{
+    //
+    $sql = "SELECT * FROM shop_item WHERE id = " . intval($i_item);
+    try{
+        $sql_rs1  = $dbh->query($sql);
+        $sql_rs2 = ($sql_rs1->fetchAll(MYSQLI_NUM));
+
+        if (count($sql_rs2)){
+            $rs = [
+                'success' => 1,
+                'message' => 'Запрос выполнен, найдено!',
+                'result' => $sql_rs2
+            ];
+        }else{
+            $rs = [
+                'success' => 0,
+                'message' => 'Запрос выполнен, НЕ найдено!',
+            ];
+        }
+    }catch (Exception $e){
+        $rs = [
+            'success' => 0,
+            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
+            'message' => 'Ошибка при запросе. Попробуйте позднее.'
+        ];
+    }
+    return $rs;
+}
+
+//
+function user_shop_buy_item($dbh, $i_user, $i_item){
+
+}
+
+//
+function user_inventory_get_all_childs($dbh, $i_user)
+{
+    //
+    $sql = "
+        SELECT                        
+            shop.name shop_name,
+            inventory.id inv_id,
+            inventory.count inv_count,            
+            shop_item.id item_id,
+            shop_item.name item_name,
+            shop_item.attack,
+            shop_item.armor,
+            shop_item.cost,
+            shop_item.spec_type            
+        FROM
+            inventory
+        LEFT JOIN shop_item ON inventory.i_item = shop_item.id
+        LEFT JOIN shop ON shop_item.i_shop = shop.id
+        WHERE inventory.i_user = { intval($i_user) }
+        LIMIT 100";
+    try{
+        $sql_rs1  = $dbh->query($sql);
+        $sql_rs2 = ($sql_rs1->fetchAll(MYSQLI_NUM));
+        if (count($sql_rs2)){
+            $rs = [
+                'success' => 1,
+                'message' => 'Запрос выполнен, найдено!',
+                'result' => $sql_rs2
+            ];
+        }else{
+            $rs = [
+                'success' => 0,
+                'message' => 'Запрос выполнен, НЕ найдено!',
+            ];
+        }
+    }catch (Exception $e){
+        $rs = [
+            'success' => 0,
+            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
+            'message' => 'Ошибка при запросе. Попробуйте позднее.'
+        ];
+    }
+    return $rs;
+}
+
+//
+function user_inventory_get_all_childs_html($result_array)
+{
+    $result_str = '';
+    if ( ($result_array !== null) && is_array($result_array) && count($result_array) )
+    {
+        //
+        foreach($result_array as $item_key => $item_value)
+        {
+            $vr = '';
+            $v1 = $item_value['attack'] * 1;
+            $v2 = $item_value['armor'] * 1;
+            $v3 = $item_value['spec_type'];
+            if ($v1 == 0 && $v2 == 0){
+                $vr = $v3;
+            }else{
+                if ($v1 == 0){
+                    $vr = $v2;
+                }else{
+                    $vr = $v1;
+                }
+            }
+            //
+            $tmp_str = <<<TMP_STR
+            <li>
+                <label>
+                    <input class="inp_radio" name="inventory" type="radio">
+                    <span class="itemName">
+                        {$item_value['item_name']}
+                    </span>
+                    <span class="counter counter-0 ">
+                        {$item_value['inv_count']},
+                    </span>
+                    <span class="priceItemHero">
+                        {$item_value['cost']},
+                    </span>
+                    <span class="damageItemHero">
+                        {$vr}
+                    </span>
+                    </input>
+                </label>
+            </li>
+TMP_STR;
+            $result_str .= $tmp_str;
+        }
+    }
+
+    return ['success' => 1 , 'result' => $result_str];
+}
+
+//
+//// ### получаем инвентарь пользователя...
+function user_inventory_get($dbh)
+{
+    //
+    $inv_childs = user_inventory_get_all_childs($dbh, $_SESSION['user']['id']);
+    if ($inv_childs['success'] !== 0){
+        $WM_user_inventory = $inv_childs['result'];
+        $WM_user_inventory = user_inventory_get_all_childs_html($WM_user_inventory);
+        //echo Debug::d($WM_user_inventory,'woow',1);
+        return $WM_user_inventory;
+    }
+    return $inv_childs;
+}
+
+//
+function user_inventory_buy_item($dbh, $user_id, $i_item)
+{
+    /// ####
+    ///
+    //echo Debug::d($_SESSION);
+    $curr_shop_item['id'] = $i_item;
+    $curr_shop_item['inner'] = user_get_shopitem_by_id($dbh, $curr_shop_item['id']);
+    //echo Debug::d($curr_shop_item); die;
+    if ($curr_shop_item['inner']['success'] === 0) {
+        return $curr_shop_item['inner'];
+    }
+
+    $curr_shop_item['price'] = $curr_shop_item['inner']['result'][0]['cost'] * 1;
+    //echo Debug::d($curr_shop_item['price']);
+
+    // # 1 new ---> test user_add_item
+    // добавление и обновление итемов по ИД работает!
+    // сначала проверим, хватает ли денег на покупку текущего итема.
+    $user['curr_gold'] = user_get_gold($dbh, $user_id);
+    if ($user['curr_gold']['success'] === 1)
+    {
+        $cu_gold = $user['curr_gold']['res'][0]['gold'] * 1;
+        $nu_gold = $cu_gold - $curr_shop_item['price'];
+        //echo Debug::d($cu_gold,'$cu_gold',2);
+        //echo Debug::d($nu_gold,'$nu_gold',2);
+        if ($nu_gold < 0){
+            // more gold required !
+            return ['success' => 6, 'message' => '<p>' . 'Торговец: Эта вещь тебе явно не по карману :)' . '</p>'];
+        }
+        //
+        $ruait = user_inventory_add_item($dbh, $curr_shop_item['id']);
+        //echo Debug::d($ruait,'');
+
+        if ($ruait['success'] === 1){
+            //echo Debug::d($user['curr_gold'],'',1);
+            $usg = user_set_gold($dbh, $user_id, $nu_gold);
+            //echo Debug::d($usg,'',2);
+            return $usg;
+        }
+        return $ruait;
+
+    }
+
+    return $user['curr_gold'];
+
+    // # 2 new ---> test user_del_item_by_ID
+    // удаление и обновление итемов по ИД тоже работает!
+    //$ruaig = user_inventory_del_item($dbh, 5);
+    //die;
+}
