@@ -525,6 +525,12 @@ $(document).ready(function() {
                 $('#hero_gold').html(dt['gold']);
                 if (dt['inventory']['success'] == 1) {
                     $('#inventory').html(dt['inventory']['result']);
+                    //
+                    console.log('t: ' + t);
+                    var inv = $('#inventory')
+                    var find_selector = 'li input[data-itemid="' + t + '"]';
+                    var ii = inv.find(find_selector);
+                    ii.prop( "checked", true );
                 }
             }
         }).fail(function () {
