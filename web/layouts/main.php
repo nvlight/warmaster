@@ -140,6 +140,10 @@
 					<button class="btn" id="sellItem" type="button">Продать</button>
 					<button class="btn" id="toRest" type="button">Отдыхать</button>
 				</div>
+                <div class="dialog_box db db_market bg-img" style="display: none;">
+                    <div class="db_close">х</div>
+                    <div class="dinamicTxt"><p>Торговец: Ты не выбрал предмет для продажи :)</p></div>
+                </div>
 			</div>
 
 		</div>
@@ -355,13 +359,15 @@
 <!--    <script src="js/ajax_functions.js" defer></script>-->
 
     <script src="js/main.js"></script>
+    <script src="js/main2.js"></script>
+
 
     <!-- Таймер -->
     <script src="js/timer.js"></script>
 
     <?php //echo "$js1"; ?>
 
-    <h3 class="user_bottom_dev_caption">&copy; <span class="s_year"></span> All rights reserved
+    <h3 class="user_bottom_dev_caption dn">&copy; <span class="s_year"></span> All rights reserved
         <br>
         <span class="devs_span">Martin German && Aslan Bers@rk</span>
     </h3>

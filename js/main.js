@@ -1,6 +1,7 @@
 //window.onload = function() {
-$(document).ready(function(){
+$(document).ready(function() {
 
+    // set current year for the footer!
     var curr_year = (new Date()).getFullYear();
     $('.s_year').html(curr_year);
 
@@ -47,16 +48,16 @@ $(document).ready(function(){
             method: 'POST',
             data: '',
             dataType: 'json', // ! important string!
-            beforeSend: function( xhr ) {
+            beforeSend: function (xhr) {
                 console.log('before_send')
 
             },
-            complete: function( xhr ) {
+            complete: function (xhr) {
                 console.log('after_send')
             },
         }).done(function (dt) {
             console.log('request is done');
-            if (dt['success'] == 1){
+            if (dt['success'] == 1) {
                 window.location.reload();
             }
         }).fail(function () {
@@ -67,7 +68,7 @@ $(document).ready(function(){
     });
 
     //
-    function user_start_stage(){
+    function user_start_stage() {
         console.log('user_get_stage...');
         user_stage = -1;
         var user_logout = $(this);
@@ -77,21 +78,21 @@ $(document).ready(function(){
             method: 'POST',
             data: '',
             dataType: 'json', // ! important string!
-            beforeSend: function( xhr ) {
+            beforeSend: function (xhr) {
                 console.log('before_send')
 
             },
-            complete: function( xhr ) {
+            complete: function (xhr) {
                 console.log('after_send')
             },
         }).done(function (dt) {
             console.log('request is done');
-            if (dt['success'] == 1){
+            if (dt['success'] == 1) {
                 user_stage = dt['res'][0]['stage'];
                 console.log('in Done function - user_stage: ' + user_stage);
-                if (user_stage == 0){
+                if (user_stage == 0) {
                     gameStart();
-                }else{
+                } else {
                     $('.main_div').removeClass('dn');
                 }
             }
@@ -103,25 +104,25 @@ $(document).ready(function(){
     }
 
     //
-    function user_set_stage(stage){
+    function user_set_stage(stage) {
         console.log('user_set_stage...');
         var user_logout = $(this);
         var url = './ajax/user_set_stage.php';
         $.ajax({
             url: url,
             method: 'POST',
-            data: 'stage='+stage,
+            data: 'stage=' + stage,
             dataType: 'json', // ! important string!
-            beforeSend: function( xhr ) {
+            beforeSend: function (xhr) {
                 console.log('before_send')
 
             },
-            complete: function( xhr ) {
+            complete: function (xhr) {
                 console.log('after_send')
             },
         }).done(function (dt) {
             console.log('request is done');
-            if (dt['success'] == 1){
+            if (dt['success'] == 1) {
                 console.log(dt['message']);
             }
         }).fail(function () {
@@ -143,7 +144,7 @@ $(document).ready(function(){
             '<li style="margin-right:10px;"> <button class="btn toHorinis">Далее</button></li>' +
             '</ul>'
         );
-        $('.toHorinis').click(function() {
+        $('.toHorinis').click(function () {
             $('.OnarDialogBox').css({
                 'background': 'url(./img/horinis.jpg) no-repeat top center',
                 'background-size': 'cover'
@@ -164,15 +165,15 @@ $(document).ready(function(){
                 '<div class="question-3" style="display:none;"> > <i><a class="go2city" href="#">Пройти в город</a></i></div>'
             );
             tabsDialog();
-            $('.question-1').click(function() {
+            $('.question-1').click(function () {
                 $(this).css('display', 'none');
                 $('.question-2').fadeIn();
             });
-            $('.question-2').click(function() {
+            $('.question-2').click(function () {
                 $(this).css('display', 'none');
                 $('.question-3').fadeIn();
             });
-            $('.question-3').click(function() {
+            $('.question-3').click(function () {
                 $('.OnarDialogBox').fadeOut();
                 $('.overlay').fadeOut();
                 //$('.player').trigger('click');
@@ -180,7 +181,8 @@ $(document).ready(function(){
                 // !
                 user_set_stage(1);
 
-                $('.main_div').removeClass('dn');
+
+                $('.main_div, .user_bottom_dev_caption').removeClass('dn');
                 // теперь нужно сделать для героя стартовые характеристики
 
                 // следующие 3 строки комментирую, т.к. нужно их формировать с сервера
@@ -195,10 +197,10 @@ $(document).ready(function(){
                     method: 'POST',
                     data: '',
                     dataType: 'json', // ! important string!
-                    beforeSend: function( xhr ) {
+                    beforeSend: function (xhr) {
                         console.log('before_send')
                     },
-                    complete: function( xhr ) {
+                    complete: function (xhr) {
                         console.log('after_send')
                     },
                 }).done(function (dt) {
@@ -216,7 +218,7 @@ $(document).ready(function(){
     }
 
     //
-    function user_set_gold_html(){
+    function user_set_gold_html() {
         console.log('user_get_gold...');
         var url = './ajax/user_get_gold.php';
         $.ajax({
@@ -224,15 +226,15 @@ $(document).ready(function(){
             method: 'POST',
             data: '',
             dataType: 'json', // ! important string!
-            beforeSend: function( xhr ) {
+            beforeSend: function (xhr) {
                 console.log('before_send')
             },
-            complete: function( xhr ) {
+            complete: function (xhr) {
                 console.log('after_send')
             },
         }).done(function (dt) {
             console.log('request is done');
-            if (dt['success'] == 1){
+            if (dt['success'] == 1) {
                 console.log(dt['message']);
                 //
                 let gold = dt['res'][0]['gold'] * 1;
@@ -245,7 +247,7 @@ $(document).ready(function(){
     }
 
     // user_hero_chars
-    function uset_set_user_chars_html(){
+    function user_set_user_chars_html() {
         console.log('user_get_gold...');
         var url = './ajax/user_get_hero_chars.php';
         $.ajax({
@@ -253,15 +255,15 @@ $(document).ready(function(){
             method: 'POST',
             data: '',
             dataType: 'json', // ! important string!
-            beforeSend: function( xhr ) {
+            beforeSend: function (xhr) {
                 console.log('before_send')
             },
-            complete: function( xhr ) {
+            complete: function (xhr) {
                 console.log('after_send')
             },
         }).done(function (dt) {
             console.log('request is done');
-            if (dt['success'] == 1){
+            if (dt['success'] == 1) {
                 console.log(dt['message']);
                 //console.log(dt);
                 $('#hero_power').html(dt['res']['']);
@@ -275,8 +277,8 @@ $(document).ready(function(){
         });
     }
 
-    //
-    $('.player').click(function() {
+    // music - tango
+    $('.player').click(function () {
         if (jQuery(this).hasClass('on')) {
             jQuery(this).removeClass('on');
             jQuery('#my-hidden-player').get(0).pause();
@@ -291,7 +293,7 @@ $(document).ready(function(){
     });
 
     //
-    function go2Hollow(){
+    function go2Hollow() {
         console.log('user_go2Hollow...');
         var url = './ajax/user_go2Hollow.php';
         $.ajax({
@@ -299,15 +301,15 @@ $(document).ready(function(){
             method: 'POST',
             data: '',
             dataType: 'json', // ! important string!
-            beforeSend: function( xhr ) {
+            beforeSend: function (xhr) {
                 console.log('before_send')
             },
-            complete: function( xhr ) {
+            complete: function (xhr) {
                 console.log('after_send')
             },
         }).done(function (dt) {
             console.log('request is done');
-            if (dt['success'] == 1){
+            if (dt['success'] == 1) {
                 console.log(dt['message']);
                 //console.log(dt);
                 $('#hero_hp').html(dt['health']);
@@ -319,7 +321,7 @@ $(document).ready(function(){
     }
 
     //
-    function go2Rest(){
+    function go2Rest() {
         console.log('user_go2Rest...');
         var url = './ajax/user_go2rest.php';
         $.ajax({
@@ -327,15 +329,15 @@ $(document).ready(function(){
             method: 'POST',
             data: '',
             dataType: 'json', // ! important string!
-            beforeSend: function( xhr ) {
+            beforeSend: function (xhr) {
                 console.log('before_send')
             },
-            complete: function( xhr ) {
+            complete: function (xhr) {
                 console.log('after_send')
             },
         }).done(function (dt) {
             console.log('request is done');
-            if (dt['success'] == 1){
+            if (dt['success'] == 1) {
                 console.log(dt['message']);
                 TimerFunc(15, HeroHP, 1, 'Отдых: ', dt['message']);
                 dialogBg('url(./img/bad.jpg) no-repeat top center');
@@ -365,9 +367,7 @@ $(document).ready(function(){
     user_set_gold_html();
 
     //
-    uset_set_user_chars_html();
-
-
+    user_set_user_chars_html();
 
     //
     function HeroBaseAtack() {
@@ -414,11 +414,11 @@ $(document).ready(function(){
 
     // Дерек ===============================================================
     DerekHPBase = 100,
-    DerekHP = DerekHPBase,
-    DerekPower = 30,
-    DerekDamage = DerekPower + 5,
-    DerekCrit = 10,
-    DerekArmor = 0;
+        DerekHP = DerekHPBase,
+        DerekPower = 30,
+        DerekDamage = DerekPower + 5,
+        DerekCrit = 10,
+        DerekArmor = 0;
 
     // Работа с объектом event =================================================
     function ProductfadeOut(class_1, class_2) {
@@ -429,66 +429,55 @@ $(document).ready(function(){
     }
 
     // Покупка предметов =======================================================
-    $('#ShowTheProduct').click(function() {
+    $('#ShowTheProduct').click(function () {
         $(".shop_box").slideToggle(300);
     });
-    var HeroItem = [
-        [],
-        [],
-        [],
-        []
-    ];
+
     var bye = document.getElementById('bye');
-    //bye.addEventListener('click', BuyFromSeller);
-    bye.addEventListener('click', BuyFromSeller2);
+    bye.addEventListener('click', BuyFromSeller);
 
     // Разговор с продавцом
     talkToSellerBtn = document.getElementById('talkToSeller');
     talkToSellerBtn.addEventListener('click', TalkToSeller);
 
+    //
     function TalkToSeller() {
         $('.marketPlace .db .dinamicTxt').html('<p>' + 'Торговец: Продаю по полной цене, выкупаю за половину :)' + '</p>');
         $('.marketPlace .db').fadeIn();
     }
 
+    //
     function BuyFromSeller() {
-        var itemCheck = $('input[name=shopItem]:checked'),
-            itemCheckVal = $('input[name=shopItem]:checked').val();
-        BuyItem(itemCheck, itemCheckVal);
-    }
-
-    // my variation
-    function BuyFromSeller2() {
         var t = $('input[name=shopItem]:checked').data('itemid');
-        if (t === undefined){
+        if (t === undefined) {
             $('.dialog_box.db.db_market .dinamicTxt').html('<p>' + 'Торговец: Ты не выбрал предмет для покупки :)' + '</p>');
             $('.marketPlace .db').fadeIn();
             return;
         }
-        console.log('item_id: '+t);
+        console.log('item_id: ' + t);
 
         console.log('user_buy_item_by_id.php...');
         var url = './ajax/user_buy_item_by_id.php';
         $.ajax({
             url: url,
             method: 'POST',
-            data: 'item_id='+t,
+            data: 'item_id=' + t,
             dataType: 'json', // ! important string!
-            beforeSend: function( xhr ) {
+            beforeSend: function (xhr) {
                 console.log('before_send')
             },
-            complete: function( xhr ) {
+            complete: function (xhr) {
                 console.log('after_send')
             },
         }).done(function (dt) {
             console.log('request is done');
-            if (dt['success'] == 5){
+            if (dt['success'] == 5) {
                 console.log(dt['message']);
                 $('#hero_gold').html(dt['gold']);
-                if (dt['inventory']['success'] == 1){
+                if (dt['inventory']['success'] == 1) {
                     $('#inventory').html(dt['inventory']['result']);
                 }
-            }else if (dt['success'] == 6){
+            } else if (dt['success'] == 6) {
                 //console.log(dt['message']);
                 $('.dialog_box.db.db_market .dinamicTxt').html(dt['message']);
                 $('.marketPlace .db').fadeIn();
@@ -498,87 +487,49 @@ $(document).ready(function(){
         });
     }
 
-    //
-    function BuyItem(parameter1, parameter2) {
-        var itemPrice = parameter1.next().html(),
-            damage = parameter1.next().siblings('em').html(),
-            HomeInventory = document.getElementById('inventory'),
-            // Проверяем массив и получаем индекс предмета в массиве
-            HeroItemIndex = HeroItem[0].indexOf(parameter2);
-        // Если не хватает золота
-        if (HeroGoldInner < itemPrice) {
-            $('.marketPlace .db .dinamicTxt').html('<p>' + 'Торговец: Эта вещь тебе явно не по карману :)' + '</p>');
-            $('.marketPlace .db').fadeIn();
-        }
-        // Если предмет не выбран для покупки
-        if (typeof parameter2 === 'undefined') {
-            $('.marketPlace .db .dinamicTxt').html('<p>' + 'Торговец: Ты не выбрал предмет для покупки :)' + '</p>');
-            $('.marketPlace .db').fadeIn();
-            return;
-        }
-        // Покупка
-        if (HeroGoldInner >= itemPrice) {
-            console.log('HeroGoldInner: ' + HeroGoldInner);
-            console.log('itemPrice: ' + itemPrice);
-
-            HeroGoldInner = HeroGoldInner - itemPrice;
-            console.log('HeroGoldInner: ' + HeroGoldInner);
-
-            HeroGold.innerHTML = HeroGoldInner;
-            // Если предмет уже куплен увеличиваем счетчик
-            if (HeroItemIndex != -1) {
-                HeroItem[1][HeroItemIndex] = +HeroItem[1][HeroItemIndex] + 1;
-                document.querySelector('.counter-' + (HeroItemIndex)).innerHTML = HeroItem[1][HeroItemIndex];
-            } else {
-                // Добавляем предметы в список
-                HeroItem[0].push(parameter2);
-                HeroItem[1].push(1);
-                HeroItem[2].push(itemPrice);
-                HeroItem[3].push(damage);
-                // Цепляем последние элементы в массиве
-                var NameMassiveLastEl = HeroItem[0][HeroItem[0].length - 1],
-                    CountMassiveLastEl = HeroItem[1][HeroItem[1].length - 1],
-                    PriceMassiveLastEl = HeroItem[2][HeroItem[2].length - 1] / 2,
-                    DamageMassiveLastEl = HeroItem[3][HeroItem[3].length - 1],
-                    li = document.createElement('li');
-                li.innerHTML = '<label>' + '<input class="inp_radio" type=radio name="inventory">' + ' <span class="itemName">' + NameMassiveLastEl + '</span>' + ' <span class="counter counter-' + (HeroItem[0].length - 1) + ' ">' + CountMassiveLastEl + '</span>' + ', ' + '<span class="priceItemHero">' + PriceMassiveLastEl + '</span>' + ', ' + '<span class="damageItemHero">' + DamageMassiveLastEl + '</span>' + '</label>';
-                HomeInventory.appendChild(li);
-            }
-        }
-    }
-
     // Продажа предметов =======================================================
     var sellTheItemBtn = document.getElementById('sellItem');
     sellTheItemBtn.addEventListener('click', SellItem);
 
-    function SellItem() {
-        var itemCheckInv = $('input[name=inventory]:checked').next().html(),
-            HeroItemPrice = $('input[name=inventory]:checked').siblings('.priceItemHero').html();
-        IndexOf(itemCheckInv);
-        if (HeroItemIndexInv != -1) {
-            CounterMinus();
-            HeroGoldInner = HeroGoldInner + Number(HeroItemPrice);
-            HeroGold.innerHTML = HeroGoldInner;
+    //
+    function SellItem()
+    {
+        var t = $('input[name=inventory]:checked').data('itemid');
+        if (t === undefined) {
+            console.log('sell item');
+            $('.box-item.home .dialog_box.db.db_market .dinamicTxt').html('<p>' + 'Торговец: Ты не выбрал предмет для продажи :)' + '</p>');
+            $('.box-item.home .db_market.db').fadeIn();
+            return;
         }
-        if (HeroItem[1][HeroItemIndexInv] == 0) {
-            var DeleteItem = document.querySelector('.counter-' + (HeroItemIndexInv)),
-                itemCheckInvName = $('input[name=inventory]:checked').next().html();
-            var RemoveItem = $(DeleteItem).parents()[1];
-            HeroItemIndex = HeroItem[0].indexOf(itemCheckInvName);
-            delete HeroItem[0][HeroItemIndex];
-            $(RemoveItem).empty();
-            var HeroArmorEquiped = $('#hero_armor_equiped span').html(),
-                HeroWeaponEquiped = $('#hero_weapon span').html();
-            if (HeroArmorEquiped == itemCheckInvName) {
-                $('#hero_armor_equiped span').html('Пусто');
-                HeroBaseArmor();
+        console.log('inventory checked item_id: ' + t);
+
+        // при продаже скрывает предметы с бокса героя, если предметов данного типа не осталось...
+        //ItemImgFadeOut();
+        console.log('user_sell_item_by_id.php...');
+        var url = './ajax/user_sell_item_by_id.php';
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: 'item_id=' + t,
+            dataType: 'json', // ! important string!
+            beforeSend: function (xhr) {
+                console.log('before_send')
+            },
+            complete: function (xhr) {
+                console.log('after_send')
+            },
+        }).done(function (dt) {
+            console.log('request is done');
+            if (dt['success'] == 5) {
+                console.log(dt['message']);
+                $('#hero_gold').html(dt['gold']);
+                if (dt['inventory']['success'] == 1) {
+                    $('#inventory').html(dt['inventory']['result']);
+                }
             }
-            if (HeroWeaponEquiped == itemCheckInvName) {
-                $('#hero_weapon span').html('Пусто');
-                HeroBaseAtack();
-            }
-        }
-        ItemImgFadeOut();
+        }).fail(function () {
+            console.log('error');
+        });
     }
 
     function ItemImgFadeOut() {
@@ -622,7 +573,7 @@ $(document).ready(function(){
     var HaraldMission = false;
     var HornOfMrakoris = false;
 
-    $('#HaraldProduct').click(function() {
+    $('#HaraldProduct').click(function () {
         $('.bg_inner__forge').slideToggle(300);
     });
 
@@ -785,7 +736,8 @@ $(document).ready(function(){
             $(QuestClassIn).append(QuestArticleIn);
         }
     }
-    $('#journal').click(function() {
+
+    $('#journal').click(function () {
         $('.overlay, .journal_box').fadeIn();
         // nuzhno eto delo obrabotat
         console.log('user_get_journal_messages...');
@@ -795,15 +747,15 @@ $(document).ready(function(){
             method: 'POST',
             data: '',
             dataType: 'json', // ! important string!
-            beforeSend: function( xhr ) {
+            beforeSend: function (xhr) {
                 console.log('before_send')
             },
-            complete: function( xhr ) {
+            complete: function (xhr) {
                 console.log('after_send')
             },
         }).done(function (dt) {
             console.log('request is done');
-            if (dt['success'] == 1){
+            if (dt['success'] == 1) {
                 $('#journal_box__inner').html(dt['res']);
             }
         }).fail(function () {
@@ -834,9 +786,6 @@ $(document).ready(function(){
             $(RemoveItem).empty();
         }
     }
-
-    var HornOfMrakoris = false;
-    var sitizen = false;
 
     function masterAdvice() {
         if (trainResolution == true) {
@@ -908,6 +857,14 @@ $(document).ready(function(){
             $('.master .db').fadeIn();
         }
     }
+
+
+
+
+    var HornOfMrakoris = false;
+    var sitizen = false;
+
+
 
     // Показ/Скрытие диалоговых окон
     $('.db_close').click(function() {
@@ -2016,7 +1973,6 @@ $(document).ready(function(){
     }
     // Конец туманная лощина ===================================================
 
-});
 
-//}
-// конец onload
+
+});

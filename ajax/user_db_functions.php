@@ -645,10 +645,10 @@ function user_get_shops_with_childs($dbh)
 // 2.3 если счетчик = 1 удалить итем.
 
 //
-function user_inventory_is_item_exists($dbh, $i_item)
+function user_inventory_is_item_exists($dbh, $i_item, $i_user)
 {
 //
-    $sql = "SELECT count FROM inventory WHERE i_item = " . intval($i_item);
+    $sql = "SELECT count FROM inventory WHERE i_item = " . intval($i_item) . " and i_user = " . intval($i_user);
 
     try{
         $sql_rs1  = $dbh->query($sql);
@@ -684,18 +684,19 @@ function user_inventory_add_item($dbh, $i_item)
 {
     //
     $new_count = 1;
-    $is_item_exists = user_inventory_is_item_exists($dbh, $i_item);
+    $i_user = $_SESSION['user']['id'];
+    $is_item_exists = user_inventory_is_item_exists($dbh, $i_item, $i_user);
     //echo Debug::d($is_item_exists,'',2); //die;
     //echo Debug::d(count($is_item_exists['result']));
     if ($is_item_exists['success'] === 1 && count($is_item_exists['result']) ){
         $new_count =  intval($is_item_exists['result'][0]['count']);
         $new_count++;
-        return user_inventory_update_item($dbh, $i_item, $new_count);
+        return user_inventory_update_item($dbh, $i_item, $i_user, $new_count);
     }
 
     $sql = $dbh->prepare("INSERT INTO inventory(i_user, i_item, count) VALUES (?, ?, $new_count)");
     try{
-        $str = $sql->execute([$_SESSION['user']['id'] * 1, $i_item]);
+        $str = $sql->execute([$_SESSION['user']['id'], $i_item]);
         $rs = [
             'success' => 1,
             'message' => 'Запись добавлена!',
@@ -713,18 +714,19 @@ function user_inventory_add_item($dbh, $i_item)
 //
 function user_inventory_del_item($dbh, $i_item)
 {
-//
-    $is_item_exists = user_inventory_is_item_exists($dbh, $i_item);
-    echo Debug::d($is_item_exists,'',2); //die;
+    //
+    $i_user = $_SESSION['user']['id'];
+    $is_item_exists = user_inventory_is_item_exists($dbh, $i_item, $i_user);
+    //echo Debug::d($is_item_exists,'',2); //die;
     //echo Debug::d(count($is_item_exists['result']));
     if ($is_item_exists['success'] === 1 && (intval($is_item_exists['result'][0]['count']) - 1) > 0 ){
         $new_count =  intval($is_item_exists['result'][0]['count']);
         $new_count--;
-        echo Debug::d($new_count,'new_count');
-        return user_inventory_update_item($dbh, $i_item, $new_count);
+        //echo Debug::d($new_count,'new_count');
+        return user_inventory_update_item($dbh, $i_item, $i_user, $new_count);
     }
     //
-    $sql = "DELETE FROM inventory WHERE i_item = " . intval($i_item);
+    $sql = "DELETE FROM inventory WHERE i_item = " . intval($i_item) . " and i_user = " . $_SESSION['user']['id'];
     try{
         $dbh->exec($sql);
         $rs = ['success' => 1, 'message' => 'Запрос выполнен!',];
@@ -739,10 +741,10 @@ function user_inventory_del_item($dbh, $i_item)
 }
 
 //
-function user_inventory_update_item($dbh, $i_item, $new_count)
+function user_inventory_update_item($dbh, $i_item, $i_user, $new_count)
 {
     //
-    $sql = "UPDATE inventory SET count = $new_count WHERE i_item = " . intval($i_item);
+    $sql = "UPDATE inventory SET count = $new_count WHERE i_item = " . intval($i_item) . " and i_user = " . intval($i_user);
     try{
         $dbh->exec($sql);
         $rs = ['success' => 1, 'message' => 'Запрос выполнен!',];
@@ -785,11 +787,6 @@ function user_get_shopitem_by_id($dbh, $i_item)
         ];
     }
     return $rs;
-}
-
-//
-function user_shop_buy_item($dbh, $i_user, $i_item){
-
 }
 
 //
@@ -842,6 +839,7 @@ function user_inventory_get_all_childs($dbh, $i_user)
 function user_inventory_get_all_childs_html($result_array)
 {
     $result_str = '';
+    //echo Debug::d($result_array); die;
     if ( ($result_array !== null) && is_array($result_array) && count($result_array) )
     {
         //
@@ -861,10 +859,11 @@ function user_inventory_get_all_childs_html($result_array)
                 }
             }
             //
+            //
             $tmp_str = <<<TMP_STR
             <li>
                 <label>
-                    <input class="inp_radio" name="inventory" type="radio">
+                    <input class="inp_radio" name="inventory" type="radio" data-itemid="{$item_value['item_id']}" >
                     <span class="itemName">
                         {$item_value['item_name']}
                     </span>
@@ -953,4 +952,42 @@ function user_inventory_buy_item($dbh, $user_id, $i_item)
     // удаление и обновление итемов по ИД тоже работает!
     //$ruaig = user_inventory_del_item($dbh, 5);
     //die;
+}
+
+//
+function user_inventory_sell_item($dbh, $user_id, $i_item)
+{
+    /// ####
+    //echo Debug::d($_SESSION);
+    $curr_shop_item['id'] = $i_item;
+    $curr_shop_item['inner'] = user_get_shopitem_by_id($dbh, $curr_shop_item['id']);
+    //echo Debug::d($curr_shop_item); die;
+    if ($curr_shop_item['inner']['success'] === 0) {
+        return $curr_shop_item['inner'];
+    }
+
+    // current item price --->
+    $curr_shop_item['price'] = $curr_shop_item['inner']['result'][0]['cost'] * 1;
+    //echo Debug::d($curr_shop_item['price']);
+
+    // # 1 new ---> test user_add_item
+    $user['curr_gold'] = user_get_gold($dbh, $user_id);
+    if ($user['curr_gold']['success'] === 1) {
+        $cu_gold = $user['curr_gold']['res'][0]['gold'] * 1;
+        $nu_gold = $cu_gold + $curr_shop_item['price'];
+    }else{
+        return $user['curr_gold'];
+    }
+
+    $ruait = user_inventory_del_item($dbh, $curr_shop_item['id']);
+    //echo Debug::d($ruait,'');
+
+    if ($ruait['success'] === 1) {
+        //echo Debug::d($user['curr_gold'],'',1);
+        $usg = user_set_gold($dbh, $user_id, $nu_gold);
+        //echo Debug::d($usg,'',2);
+        return $usg;
+    }
+
+    return $ruait;
 }
