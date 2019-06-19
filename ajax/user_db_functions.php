@@ -864,18 +864,10 @@ function user_inventory_get_all_childs_html($result_array)
             <li>
                 <label>
                     <input class="inp_radio" name="inventory" type="radio" data-itemid="{$item_value['item_id']}" >
-                    <span class="itemName">
-                        {$item_value['item_name']}
-                    </span>
-                    <span class="counter counter-0 ">
-                        {$item_value['inv_count']},
-                    </span>
-                    <span class="priceItemHero">
-                        {$item_value['cost']},
-                    </span>
-                    <span class="damageItemHero">
-                        {$vr}
-                    </span>
+                        <span class="itemName">{$item_value['item_name']}</span>
+                        <span class="counter counter-0 ">{$item_value['inv_count']},</span>
+                        <span class="priceItemHero">{$item_value['cost']},</span>
+                        <span class="damageItemHero">{$vr}</span>
                     </input>
                 </label>
             </li>
@@ -990,4 +982,185 @@ function user_inventory_sell_item($dbh, $user_id, $i_item)
     }
 
     return $ruait;
+}
+
+
+// #########
+// Equipment
+// #########
+
+function user_get_equipment($dbh, $i_user){
+    //
+    $sql = "SELECT 
+            equipment.*,            
+            shop_item.name,
+            shop_item.attack,
+            shop_item.armor,
+            shop_item.spec_type
+        FROM equipment        
+        LEFT JOIN shop_item on shop_item.id = equipment.i_item
+        WHERE i_user = { intval($i_user) }
+         
+    ";
+    try{
+        $sql_rs1  = $dbh->query($sql);
+        $sql_rs2 = ($sql_rs1->fetchAll(MYSQLI_NUM));
+        if (count($sql_rs2)){
+            $rs = [
+                'success' => 1,
+                'message' => 'Запрос выполнен, найдено!',
+                'result' => $sql_rs2
+            ];
+        }else{
+            $rs = [
+                'success' => 2,
+                'message' => 'Запрос выполнен, НЕ найдено!',
+            ];
+        }
+    }catch (Exception $e){
+        $rs = [
+            'success' => 0,
+            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
+            'message' => 'Ошибка при запросе. Попробуйте позднее.'
+        ];
+    }
+    return $rs;
+}
+
+////////
+function user_equipment_do($dbh, $user_id, $i_item)
+{
+    //
+    $get_item = user_get_shopitem_by_id($dbh, $i_item);
+    //echo Debug::d($get_item);
+    if ($get_item['success'] === 0) {
+        return $get_item;
+    }
+
+    //
+    $item = $get_item['result'][0];
+    $get_item_type = user_get_item_type($item);
+    //echo Debug::d($get_item_type,'',2);
+    if ($get_item_type === 0) {
+        return ['success' => 0, 'message' => 'item type - armor/attack/spec is undefined'];
+    }
+    $item['item_type'] = $get_item_type;
+    //echo Debug::d($item);
+
+    // если тип итема не из (1,2) attack/armor
+    // это тоже надо где-то да проверить...
+    if ($item['item_type'] !== 1 && $item['item_type'] !== 2){
+        return ['success' => 2, 'message' => 'невозможно экиппировать!'];
+    }
+
+
+    // теперь важный момент, мы просматриваем все экиппированные итемы героя
+    // если тип, который мы добавляем уже есть, мы просто должны обновить item_id экиппированного итема
+    // иначе мы должны добавить этот новый итем с новым типом урон-атака-спец_тип
+    //
+    $gue = user_get_equipment($dbh, $user_id);
+    //echo Debug::d($gue,'user_get_equipment',1);
+    if ($gue['success'] === 0){
+        return $gue;
+    }
+    // значит герой не экипирован вообще!
+    if ($gue['success'] === 2) {
+        // well, we need to insert new value
+        $do_add_equipment = user_add_equipment($dbh, $user_id, $i_item);
+        return $do_add_equipment;
+    }
+
+    // теперь герой экиппирован, если найден итем с таким же типом обновляем, иначего просто добавляем
+
+    // добавляем item_type ко всем
+    foreach($gue['result'] as $k => $v)
+    {
+        $get_type = user_get_item_type($v);
+        $gue['result'][$k]['item_type'] = $get_type;
+    }
+    //echo Debug::d($gue['result'],'gue_results_with_item_type');
+
+    // # 2
+    foreach($gue['result'] as $k => $v){
+        if ($v['item_type'] === $item['item_type']){
+            $i_item_old = $v['i_item'];
+            $i_item_new = $item['id'];
+//            echo 'need to update!';
+//            echo Debug::d('$i_item_old: ' . $i_item_old, 'i_item_old');
+//            echo Debug::d('$i_item_new: ' . $i_item_new, 'i_item_new');
+            $rss = user_update_equipment($dbh,$user_id, $i_item_old, $i_item_new);
+            return $rss;
+        }
+    }
+
+    // если до этого места без ошибок и без ретурнов, значит, это другой тип, и его нужно добавить в БД
+    $do_add_equipment = user_add_equipment($dbh, $user_id, $i_item);
+    return $do_add_equipment;
+}
+
+// what is the item type - Attack | Armor | Special type = 1 | 2 | 3
+function user_get_item_type($item_arr)
+{
+    $item_type = 0; // its mean is error.
+    //(
+    //    [id] => 3
+    //    [i_shop] => 1
+    //    [name] => Двуручный меч
+    //    [attack] => 15
+    //    [armor] => 0
+    //    [cost] => 500
+    //    [spec_type] =>
+    //)
+    $p1 = $item_arr['attack'] * 1;
+    $p2 = $item_arr['armor'] * 1;
+
+    if ($p1 > 0) $item_type = 1;
+    elseif ($p2 > 0) $item_type = 2;
+    elseif ($p1 === 0 && $p2 === 0) $item_type = 3;
+
+    return $item_type;
+}
+
+//
+function user_add_equipment($dbh, $i_user, $i_item )
+{
+    $sql = $dbh->prepare('INSERT INTO equipment (i_user, i_item) VALUES (?,?)' );
+    try{
+        //$rs = $sql->execute(['ivan','iPaa@@Sss1', 'ivi@gmail.com']);
+        $rs = $sql->execute([$i_user, $i_item]);
+        $rs = [
+            'success' => 1,
+            'message' => 'Запрос выполнен!',
+        ];
+
+    }catch (Exception $e){
+        $rs = [
+            'success' => 0,
+            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
+            'message' => 'Ошибка. Попробуйте позднее.'
+        ];
+    }
+    return $rs;
+}
+
+//
+function user_update_equipment($dbh, $i_user, $i_item_old, $i_item_new )
+{
+    //$sql = $dbh->prepare('INSERT INTO equipment (i_user, i_item) VALUES (?,?)' );
+    $sql = "UPDATE equipment SET i_item = {$i_item_new} WHERE i_item = {$i_item_old} and i_user = {$i_user}";
+    try{
+        $dbh->exec($sql);
+        $rs = [
+            'success' => 1,
+            'message' => 'Запрос выполнен!',
+        ];
+
+    }catch (Exception $e){
+        $rs = [
+            'success' => 0,
+            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
+            'message' => 'Ошибка. Попробуйте позднее.'
+        ];
+    }
+    return $rs;
 }

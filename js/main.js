@@ -641,8 +641,9 @@ $(document).ready(function() {
     // Конец кузница ===========================================================
 
     // Экипировка предметов ====================================================
+    //var EquipItem = document.getElementById('equipItem');
     var EquipItem = document.getElementById('equipItem');
-    EquipItem.addEventListener('click', EqipItemFunc);
+    EquipItem.addEventListener('click', EqipItemFunc2);
     // Тип предметов - оружие, броня, сырье
     var ItemTypesArr = [
         ['Полуторный меч', 'Двуручный меч', 'Дубинка', 'Потрошитель Дракона'],
@@ -650,10 +651,57 @@ $(document).ready(function() {
         ['Сырая сталь', 'Охотничий нож', 'Рог Мракориса', 'Хвост крысы', 'Волчья шкура']
     ];
 
+    function EqipItemFunc2()
+    {
+        // получим ИД итема и эккипируем им героя!
+
+        // # 1. получим ИД итема
+
+        var t = $('input[name=inventory]:checked').data('itemid');
+        if (t === undefined) {
+            console.log('sell item');
+            $('.box-item.home .dialog_box.db.db_market .dinamicTxt').html('<p>' + 'Из сундука: Ты не выбрал предмет для экипировки!' + '</p>');
+            $('.box-item.home .db_market.db').fadeIn();
+            return;
+        }
+        console.log('equipment checked item_id: ' + t);
+
+        // # 2. Отправим запрос и узнаем тип итема - атака/броня
+        // # 3. Изменим характеристики героя, исходя из этого...
+
+        console.log('user_equipment_do.php...');
+        var url = './ajax/user_equipment_do.php';
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: 'item_id=' + t,
+            dataType: 'json', // ! important string!
+            beforeSend: function (xhr) {
+                console.log('before_send')
+            },
+            complete: function (xhr) {
+                console.log('after_send')
+            },
+        }).done(function (dt) {
+            console.log('request is done');
+            if (dt['success'] == 1) {
+                console.log(dt['message']);
+                //
+
+            }
+        }).fail(function () {
+            console.log('error');
+        });
+
+    }
+
     function EqipItemFunc() {
         var itemCheckInvName = $('input[name=inventory]:checked').next().html(),
             itemChecked = $('input[name=inventory]:checked'),
             ItemStats = $(itemChecked).siblings(".damageItemHero").html();
+        console.log(itemCheckInvName);
+        console.log(itemChecked);
+        console.log(ItemStats);
         HeroItemIndex = ItemTypesArr[1].indexOf(itemCheckInvName);
         HeroItemWeapon = ItemTypesArr[0].indexOf(itemCheckInvName);
         HeroItemMaterial = ItemTypesArr[2].indexOf(itemCheckInvName);
@@ -1142,7 +1190,8 @@ $(document).ready(function() {
     function afterFirstDialog() {
         AfterPaySentreza();
         // Разговор с Сентезой aboutMissing == true;
-        if (aboutMissing == true && PaySenteza == true) {
+        //if (aboutMissing == true && PaySenteza == true) {
+        if (aboutMissing == true) {
             dialogGuard();
         }
     }

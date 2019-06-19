@@ -89,8 +89,9 @@ $santino_shop['html'] = "<ul>" . $santino_shop_html ." </ul>" ;
 $WM_shops[] = $santino_shop;
 //echo Debug::d($WM_shops[0]['html']); die;
 
-
-
+// test this equipment function...
+$ued = user_equipment_do($dbh, $_SESSION['user']['id'], 2);
+echo Debug::d($ued,'ued',1); die;
 
 //
 $WM_user_inventory = user_inventory_get($dbh);

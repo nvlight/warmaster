@@ -116,6 +116,8 @@
 
 				<div class="master_btn__box">
 					<button class="btn" type="button" class="btnJournal" id="journal">Журнал</button>
+                    <button class="btn" type="button" class="btnDropWeapon" id="DropWeapon">Положить оружие</button>
+                    <button class="btn" type="button" class="btnDropArmor" id="DropArmor">Снять броню</button>
 				</div>
 				<div class="hero_img"><img src="img/hero.png" alt=""></div>
 			</div>
