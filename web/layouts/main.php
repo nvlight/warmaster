@@ -28,6 +28,9 @@
             <button id="set_stage_0">
                 Начать игру заново
             </button>
+            <button id="getHeroPower">
+                getHeroPower
+            </button>
         </div>
 
         <div class="user-items">

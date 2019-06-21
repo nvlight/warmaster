@@ -23,12 +23,21 @@ $(document).ready(function() {
 
         HeroGoldInner = '',
         HeroHPInner = '',
-        HeroPowerInner = 0,
+        HeroPowerInner = 1,
         HeroDamageInner = 10,
         HeroAtackInner = HeroDamageInner + HeroPowerInner,
         HeroCritInner = 20,
         HeroArmorBase = 0,
         HeroArmorInner = HeroArmorBase;
+
+    var HeroChars = [];
+    HeroChars['hero_gold'] = HeroGoldInner;
+    HeroChars['hero_hp'] = HeroHPInner;
+    HeroChars['hero_power'] = HeroPowerInner;
+    HeroChars['hero_damage'] = HeroDamageInner;
+    HeroChars['hero_atack'] = HeroChars['hero_damage'] + HeroChars['hero_power'];
+    HeroChars['hero_armor'] = HeroArmorBase;
+    HeroChars['hero_krit'] = HeroCritInner;
 
     HeroArmor.innerHTML = HeroArmorInner;
     HeroAtack.innerHTML = HeroAtackInner;
@@ -266,11 +275,33 @@ $(document).ready(function() {
             if (dt['success'] == 1) {
                 console.log(dt['message']);
                 //console.log(dt);
-                $('#hero_power').html(dt['res']['']);
+                $('#hero_power').html(dt['res']['power']);
                 $('#hero_atack').html(dt['res']['attack']);
                 $('#hero_armor').html(dt['res']['armor']);
                 $('#hero_krit').html(dt['res']['critical']);
                 $('#hero_hp').html(dt['res']['health']);
+
+                chars = dt['res'];
+                HeroGoldInner = chars['gold'];
+                HeroHPInner = chars['health'];
+                HeroPowerInner = chars['power'];
+                HeroDamageInner = 10;
+                HeroAtackInner = HeroDamageInner + +chars['attack'];
+                HeroCritInner = chars['critical'];
+                HeroArmorBase = chars['armor'];
+                HeroArmorInner = HeroArmorBase;
+
+                //
+                HeroChars['hero_gold'] = +HeroGoldInner;
+                HeroChars['hero_hp'] = +HeroHPInner;
+                HeroChars['hero_power'] = +HeroPowerInner;
+                HeroChars['hero_damage'] = +HeroDamageInner;
+                HeroChars['hero_atack'] = HeroAtackInner;
+                HeroChars['hero_armor'] = +HeroArmorBase;
+                HeroChars['hero_krit'] = +HeroCritInner;
+                HeroChars['its_new!'] = 'yeap';
+
+                $('#hero_atack').html(HeroChars['hero_atack']);
             }
         }).fail(function () {
             console.log('error');
@@ -414,11 +445,11 @@ $(document).ready(function() {
 
     // Дерек ===============================================================
     DerekHPBase = 100,
-        DerekHP = DerekHPBase,
-        DerekPower = 30,
-        DerekDamage = DerekPower + 5,
-        DerekCrit = 10,
-        DerekArmor = 0;
+    DerekHP = DerekHPBase,
+    DerekPower = 30,
+    DerekDamage = DerekPower + 5,
+    DerekCrit = 10,
+    DerekArmor = 0;
 
     // Работа с объектом event =================================================
     function ProductfadeOut(class_1, class_2) {
@@ -684,10 +715,36 @@ $(document).ready(function() {
             },
         }).done(function (dt) {
             console.log('request is done');
-            if (dt['success'] == 1) {
+            if (dt['success'] == 5 || dt['success'] == 4) {
                 console.log(dt['message']);
-                //
+                if (dt['success2'] == 1){
+                    // item_type: 2
+                    // item_value: 5
+                    console.log('item_value: ' + dt['item_value'])
+                    if (dt['item_type'] == 2){
+                        // hero_armor
+                        HeroArmorInner = +dt['item_value'];
+                        //
+                        HeroChars['hero_armor'] = HeroArmorInner;
+                        //
+                        $('#hero_armor').html(HeroChars['hero_armor']);
+                    }else if (dt['item_type'] == 1){
+                        // hero_atack
 
+                        HeroDamageInner = 10
+                        HeroDamageInner2 = +dt['item_value']  // this is element from Ajax!
+                        HeroAtackInner = HeroDamageInner2 + HeroDamageInner + +HeroPowerInner,
+                        //
+                        HeroChars['hero_damage'] = +HeroDamageInner;
+                        HeroChars['hero_atack'] = +HeroAtackInner;
+                        //
+                        $('#hero_atack').html(HeroChars['hero_atack']);
+                    }
+                }
+                //s
+            }else if(dt['success'] == 2){
+                console.log('Невозножжжно экиппировать')
+                $('.HomeMessageAlert').html(dt['message']).css('display', 'block');
             }
         }).fail(function () {
             console.log('error');
@@ -2028,6 +2085,9 @@ $(document).ready(function() {
     }
     // Конец туманная лощина ===================================================
 
-
+    //
+    $('#getHeroPower').on('click', function () {
+        console.log(HeroChars);
+    })
 
 });

@@ -89,10 +89,18 @@ $santino_shop['html'] = "<ul>" . $santino_shop_html ." </ul>" ;
 $WM_shops[] = $santino_shop;
 //echo Debug::d($WM_shops[0]['html']); die;
 
-// test this equipment function...
-$ued = user_equipment_do($dbh, $_SESSION['user']['id'], 2);
-echo Debug::d($ued,'ued',1); die;
-
 //
 $WM_user_inventory = user_inventory_get($dbh);
 //echo Debug::d($WM_user_inventory); die;
+
+// test
+// test this equipment function...
+//$ued = user_equipment_do($dbh, $_SESSION['user']['id'], 1);
+//echo Debug::d($ued,'ued',1); die;
+
+// test
+// user_set_hero_chars($dbh, $user_id, $attack=0, $armor=0) --> test
+//$attack = 10; $attack = 77;
+//$armor  = 0; $armor = 25;
+//$ushc = user_set_hero_chars($dbh, $_SESSION['user']['id'], $attack, $armor);
+//echo Debug::d($ushc,'$ushc'); die;

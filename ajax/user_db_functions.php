@@ -183,26 +183,6 @@ function add_new_warmaster_user($mysql, $user_data, $need_form_keys, $additional
 }
 
 //
-function update_user_resourses($dbh, $user_id, $res)
-{
-    //
-    $rs = ['success' => 0, 'message' => 'Запрос выполнен, ресурсы НЕ обновлены!',];
-    $sql = "UPDATE user SET resourses = '$res' WHERE id = $user_id";
-    try{
-        $dbh->exec($sql);
-        $rs = ['success' => 1, 'message' => 'Запрос выполнен, ресурсы обновлены!',];
-
-    }catch (Exception $e){
-        $rs = [
-            'success' => 0,
-            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
-            'message' => 'Ошибка при запросе. Попробуйте позднее.'
-        ];
-    }
-    return $rs;
-}
-
-//
 function get_user_by_mail($dbh, $mail)
 {
     //
@@ -400,19 +380,48 @@ function zhournal_get($dbh, $user_id){
 }
 
 //
-function user_set_res_by_key($key){
-
-}
-
-//
 function user_set_startup_chars($dbh, $user_id)
 {
     //
-    // $rs = ['success' => 0, 'message' => 'Запрос выполнен, стартовые характеристики героя НЕ заданы!',];
     $sql = "INSERT INTO hero_info VALUE(NULL,$user_id,700,0,100,0,20,0)";
     try{
         $dbh->exec($sql);
         $rs = ['success' => 1, 'message' => 'Запрос выполнен, стартовые характеристики героя заданы!',];
+
+    }catch (Exception $e){
+        $rs = [
+            'success' => 0,
+            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
+            'message' => 'Ошибка при запросе. Попробуйте позднее.'
+        ];
+    }
+    return $rs;
+}
+
+//
+function user_set_hero_chars($dbh, $user_id, $attack=0, $armor=0)
+{
+    //
+    if ($attack === -1 && $armor == -1){
+        $rs = [
+            'success' => 0,
+            'message' => '$attack and $armor === -1!'
+        ];
+    } elseif ($attack > 0){
+        $sql = "
+        UPDATE hero_info SET 
+            attack = {$attack}            
+        WHERE i_user = {$user_id}";
+    } elseif (($armor > 0)){
+        $sql = "
+        UPDATE hero_info SET 
+            armor = {$armor}
+        WHERE i_user = {$user_id}";
+    }
+    //
+    try{
+        $dbh->exec($sql);
+        $rs = ['success' => 1, 'message' => 'Запрос выполнен, характеристики героя обновлены!',];
 
     }catch (Exception $e){
         $rs = [
@@ -1027,6 +1036,39 @@ function user_get_equipment($dbh, $i_user){
     return $rs;
 }
 
+
+
+/////
+///
+function equipment_set_attackAndArmor($dbh, $user_id, $item_type, $item_value)
+{
+    ///
+    // set attack/gold from item type and value
+    $attack = -1; $armor = -1;
+    if ($item_type === 1){
+        $attack = $item_value;
+    }elseif ($item_type === 2){
+        $armor = $item_value;
+    }
+    //
+    $result = [];
+    $ushc = user_set_hero_chars($dbh, $user_id, $attack, $armor);
+    if ($ushc['success'] === 1){
+        $result['message2'] = 'Характеристики героя успешно заданы!';
+        $result['success2'] = 1;
+        //
+        if ($item_type === 1){
+            $result['attack'] = $item_value;
+        }elseif ($item_type === 2){
+            $result['armor'] = $item_value;
+        }
+    }else{
+        $result['success2'] = 0;
+    }
+
+    return $result;
+}
+
 ////////
 function user_equipment_do($dbh, $user_id, $i_item)
 {
@@ -1039,7 +1081,8 @@ function user_equipment_do($dbh, $user_id, $i_item)
 
     //
     $item = $get_item['result'][0];
-    $get_item_type = user_get_item_type($item);
+    $get_item_type = user_get_item_type($item)['item_type'];
+    $get_item_value = user_get_item_type($item)['item_value'];
     //echo Debug::d($get_item_type,'',2);
     if ($get_item_type === 0) {
         return ['success' => 0, 'message' => 'item type - armor/attack/spec is undefined'];
@@ -1067,6 +1110,15 @@ function user_equipment_do($dbh, $user_id, $i_item)
     if ($gue['success'] === 2) {
         // well, we need to insert new value
         $do_add_equipment = user_add_equipment($dbh, $user_id, $i_item);
+        $do_add_equipment['item_type'] = $item['item_type'];
+        $do_add_equipment['item_value'] = $get_item_value;
+
+        // equipment_set_attackAndArmor($dbh, $user_id, $item_type, $item_value)
+        $rtmp = equipment_set_attackAndArmor($dbh, $user_id, $do_add_equipment['item_type'], $do_add_equipment['item_value']);
+        foreach(array_keys($rtmp) as $k => $v){
+            $do_add_equipment[$v] = $rtmp[$v];
+        }
+
         return $do_add_equipment;
     }
 
@@ -1075,7 +1127,7 @@ function user_equipment_do($dbh, $user_id, $i_item)
     // добавляем item_type ко всем
     foreach($gue['result'] as $k => $v)
     {
-        $get_type = user_get_item_type($v);
+        $get_type = user_get_item_type($v)['item_type'];
         $gue['result'][$k]['item_type'] = $get_type;
     }
     //echo Debug::d($gue['result'],'gue_results_with_item_type');
@@ -1089,13 +1141,38 @@ function user_equipment_do($dbh, $user_id, $i_item)
 //            echo Debug::d('$i_item_old: ' . $i_item_old, 'i_item_old');
 //            echo Debug::d('$i_item_new: ' . $i_item_new, 'i_item_new');
             $rss = user_update_equipment($dbh,$user_id, $i_item_old, $i_item_new);
+            $rss['item_type'] = $item['item_type'];
+            $rss['item_value'] = $get_item_value;
+
+            // equipment_set_attackAndArmor($dbh, $user_id, $item_type, $item_value)
+            $rtmp = equipment_set_attackAndArmor($dbh, $user_id, $rss['item_type'], $rss['item_value']);
+            foreach(array_keys($rtmp) as $k => $v){
+                $rss[$v] = $rtmp[$v];
+            }
+
             return $rss;
         }
     }
 
     // если до этого места без ошибок и без ретурнов, значит, это другой тип, и его нужно добавить в БД
     $do_add_equipment = user_add_equipment($dbh, $user_id, $i_item);
+    $do_add_equipment['message'] = 'Запрос выполнен, герой принял начальную экиппировку, тип другой уже';
+    $do_add_equipment['success'] = 5;
+    $do_add_equipment['item_type'] = $item['item_type'];
+    $do_add_equipment['item_value'] = $get_item_value;
+
+    // equipment_set_attackAndArmor($dbh, $user_id, $item_type, $item_value)
+    $rtmp = equipment_set_attackAndArmor($dbh, $user_id, $do_add_equipment['item_type'], $do_add_equipment['item_value']);
+    foreach(array_keys($rtmp) as $k => $v){
+        $do_add_equipment[$v] = $rtmp[$v];
+    }
+
     return $do_add_equipment;
+}
+
+//
+function equipment_set_herochar_by_item_type($dbh, $i_user, $i_item_type){
+
 }
 
 // what is the item type - Attack | Armor | Special type = 1 | 2 | 3
@@ -1114,11 +1191,11 @@ function user_get_item_type($item_arr)
     $p1 = $item_arr['attack'] * 1;
     $p2 = $item_arr['armor'] * 1;
 
-    if ($p1 > 0) $item_type = 1;
-    elseif ($p2 > 0) $item_type = 2;
-    elseif ($p1 === 0 && $p2 === 0) $item_type = 3;
+    if ($p1 > 0) { $item_type = 1; $item_value = $p1; }
+    elseif ($p2 > 0) { $item_type = 2; $item_value = $p2; }
+    elseif ($p1 === 0 && $p2 === 0) { $item_type = 3; $item_value = 0; }
 
-    return $item_type;
+    return ['item_type' => $item_type, 'item_value' => $item_value];
 }
 
 //
@@ -1129,8 +1206,8 @@ function user_add_equipment($dbh, $i_user, $i_item )
         //$rs = $sql->execute(['ivan','iPaa@@Sss1', 'ivi@gmail.com']);
         $rs = $sql->execute([$i_user, $i_item]);
         $rs = [
-            'success' => 1,
-            'message' => 'Запрос выполнен!',
+            'success' => 5,
+            'message' => 'Запрос выполнен, герой принял начальную экиппировку',
         ];
 
     }catch (Exception $e){
@@ -1151,8 +1228,8 @@ function user_update_equipment($dbh, $i_user, $i_item_old, $i_item_new )
     try{
         $dbh->exec($sql);
         $rs = [
-            'success' => 1,
-            'message' => 'Запрос выполнен!',
+            'success' => 4,
+            'message' => 'Запрос выполнен, эккипировка обновлена',
         ];
 
     }catch (Exception $e){
@@ -1164,3 +1241,5 @@ function user_update_equipment($dbh, $i_user, $i_item_old, $i_item_new )
     }
     return $rs;
 }
+
+//
