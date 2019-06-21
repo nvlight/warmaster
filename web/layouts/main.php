@@ -21,6 +21,12 @@
     <div style="background-color: #fff;">
         <?php
             //echo Debug::d($_SESSION);
+
+        // get_user_equipments...
+        //echo Debug::d($user_get_equipment);
+        $equip_item1 = $user_get_equipment['result'][0];
+        $equip_item2 = $user_get_equipment['result'][1];
+
         ?>
     </div>
     <div class="user-top-menu">
@@ -108,16 +114,98 @@
 						<p class="hero_st hero_item__eqiped" id="hero_armor_equiped">Доспех: <br> <span>Пусто</span></p>
 					</div>
 				</div>
-				<div class="armor-crow Hero_Armor"><img src="img/crow-armor.png" alt=""></div>
-				<div class="heavy-armor Hero_Armor"><img src="img/heavy-armor.png" alt=""></div>
-				<div class="leather-armor Hero_Armor"><img src="img/leather-armor.png" alt=""></div>
+                <?php
+                if ($user_get_equipment['success'] === 1){
 
-				<div class="stick Hero_Weapon"><img src="img/dubinka.png" alt=""></div>
-				<div class="sword Hero_Weapon"><img src="img/sword.png" alt=""></div>
-				<div class="long-sword Hero_Weapon"><img src="img/longsword.png" alt=""></div>
-				<div class="ripper Hero_Weapon"><img src="img/ripper.png" alt=""></div>
+                    //echo Debug::d($equip_item1);
+                    //echo Debug::d($equip_item2);
+                    $st_db = "style='display: block;'";
 
-				<div class="master_btn__box">
+                    // for armor
+                    //echo Debug::d($equip_item2['i_item']);
+                    $equip_item2['i_item'] = $equip_item2['i_item'] * 1;
+                    switch ($equip_item1['i_item']) {
+                        case 5:
+                            ?>
+                            <div class="leather-armor Hero_Armor" <?=$st_db?> ><img src="img/leather-armor.png" alt=""></div>
+                            <div class="heavy-armor Hero_Armor"  ><img src="img/heavy-armor.png" alt=""></div>
+                            <div class="armor-crow Hero_Armor"  ><img src="img/crow-armor.png" alt=""></div>
+                            <?php
+                            break;
+                        case 6:
+                            ?>
+                            <div class="leather-armor Hero_Armor"  ><img src="img/leather-armor.png" alt=""></div>
+                            <div class="heavy-armor Hero_Armor" <?=$st_db?> ><img src="img/heavy-armor.png" alt=""></div>
+                            <div class="armor-crow Hero_Armor"  ><img src="img/crow-armor.png" alt=""></div>
+                            <?php
+                            break;
+                        case 9:
+                            ?>
+                            <div class="leather-armor Hero_Armor" ><img src="img/leather-armor.png" alt=""></div>
+                            <div class="heavy-armor Hero_Armor"  ><img src="img/heavy-armor.png" alt=""></div>
+                            <div class="armor-crow Hero_Armor"  <?=$st_db?> ><img src="img/crow-armor.png" alt=""></div>
+                            <?php
+                            break;
+                    }
+
+                }
+                ?>
+                <?php
+                if ($user_get_equipment['success'] === 1){
+
+                    //echo Debug::d($equip_item1);
+                    //echo Debug::d($equip_item2);
+                    $st_db = "style='display: block;'";
+
+                    // for weapon
+                    switch ($equip_item2['i_item']) {
+                        case 1:
+                            ?>
+                            <div class="stick Hero_Weapon" <?=$st_db?> ><img src="img/dubinka.png" alt=""></div>
+                            <div class="sword Hero_Weapon"><img src="img/sword.png" alt=""></div>
+                            <div class="long-sword Hero_Weapon"><img src="img/longsword.png" alt=""></div>
+                            <div class="ripper Hero_Weapon"><img src="img/ripper.png" alt=""></div>
+                            <?php
+                            break;
+                        case 2:
+                            ?>
+                            <div class="stick Hero_Weapon"><img src="img/dubinka.png" alt=""></div>
+                            <div class="sword Hero_Weapon" <?=$st_db?> ><img src="img/sword.png" alt=""></div>
+                            <div class="long-sword Hero_Weapon"><img src="img/longsword.png" alt=""></div>
+                            <div class="ripper Hero_Weapon"><img src="img/ripper.png" alt=""></div>
+                            <?php
+                            break;
+                        case 3:
+                            ?>
+                            <div class="stick Hero_Weapon"><img src="img/dubinka.png" alt=""></div>
+                            <div class="sword Hero_Weapon"><img src="img/sword.png" alt=""></div>
+                            <div class="long-sword Hero_Weapon" <?=$st_db?> ><img src="img/longsword.png" alt=""></div>
+                            <div class="ripper Hero_Weapon"><img src="img/ripper.png" alt=""></div>
+                            <?php
+                            break;
+                        case 8:
+                            ?>
+                            <div class="stick Hero_Weapon"><img src="img/dubinka.png" alt=""></div>
+                            <div class="sword Hero_Weapon"><img src="img/sword.png" alt=""></div>
+                            <div class="long-sword Hero_Weapon"><img src="img/longsword.png" alt=""></div>
+                            <div class="ripper Hero_Weapon" <?=$st_db?> ><img src="img/ripper.png" alt=""></div>
+                            <?php
+                            break;
+                    }
+                }
+                ?>
+
+
+<!--                <div class="stick Hero_Weapon"><img src="img/dubinka.png" alt=""></div>-->
+<!--                <div class="sword Hero_Weapon"><img src="img/sword.png" alt=""></div>-->
+<!--                <div class="long-sword Hero_Weapon"><img src="img/longsword.png" alt=""></div>-->
+<!--                <div class="ripper Hero_Weapon"><img src="img/ripper.png" alt=""></div>-->
+<!---->
+<!--                <div class="leather-armor Hero_Armor" ><img src="img/leather-armor.png" alt=""></div>-->
+<!--                <div class="heavy-armor Hero_Armor"  ><img src="img/heavy-armor.png" alt=""></div>-->
+<!--                <div class="armor-crow Hero_Armor"  --><?//=$st_db?><!-- ><img src="img/crow-armor.png" alt=""></div>-->
+
+                <div class="master_btn__box">
 					<button class="btn" type="button" class="btnJournal" id="journal">Журнал</button>
                     <button class="btn" type="button" class="btnDropWeapon" id="DropWeapon">Положить оружие</button>
                     <button class="btn" type="button" class="btnDropArmor" id="DropArmor">Снять броню</button>

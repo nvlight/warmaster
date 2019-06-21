@@ -4,7 +4,7 @@ $(document).ready(function() {
     // set current year for the footer!
     var curr_year = (new Date()).getFullYear();
     $('.s_year').html(curr_year);
-
+    // current stage
     var user_stage = -1;
 
     // Окно оповещений
@@ -21,12 +21,12 @@ $(document).ready(function() {
         HeroCriticalAtack = document.getElementById('hero_krit'),
         HeroHP = document.getElementById('hero_hp'),
 
-        HeroGoldInner = '',
-        HeroHPInner = '',
-        HeroPowerInner = 1,
-        HeroDamageInner = 10,
-        HeroAtackInner = HeroDamageInner + HeroPowerInner,
-        HeroCritInner = 20,
+        HeroGoldInner = 0,
+        HeroHPInner = 0,
+        HeroPowerInner = 0,
+        HeroDamageInner = 0,
+        HeroAtackInner = HeroAtackInner,
+        HeroCritInner = 0,
         HeroArmorBase = 0,
         HeroArmorInner = HeroArmorBase;
 
@@ -35,7 +35,7 @@ $(document).ready(function() {
     HeroChars['hero_hp'] = HeroHPInner;
     HeroChars['hero_power'] = HeroPowerInner;
     HeroChars['hero_damage'] = HeroDamageInner;
-    HeroChars['hero_atack'] = HeroChars['hero_damage'] + HeroChars['hero_power'];
+    HeroChars['hero_atack'] = HeroChars['hero_damage'];
     HeroChars['hero_armor'] = HeroArmorBase;
     HeroChars['hero_krit'] = HeroCritInner;
 
@@ -190,7 +190,6 @@ $(document).ready(function() {
                 // !
                 user_set_stage(1);
 
-
                 $('.main_div, .user_bottom_dev_caption').removeClass('dn');
                 // теперь нужно сделать для героя стартовые характеристики
 
@@ -285,8 +284,7 @@ $(document).ready(function() {
                 HeroGoldInner = chars['gold'];
                 HeroHPInner = chars['health'];
                 HeroPowerInner = chars['power'];
-                HeroDamageInner = 10;
-                HeroAtackInner = HeroDamageInner + +chars['attack'];
+                HeroAtackInner = +chars['attack'];
                 HeroCritInner = chars['critical'];
                 HeroArmorBase = chars['armor'];
                 HeroArmorInner = HeroArmorBase;
@@ -295,7 +293,6 @@ $(document).ready(function() {
                 HeroChars['hero_gold'] = +HeroGoldInner;
                 HeroChars['hero_hp'] = +HeroHPInner;
                 HeroChars['hero_power'] = +HeroPowerInner;
-                HeroChars['hero_damage'] = +HeroDamageInner;
                 HeroChars['hero_atack'] = HeroAtackInner;
                 HeroChars['hero_armor'] = +HeroArmorBase;
                 HeroChars['hero_krit'] = +HeroCritInner;
@@ -726,17 +723,35 @@ $(document).ready(function() {
                         HeroArmorInner = +dt['item_value'];
                         //
                         HeroChars['hero_armor'] = HeroArmorInner;
+
+                        // show armor
+                        i_item = +dt['i_item']
+                        $('.Hero_Armor').css('display', 'none');
+                        switch (i_item) {
+                            case 5: $('.leather-armor').css('display', 'block'); break;
+                            case 6: $('.heavy-armor').css('display', 'block'); break;
+                            case 9: $('.armor-crow').css('display', 'block'); break;
+                        }
                         //
                         $('#hero_armor').html(HeroChars['hero_armor']);
                     }else if (dt['item_type'] == 1){
                         // hero_atack
 
-                        HeroDamageInner = 10
+                        HeroDamageInner = 0
                         HeroDamageInner2 = +dt['item_value']  // this is element from Ajax!
                         HeroAtackInner = HeroDamageInner2 + HeroDamageInner + +HeroPowerInner,
                         //
                         HeroChars['hero_damage'] = +HeroDamageInner;
                         HeroChars['hero_atack'] = +HeroAtackInner;
+                        //
+                        i_item = +dt['i_item']
+                        $('.Hero_Weapon').css('display', 'none');
+                        switch (i_item) {
+                            case 1: $('.stick').css('display', 'block'); break;
+                            case 2: $('.sword').css('display', 'block'); break;
+                            case 3: $('.long-sword').css('display', 'block'); break;
+                            case 8: $('.ripper').css('display', 'block'); break;
+                        }
                         //
                         $('#hero_atack').html(HeroChars['hero_atack']);
                     }
@@ -969,13 +984,8 @@ $(document).ready(function() {
         }
     }
 
-
-
-
     var HornOfMrakoris = false;
     var sitizen = false;
-
-
 
     // Показ/Скрытие диалоговых окон
     $('.db_close').click(function() {
@@ -1667,6 +1677,8 @@ $(document).ready(function() {
         }
 
         if (HeroHPInner >= 10 && BattleEnemyHP <= 0) {
+            HeroItem = '  Охотничий нож   ';
+            console.log('EnemyAttr: ' + EnemyAttr);
             var HeroItemIndex = HeroItem[0].indexOf('Охотничий нож');
             if (HeroItemIndex != -1) {
                 switch (EnemyAttr) {

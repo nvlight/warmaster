@@ -904,6 +904,11 @@ function user_inventory_get($dbh)
 }
 
 //
+function inventory_get_item_by_id($dbh, $i_user, $_item){
+
+}
+
+//
 function user_inventory_buy_item($dbh, $user_id, $i_item)
 {
     /// ####
@@ -1081,6 +1086,7 @@ function user_equipment_do($dbh, $user_id, $i_item)
 
     //
     $item = $get_item['result'][0];
+    $shop_item_id = $item['id'];
     $get_item_type = user_get_item_type($item)['item_type'];
     $get_item_value = user_get_item_type($item)['item_value'];
     //echo Debug::d($get_item_type,'',2);
@@ -1118,7 +1124,7 @@ function user_equipment_do($dbh, $user_id, $i_item)
         foreach(array_keys($rtmp) as $k => $v){
             $do_add_equipment[$v] = $rtmp[$v];
         }
-
+        $do_add_equipment['i_item'] = $shop_item_id;
         return $do_add_equipment;
     }
 
@@ -1150,6 +1156,7 @@ function user_equipment_do($dbh, $user_id, $i_item)
                 $rss[$v] = $rtmp[$v];
             }
 
+            $rss['i_item'] = $shop_item_id;
             return $rss;
         }
     }
@@ -1166,13 +1173,8 @@ function user_equipment_do($dbh, $user_id, $i_item)
     foreach(array_keys($rtmp) as $k => $v){
         $do_add_equipment[$v] = $rtmp[$v];
     }
-
+    $do_add_equipment['i_item'] = $shop_item_id;
     return $do_add_equipment;
-}
-
-//
-function equipment_set_herochar_by_item_type($dbh, $i_user, $i_item_type){
-
 }
 
 // what is the item type - Attack | Armor | Special type = 1 | 2 | 3
@@ -1180,22 +1182,25 @@ function user_get_item_type($item_arr)
 {
     $item_type = 0; // its mean is error.
     //(
-    //    [id] => 3
-    //    [i_shop] => 1
-    //    [name] => Двуручный меч
-    //    [attack] => 15
-    //    [armor] => 0
-    //    [cost] => 500
-    //    [spec_type] =>
+    //   [id] => 39
+    //   [i_user] => 8
+    //   [i_item] => 5
+    //   [name] => Кожаная броня
+    //   [attack] => 0
+    //   [armor] => 5
+    //   [spec_type] =
     //)
     $p1 = $item_arr['attack'] * 1;
     $p2 = $item_arr['armor'] * 1;
+    //echo Debug::d($item_arr,'search_for_i_item!');
 
     if ($p1 > 0) { $item_type = 1; $item_value = $p1; }
     elseif ($p2 > 0) { $item_type = 2; $item_value = $p2; }
     elseif ($p1 === 0 && $p2 === 0) { $item_type = 3; $item_value = 0; }
 
-    return ['item_type' => $item_type, 'item_value' => $item_value];
+    return ['item_type' => $item_type, 'item_value' => $item_value,
+        //'i_item' => $item_arr['i_item']
+    ];
 }
 
 //

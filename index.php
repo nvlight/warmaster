@@ -29,6 +29,8 @@ $main_filename = "web/layouts/auth.php";
 if (array_key_exists('user', $_SESSION)){
     // т.е. у нас экран приветствия,
     //$js1 = require 'lib/create_js1.php';
+    $dbh = $mysql['connect'];
+    $user_get_equipment = user_get_equipment($dbh, $_SESSION['user']['id']);
     require './lib/warmaster/shops.php';
     $main_filename = "web/layouts/main.php";
 }
