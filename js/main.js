@@ -103,6 +103,7 @@ $(document).ready(function() {
                     gameStart();
                 } else {
                     $('.main_div').removeClass('dn');
+                    $('.main_div, h3.user_bottom_dev_caption').removeClass('dn');
                 }
             }
         }).fail(function () {
@@ -190,7 +191,7 @@ $(document).ready(function() {
                 // !
                 user_set_stage(1);
 
-                $('.main_div, .user_bottom_dev_caption').removeClass('dn');
+                $('.main_div, h3.user_bottom_dev_caption').removeClass('dn');
                 // теперь нужно сделать для героя стартовые характеристики
 
                 // следующие 3 строки комментирую, т.к. нужно их формировать с сервера
@@ -712,51 +713,56 @@ $(document).ready(function() {
             },
         }).done(function (dt) {
             console.log('request is done');
-            if (dt['success'] == 5 || dt['success'] == 4) {
+            //if (dt['success'] == 5 || dt['success'] == 4) {
+            if (dt['success'] == 1) {
+                //console.log(dt);
                 console.log(dt['message']);
-                if (dt['success2'] == 1){
-                    // item_type: 2
-                    // item_value: 5
-                    console.log('item_value: ' + dt['item_value'])
-                    if (dt['item_type'] == 2){
-                        // hero_armor
-                        HeroArmorInner = +dt['item_value'];
-                        //
-                        HeroChars['hero_armor'] = HeroArmorInner;
 
-                        // show armor
-                        i_item = +dt['i_item']
-                        $('.Hero_Armor').css('display', 'none');
-                        switch (i_item) {
-                            case 5: $('.leather-armor').css('display', 'block'); break;
-                            case 6: $('.heavy-armor').css('display', 'block'); break;
-                            case 9: $('.armor-crow').css('display', 'block'); break;
-                        }
-                        //
-                        $('#hero_armor').html(HeroChars['hero_armor']);
-                    }else if (dt['item_type'] == 1){
-                        // hero_atack
+                // item_type: 2
+                // item_value: 5
+                console.log('item_value: ' + dt['item_value'])
+                if (dt['item_type'] == 2){
+                    // hero_armor
+                    HeroArmorInner = +dt['item_value'];
+                    //
+                    HeroChars['hero_armor'] = HeroArmorInner;
 
-                        HeroDamageInner = 0
-                        HeroDamageInner2 = +dt['item_value']  // this is element from Ajax!
-                        HeroAtackInner = HeroDamageInner2 + HeroDamageInner + +HeroPowerInner,
-                        //
-                        HeroChars['hero_damage'] = +HeroDamageInner;
-                        HeroChars['hero_atack'] = +HeroAtackInner;
-                        //
-                        i_item = +dt['i_item']
-                        $('.Hero_Weapon').css('display', 'none');
-                        switch (i_item) {
-                            case 1: $('.stick').css('display', 'block'); break;
-                            case 2: $('.sword').css('display', 'block'); break;
-                            case 3: $('.long-sword').css('display', 'block'); break;
-                            case 8: $('.ripper').css('display', 'block'); break;
-                        }
-                        //
-                        $('#hero_atack').html(HeroChars['hero_atack']);
+                    // show armor
+                    i_item = +dt['i_item']
+                    $('.Hero_Armor').css('display', 'none');
+                    switch (i_item) {
+                        case 5: $('.leather-armor').css('display', 'block'); break;
+                        case 6: $('.heavy-armor').css('display', 'block'); break;
+                        case 9: $('.armor-crow').css('display', 'block'); break;
                     }
+                    //
+                    $('#hero_armor').html(HeroChars['hero_armor']);
+                    //
+                    $('#hero_armor_equiped span').html(dt['item_name']);
+                }else if (dt['item_type'] == 1){
+                    // hero_atack
+
+                    HeroDamageInner = 0
+                    HeroDamageInner2 = +dt['item_value']  // this is element from Ajax!
+                    HeroAtackInner = HeroDamageInner2 + HeroDamageInner + +HeroPowerInner,
+                    //
+                    HeroChars['hero_damage'] = +HeroDamageInner;
+                    HeroChars['hero_atack'] = +HeroAtackInner;
+                    //
+                    i_item = +dt['i_item']
+                    $('.Hero_Weapon').css('display', 'none');
+                    switch (i_item) {
+                        case 1: $('.stick').css('display', 'block'); break;
+                        case 2: $('.sword').css('display', 'block'); break;
+                        case 3: $('.long-sword').css('display', 'block'); break;
+                        case 8: $('.ripper').css('display', 'block'); break;
+                    }
+                    //
+                    $('#hero_atack').html(HeroChars['hero_atack']);
+                    //
+                    $('#hero_weapon span').html(dt['item_name']);
                 }
-                //s
+
             }else if(dt['success'] == 2){
                 console.log('Невозножжжно экиппировать')
                 $('.HomeMessageAlert').html(dt['message']).css('display', 'block');

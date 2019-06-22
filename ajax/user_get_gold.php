@@ -12,7 +12,7 @@ require '../db/mysql.config.php';
 require '../db/mysql.connect.php';
 require '../vendor/autoload.php';
 require '../lib/functions.php';
-require '../ajax/user_db_functions.php';
+require '../ajax/db_functions_part_1.php';
 
 if (!array_key_exists('app_start', $_SESSION)){
     $rs = ['success' => 0, 'message' => 'something gone wrong!'];

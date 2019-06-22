@@ -37,43 +37,26 @@ $santino_shop = [
 // try to get shops_with_childs
 $dbh = $mysql['connect'];
 $shop_with_childs_rs = user_get_shops_with_childs($dbh);
-//echo Debug::d($shop_with_childs_rs,'',1);
-//die;
+//echo Debug::d($shop_with_childs_rs,'',1); //die;
 
 $new_santito_items = [];
+if ($shop_with_childs_rs['success'] === 1)
 foreach($shop_with_childs_rs['result'] as $k => $v)
 if ( intval($v['i_shop']) === 1)
 {
     $item = [];
 
-    $item['name'] = $v['name'];
+    $item['name'] = $v['item_name'];
     $item['cost'] = $v['cost'];
     $item['item_id'] = $v['i_item'];
-    if ($v['spec_type'] !== ''){
-        $item['type'] = 3;
-        $item['value'] = $v['spec_type'];
-        $item['type_caption'] = $item['value'];
-    }else{
-        $armor  = $v['armor'] + 0;
-        $attack = $v['attack'] + 0;
-        //echo Debug::d($armor,'',2);
-        //echo Debug::d($attack,'',2);
-        // die;
-        if ($attack > 0){
-            $item['type'] = 1;
-            $item['value'] = $attack;
-            $item['type_caption'] = 'Урон';
-        }else{
-            $item['type'] = 2;
-            $item['value'] = $armor;
-            $item['type_caption'] = 'Броня';
-        }
-    }
+    $item['type_caption'] = $v['item_type_name'];
+    $item['type'] = $v['i_item_type'];
+    $item['value'] = $v['item_value'];
 
     $new_santito_items[] = $item;
 }
 $santino_shop['items'] = $new_santito_items;
-//die;
+//echo Debug::d($santino_shop,''); die;
 
 
 $santino_shop_html = '';
@@ -95,8 +78,9 @@ $WM_user_inventory = user_inventory_get($dbh);
 
 // test
 // test this equipment function...
-//$ued = user_equipment_do($dbh, $_SESSION['user']['id'], 1);
-//echo Debug::d($ued,'ued',1); die;
+//$ued = user_equipment_do($dbh, $_SESSION['user']['id'], 3);
+//echo Debug::d($ued,'ued',1);
+//die;
 
 // test
 // user_set_hero_chars($dbh, $user_id, $attack=0, $armor=0) --> test

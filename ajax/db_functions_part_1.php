@@ -399,25 +399,13 @@ function user_set_startup_chars($dbh, $user_id)
 }
 
 //
-function user_set_hero_chars($dbh, $user_id, $attack=0, $armor=0)
+function user_set_hero_chars($dbh, $user_id, $type=0, $value=0)
 {
     //
-    if ($attack === -1 && $armor == -1){
-        $rs = [
-            'success' => 0,
-            'message' => '$attack and $armor === -1!'
-        ];
-    } elseif ($attack > 0){
-        $sql = "
+    $sql = "
         UPDATE hero_info SET 
-            attack = {$attack}            
+            {$type} = {$value}            
         WHERE i_user = {$user_id}";
-    } elseif (($armor > 0)){
-        $sql = "
-        UPDATE hero_info SET 
-            armor = {$armor}
-        WHERE i_user = {$user_id}";
-    }
     //
     try{
         $dbh->exec($sql);
@@ -605,17 +593,17 @@ function user_get_shops_with_childs($dbh)
         SELECT
             shi.id i_item,
             shop.id i_shop,
-            shop.name,
-            shi.name,
-            shi.attack,
-            shi.armor,
+            shop.name shop_name,
+            shi.name item_name,
+            shi.value item_value,
             shi.cost,
-            shi.spec_type
+            shi.i_item_type,
+            shop_item_type.name item_type_name
         FROM
              shop_item shi
         LEFT JOIN shop ON shop.id = shi.i_shop
-        LIMIT 100
-";
+        LEFT join shop_item_type on shop_item_type.id = shi.i_item_type
+        LIMIT 100";
     try{
         $sql_rs1  = $dbh->query($sql);
         $sql_rs2 = ($sql_rs1->fetchAll(MYSQLI_NUM));
@@ -809,10 +797,9 @@ function user_inventory_get_all_childs($dbh, $i_user)
             inventory.count inv_count,            
             shop_item.id item_id,
             shop_item.name item_name,
-            shop_item.attack,
-            shop_item.armor,
-            shop_item.cost,
-            shop_item.spec_type            
+            shop_item.i_item_type item_type,
+            shop_item.value,            
+            shop_item.cost                        
         FROM
             inventory
         LEFT JOIN shop_item ON inventory.i_item = shop_item.id
@@ -854,20 +841,6 @@ function user_inventory_get_all_childs_html($result_array)
         //
         foreach($result_array as $item_key => $item_value)
         {
-            $vr = '';
-            $v1 = $item_value['attack'] * 1;
-            $v2 = $item_value['armor'] * 1;
-            $v3 = $item_value['spec_type'];
-            if ($v1 == 0 && $v2 == 0){
-                $vr = $v3;
-            }else{
-                if ($v1 == 0){
-                    $vr = $v2;
-                }else{
-                    $vr = $v1;
-                }
-            }
-            //
             //
             $tmp_str = <<<TMP_STR
             <li>
@@ -876,7 +849,7 @@ function user_inventory_get_all_childs_html($result_array)
                         <span class="itemName">{$item_value['item_name']}</span>
                         <span class="counter counter-0 ">{$item_value['inv_count']},</span>
                         <span class="priceItemHero">{$item_value['cost']},</span>
-                        <span class="damageItemHero">{$vr}</span>
+                        <span class="damageItemHero">{$item_value['value']}</span>
                     </input>
                 </label>
             </li>
@@ -1002,15 +975,13 @@ function user_inventory_sell_item($dbh, $user_id, $i_item)
 // #########
 // Equipment
 // #########
-
 function user_get_equipment($dbh, $i_user){
     //
     $sql = "SELECT 
             equipment.*,            
             shop_item.name,
-            shop_item.attack,
-            shop_item.armor,
-            shop_item.spec_type
+            shop_item.value,
+            shop_item.i_item_type            
         FROM equipment        
         LEFT JOIN shop_item on shop_item.id = equipment.i_item
         WHERE i_user = { intval($i_user) }
@@ -1041,9 +1012,7 @@ function user_get_equipment($dbh, $i_user){
     return $rs;
 }
 
-
-
-/////
+///
 ///
 function equipment_set_attackAndArmor($dbh, $user_id, $item_type, $item_value)
 {
@@ -1077,130 +1046,135 @@ function equipment_set_attackAndArmor($dbh, $user_id, $item_type, $item_value)
 ////////
 function user_equipment_do($dbh, $user_id, $i_item)
 {
+    // получаем сразу же эпипировку и данные текущего итема по ИД
+    $gue = user_get_equipment($dbh, $user_id);
+    //echo Debug::d($gue,'user_get_equipment',1);
     //
     $get_item = user_get_shopitem_by_id($dbh, $i_item);
-    //echo Debug::d($get_item);
+    //echo Debug::d($get_item,'user_get_shop_item_by_id: ' . $i_item,1); //die;
+
+    // сразу 2 проверки на 2 предыдущих запроса
+    if ($gue === 0){
+        return $gue;
+    }
     if ($get_item['success'] === 0) {
         return $get_item;
     }
 
-    //
-    $item = $get_item['result'][0];
-    $shop_item_id = $item['id'];
-    $get_item_type = user_get_item_type($item)['item_type'];
-    $get_item_value = user_get_item_type($item)['item_value'];
-    //echo Debug::d($get_item_type,'',2);
-    if ($get_item_type === 0) {
-        return ['success' => 0, 'message' => 'item type - armor/attack/spec is undefined'];
-    }
-    $item['item_type'] = $get_item_type;
-    //echo Debug::d($item);
-
-    // если тип итема не из (1,2) attack/armor
-    // это тоже надо где-то да проверить...
-    if ($item['item_type'] !== 1 && $item['item_type'] !== 2){
-        return ['success' => 2, 'message' => 'невозможно экиппировать!'];
+    // тут должна быть важная проверка, если предмет не оружие и не броня, сразу же выходим!
+    if ($get_item['result'][0]['i_item_type'] != 1 && $get_item['result'][0]['i_item_type'] != 2 ){
+        return ['success' => 2, 'message' => 'Невозножно экиппировать!'];
     }
 
-
-    // теперь важный момент, мы просматриваем все экиппированные итемы героя
-    // если тип, который мы добавляем уже есть, мы просто должны обновить item_id экиппированного итема
-    // иначе мы должны добавить этот новый итем с новым типом урон-атака-спец_тип
-    //
-    $gue = user_get_equipment($dbh, $user_id);
-    //echo Debug::d($gue,'user_get_equipment',1);
-    if ($gue['success'] === 0){
-        return $gue;
-    }
-    // значит герой не экипирован вообще!
-    if ($gue['success'] === 2) {
-        // well, we need to insert new value
-        $do_add_equipment = user_add_equipment($dbh, $user_id, $i_item);
-        $do_add_equipment['item_type'] = $item['item_type'];
-        $do_add_equipment['item_value'] = $get_item_value;
-
-        // equipment_set_attackAndArmor($dbh, $user_id, $item_type, $item_value)
-        $rtmp = equipment_set_attackAndArmor($dbh, $user_id, $do_add_equipment['item_type'], $do_add_equipment['item_value']);
-        foreach(array_keys($rtmp) as $k => $v){
-            $do_add_equipment[$v] = $rtmp[$v];
-        }
-        $do_add_equipment['i_item'] = $shop_item_id;
-        return $do_add_equipment;
-    }
-
-    // теперь герой экиппирован, если найден итем с таким же типом обновляем, иначего просто добавляем
-
-    // добавляем item_type ко всем
-    foreach($gue['result'] as $k => $v)
+    // если экипировка героя пустая, сразу же добавляем текущий предмет...
+    if ($gue['success'] === 2)
     {
-        $get_type = user_get_item_type($v)['item_type'];
-        $gue['result'][$k]['item_type'] = $get_type;
-    }
-    //echo Debug::d($gue['result'],'gue_results_with_item_type');
+        //
+        $uae = user_add_equipment($dbh, $user_id, $i_item);
+        if ($uae['success'] === 0){
+            return $uae;
+        }
+        //echo Debug::d($uae);
+        //return $uae;
+        $curr_item = $get_item['result'][0];
+        // user_set_hero_chars($dbh, $user_id, $type=0, $value=0)
+        if ( intval($curr_item['i_item_type']) === 1){
+            $type = "attack";
+        }else{
+            $type = "armor";
+        }
+        $ushc = user_set_hero_chars($dbh, $user_id, $type, $curr_item['value']);
+        $ushc['item_type']  = $curr_item['i_item_type'];
+        $ushc['item_name']  = $curr_item['name'];
+        $ushc['item_value'] = $curr_item['value'];
+        $ushc['i_item']     = $curr_item['id'];
+        return $ushc;
 
-    // # 2
-    foreach($gue['result'] as $k => $v){
-        if ($v['item_type'] === $item['item_type']){
-            $i_item_old = $v['i_item'];
-            $i_item_new = $item['id'];
-//            echo 'need to update!';
-//            echo Debug::d('$i_item_old: ' . $i_item_old, 'i_item_old');
-//            echo Debug::d('$i_item_new: ' . $i_item_new, 'i_item_new');
-            $rss = user_update_equipment($dbh,$user_id, $i_item_old, $i_item_new);
-            $rss['item_type'] = $item['item_type'];
-            $rss['item_value'] = $get_item_value;
+    }elseif($gue['success'] === 1){
+        //
+        // теперь возможны несколько вариантов, если i_item_type того что в базе и того что на входе совпадают
+        // то мы должны лишь обновить текущий итем
+        $equip = $gue['result'][0];
+        $curr_item = $get_item['result'][0];
+        $i_item_old = $equip['i_item'];
+        $i_item_new = $curr_item['id'];
+        if ($equip['i_item_type'] === $curr_item['i_item_type']) {
+            $uue = user_update_equipment($dbh,$user_id, $i_item_old, $i_item_new);
+            if ($uue['success'] === 0){
+                return $uue;
+            }
+            //echo Debug::d($uue);
+            //return $uue;
+            // user_set_hero_chars($dbh, $user_id, $type=0, $value=0)
+            if ( intval($curr_item['i_item_type']) === 1){
+                $type = "attack";
+            }else{
+                $type = "armor";
+            }
+            $ushc = user_set_hero_chars($dbh, $user_id, $type, $curr_item['value']);
+            $ushc['item_type']  = $curr_item['i_item_type'];
+            $ushc['item_name']  = $curr_item['name'];
+            $ushc['item_value'] = $curr_item['value'];
+            $ushc['i_item']     = $curr_item['id'];
+            return $ushc;
+        }else{
+            // перед нами другой тип, противоположный текущему
+            // если предмет такого же типа уже есть в экиппировках, нужно только обновить иначе добавляем как новый
+            $is_item_new = false;
+            $all_equip = $gue['result'];
+            foreach($all_equip as $k => $v){
+                if ( $curr_item['i_item_type'] === $v['i_item_type'] ){
+                    $is_item_new = true;
+                    $i_item_old = $v['i_item'];
+                    break;
+                }
+            };
 
-            // equipment_set_attackAndArmor($dbh, $user_id, $item_type, $item_value)
-            $rtmp = equipment_set_attackAndArmor($dbh, $user_id, $rss['item_type'], $rss['item_value']);
-            foreach(array_keys($rtmp) as $k => $v){
-                $rss[$v] = $rtmp[$v];
+            //
+            if ($is_item_new){
+                $uue = user_update_equipment($dbh,$user_id, $i_item_old, $i_item_new);
+                if ($uue['success'] === 0){
+                    return $uue;
+                }
+                //echo Debug::d($i_item_old . ' : ' . $i_item_old);
+                //echo Debug::d($uue);
+                //return $uue;
+                // user_set_hero_chars($dbh, $user_id, $type=0, $value=0)
+                if ( intval($curr_item['i_item_type']) === 1){
+                    $type = "attack";
+                }else{
+                    $type = "armor";
+                }
+                $ushc = user_set_hero_chars($dbh, $user_id, $type, $curr_item['value']);
+                $ushc['item_type']  = $curr_item['i_item_type'];
+                $ushc['item_name']  = $curr_item['name'];
+                $ushc['item_value'] = $curr_item['value'];
+                $ushc['i_item']     = $curr_item['id'];
+                return $ushc;
+            }else{
+                $uae = user_add_equipment($dbh, $user_id, $i_item);
+                if ($uae['success'] === 0){
+                    return $uae;
+                }
+                //echo Debug::d($uae);
+                //return $uae;
+                // user_set_hero_chars($dbh, $user_id, $type=0, $value=0)
+                if ( intval($curr_item['i_item_type']) === 1){
+                    $type = "attack";
+                }else{
+                    $type = "armor";
+                }
+                $ushc = user_set_hero_chars($dbh, $user_id, $type, $curr_item['value']);
+                $ushc['item_type']  = $curr_item['i_item_type'];
+                $ushc['item_name']  = $curr_item['name'];
+                $ushc['item_value'] = $curr_item['value'];
+                $ushc['i_item']     = $curr_item['id'];
+                return $ushc;
             }
 
-            $rss['i_item'] = $shop_item_id;
-            return $rss;
         }
     }
-
-    // если до этого места без ошибок и без ретурнов, значит, это другой тип, и его нужно добавить в БД
-    $do_add_equipment = user_add_equipment($dbh, $user_id, $i_item);
-    $do_add_equipment['message'] = 'Запрос выполнен, герой принял начальную экиппировку, тип другой уже';
-    $do_add_equipment['success'] = 5;
-    $do_add_equipment['item_type'] = $item['item_type'];
-    $do_add_equipment['item_value'] = $get_item_value;
-
-    // equipment_set_attackAndArmor($dbh, $user_id, $item_type, $item_value)
-    $rtmp = equipment_set_attackAndArmor($dbh, $user_id, $do_add_equipment['item_type'], $do_add_equipment['item_value']);
-    foreach(array_keys($rtmp) as $k => $v){
-        $do_add_equipment[$v] = $rtmp[$v];
-    }
-    $do_add_equipment['i_item'] = $shop_item_id;
-    return $do_add_equipment;
-}
-
-// what is the item type - Attack | Armor | Special type = 1 | 2 | 3
-function user_get_item_type($item_arr)
-{
-    $item_type = 0; // its mean is error.
-    //(
-    //   [id] => 39
-    //   [i_user] => 8
-    //   [i_item] => 5
-    //   [name] => Кожаная броня
-    //   [attack] => 0
-    //   [armor] => 5
-    //   [spec_type] =
-    //)
-    $p1 = $item_arr['attack'] * 1;
-    $p2 = $item_arr['armor'] * 1;
-    //echo Debug::d($item_arr,'search_for_i_item!');
-
-    if ($p1 > 0) { $item_type = 1; $item_value = $p1; }
-    elseif ($p2 > 0) { $item_type = 2; $item_value = $p2; }
-    elseif ($p1 === 0 && $p2 === 0) { $item_type = 3; $item_value = 0; }
-
-    return ['item_type' => $item_type, 'item_value' => $item_value,
-        //'i_item' => $item_arr['i_item']
-    ];
+    //die('weAw!');
 }
 
 //
@@ -1246,5 +1220,3 @@ function user_update_equipment($dbh, $i_user, $i_item_old, $i_item_new )
     }
     return $rs;
 }
-
-//

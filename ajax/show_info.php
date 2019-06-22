@@ -12,6 +12,6 @@ require '../db/mysql.config.php';
 require '../db/mysql.connect.php';
 require '../vendor/autoload.php';
 require '../lib/functions.php';
-require '../ajax/user_db_functions.php';
+require '../ajax/db_functions_part_1.php';
 
 echo Debug::d($_SESSION);

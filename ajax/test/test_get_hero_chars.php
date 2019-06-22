@@ -6,7 +6,7 @@ require '../db/mysql.config.php';
 require '../db/mysql.connect.php';
 require '../vendor/autoload.php';
 require '../lib/functions.php';
-require '../ajax/user_db_functions.php';
+require '../ajax/db_functions_part_1.php';
 
 $user_id = 8;
 $dbh = $mysql['connect'];
