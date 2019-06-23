@@ -421,7 +421,33 @@ function user_set_hero_chars($dbh, $user_id, $type=0, $value=0)
     return $rs;
 }
 
-//
+
+/// n1
+// Обновление одного поля таблицы Героя с приклюсовыванием текущего значения!
+function user_set_hero_chars_withInc($dbh, $user_id, $type=0, $value=0)
+{
+    //
+    $sql = "
+        UPDATE hero_info SET 
+            {$type} = ( {$type} + {$value})
+        WHERE i_user = {$user_id}";
+    //
+    try{
+        $dbh->exec($sql);
+        $rs = ['success' => 1, 'message' => 'Запрос выполнен, характеристики героя обновлены!',];
+
+    }catch (Exception $e){
+        $rs = [
+            'success' => 0,
+            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
+            'message' => 'Ошибка при запросе. Попробуйте позднее.'
+        ];
+    }
+    return $rs;
+}
+
+/// n2
+///
 function hero_set_char_byDec($dbh, $user_id, $type=0, $value=0)
 {
     //
@@ -1171,7 +1197,7 @@ function user_equipment_do($dbh, $user_id, $i_item)
     //echo Debug::d($get_item,'user_get_shop_item_by_id: ' . $i_item,1); //die;
 
     // сразу 2 проверки на 2 предыдущих запроса
-    if ($gue === 0){
+    if ($gue['success'] === 0){
         return $gue;
     }
     if ($get_item['success'] === 0) {
@@ -1200,11 +1226,12 @@ function user_equipment_do($dbh, $user_id, $i_item)
         }else{
             $type = "armor";
         }
-        $ushc = user_set_hero_chars($dbh, $user_id, $type, $curr_item['value']);
+        $ushc = user_set_hero_chars_withInc($dbh, $user_id, $type, $curr_item['value']);
         $ushc['item_type']  = $curr_item['i_item_type'];
         $ushc['item_name']  = $curr_item['name'];
         $ushc['item_value'] = $curr_item['value'];
         $ushc['i_item']     = $curr_item['id'];
+        $ushc['operation']  = 'first push';
         return $ushc;
 
     }elseif($gue['success'] === 1){
@@ -1215,7 +1242,27 @@ function user_equipment_do($dbh, $user_id, $i_item)
         $curr_item = $get_item['result'][0];
         $i_item_old = $equip['i_item'];
         $i_item_new = $curr_item['id'];
+        // если перед нами итем, тип которого уже в инвентаре
         if ($equip['i_item_type'] === $curr_item['i_item_type']) {
+            if ( intval($curr_item['i_item_type']) === 1){
+                $type = "attack";
+            }else{
+                $type = "armor";
+            }
+            /// # start of update
+            /// т.к. это обновление, мы должны сначала отнять хар-ки предыдущего итема у героя!
+            $egowii = equipment_get_one_with_itemAndItemtype($dbh, $user_id, $curr_item['i_item_type']);
+            //echo Debug::d($egowii,'$egowii',1);
+            if ($egowii['success'] === 0) { return $egowii; }
+            $value = intval($egowii['result']['value']);
+            // также мы должны текущий value уменьшить у героя!
+            // для этого перепишем функцию снизу, и посмотрим как она отработает )
+            $ushc = hero_set_char_byDec($dbh, $user_id, $type, $value);
+            //echo Debug::d($ushc,'',1); die;
+            if ($ushc['success'] === 0){ return $ushc; }
+            ///
+            /// # end of update
+
             $uue = user_update_equipment($dbh,$user_id, $i_item_old, $i_item_new);
             if ($uue['success'] === 0){
                 return $uue;
@@ -1223,19 +1270,19 @@ function user_equipment_do($dbh, $user_id, $i_item)
             //echo Debug::d($uue);
             //return $uue;
             // user_set_hero_chars($dbh, $user_id, $type=0, $value=0)
-            if ( intval($curr_item['i_item_type']) === 1){
-                $type = "attack";
-            }else{
-                $type = "armor";
-            }
-            $ushc = user_set_hero_chars($dbh, $user_id, $type, $curr_item['value']);
+
+            $ushc = user_set_hero_chars_withInc($dbh, $user_id, $type, $curr_item['value']);
             $ushc['item_type']  = $curr_item['i_item_type'];
             $ushc['item_name']  = $curr_item['name'];
             $ushc['item_value'] = $curr_item['value'];
             $ushc['i_item']     = $curr_item['id'];
+            $ushc['operation']  = 'update 1';
+            $ushc['inc']        = $curr_item['value'];
+            $ushc['dec']        = $value;
+            $ushc['tmp']        = $egowii['result'];
             return $ushc;
         }else{
-            // перед нами другой тип, противоположный текущему
+            // перед нами другой тип, противоположный тому, что уже есть в БД
             // если предмет такого же типа уже есть в экиппировках, нужно только обновить иначе добавляем как новый
             $is_item_new = false;
             $all_equip = $gue['result'];
@@ -1249,6 +1296,25 @@ function user_equipment_do($dbh, $user_id, $i_item)
 
             //
             if ($is_item_new){
+                if ( intval($curr_item['i_item_type']) === 1){
+                    $type = "attack";
+                }else{
+                    $type = "armor";
+                }
+
+                /// # start of update
+                /// т.к. это обновление, мы должны сначала отнять хар-ки предыдущего итема у героя!
+                $egowii = equipment_get_one_with_itemAndItemtype($dbh, $user_id, $curr_item['i_item_type']);
+                if ($egowii['success'] === 0) { return $egowii; }
+                $value = intval($egowii['result']['value']);
+                // также мы должны текущий value уменьшить у героя!
+                // для этого перепишем функцию снизу, и посмотрим как она отработает )
+                $ushc = hero_set_char_byDec($dbh, $user_id, $type, $value);
+                //echo Debug::d($ushc,'',1); die;
+                if ($ushc['success'] === 0){ return $ushc; }
+                ///
+                /// # end of update
+
                 $uue = user_update_equipment($dbh,$user_id, $i_item_old, $i_item_new);
                 if ($uue['success'] === 0){
                     return $uue;
@@ -1257,16 +1323,14 @@ function user_equipment_do($dbh, $user_id, $i_item)
                 //echo Debug::d($uue);
                 //return $uue;
                 // user_set_hero_chars($dbh, $user_id, $type=0, $value=0)
-                if ( intval($curr_item['i_item_type']) === 1){
-                    $type = "attack";
-                }else{
-                    $type = "armor";
-                }
-                $ushc = user_set_hero_chars($dbh, $user_id, $type, $curr_item['value']);
+
+
+                $ushc = user_set_hero_chars_withInc($dbh, $user_id, $type, $curr_item['value']);
                 $ushc['item_type']  = $curr_item['i_item_type'];
                 $ushc['item_name']  = $curr_item['name'];
                 $ushc['item_value'] = $curr_item['value'];
                 $ushc['i_item']     = $curr_item['id'];
+                $ushc['operation']  = 'update 2';
                 return $ushc;
             }else{
                 $uae = user_add_equipment($dbh, $user_id, $i_item);
@@ -1281,11 +1345,12 @@ function user_equipment_do($dbh, $user_id, $i_item)
                 }else{
                     $type = "armor";
                 }
-                $ushc = user_set_hero_chars($dbh, $user_id, $type, $curr_item['value']);
+                $ushc = user_set_hero_chars_withInc($dbh, $user_id, $type, $curr_item['value']);
                 $ushc['item_type']  = $curr_item['i_item_type'];
                 $ushc['item_name']  = $curr_item['name'];
                 $ushc['item_value'] = $curr_item['value'];
                 $ushc['i_item']     = $curr_item['id'];
+                $ushc['operation']  = 'second add';
                 return $ushc;
             }
 

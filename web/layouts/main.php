@@ -22,6 +22,25 @@
         //echo Debug::d($_SESSION);
         //echo Debug::d($user_get_equipment,'',1);
 
+        // найдем тут экиппировку и html для ее вывода.
+        // также тут пропишем названия оружия и/или доспехов, если таковые есть
+        // ### ! сначала нужно выводить броню ! Это от дизайна артефакт
+        $weapon_column = "Пусто"; $equip_weapon = null;
+        $armor_column  = "Пусто"; $equip_armor = null;
+
+        if ($user_get_equipment['success'] == 1)
+        foreach ($user_get_equipment['result'] as $k => $v)
+        {
+            //
+            if (intval($v['i_item_type']) === 1){
+                $equip_weapon['name'] = $v['name']; $equip_weapon['i_item'] = intval($v['i_item']);
+                $weapon_column = $v['name'];
+            } elseif (intval($v['i_item_type']) === 2){
+                $equip_armor['name'] = $v['name'];  $equip_armor['i_item']  = intval($v['i_item']);
+                $armor_column = $v['name'];
+            }
+        }
+
         ?>
     </div>
     <div class="user-top-menu">
@@ -104,20 +123,6 @@
 								<p>Крит: <span id="hero_krit"></span></p>
 							</div>
 						</div>
-<!--						<p>Здоровье: <span id="hero_hp"></span></p>-->
-                        <?php
-                        // также тут пропишем названия оружия и/или доспехов, если таковые есть
-                        $weapon_column = "Пусто"; $equip_item1 = null;
-                        $armor_column  = "Пусто"; $equip_item2 = null;
-                        if ($user_get_equipment['success'] == 1)
-                        foreach ($user_get_equipment['result'] as $k => $v):
-                        ?>
-                            <?php if ($v['i_item_type'] == 1): ?>
-                                <?php $weapon_column = $v['name']; $equip_item1 = $v; ?>
-                            <?php elseif ($v['i_item_type'] == 2): ?>
-                                <?php $armor_column = $v['name'];  $equip_item2 = $v; ?>
-                            <?php endif; ?>
-                        <?php endforeach; ?>
 
                         <p class="hero_st hero_item__eqiped" id="hero_weapon">Оружие: <br> <span><?=$weapon_column?></span></p>
                         <p class="hero_st hero_item__eqiped" id="hero_armor_equiped">Доспех: <br> <span><?=$armor_column?></span></p>
@@ -125,23 +130,19 @@
 					</div>
 				</div>
                 <?php
-                ////
-                if ($user_get_equipment['success'] === 1111) {
 
-                    //echo Debug::d($equip_item1);
-                    //echo Debug::d($equip_item2);
-                    $st_db = "style='display: block;'";
 
+                /// $equip_weapon
+                ///
+                $st_db = "style='display: block;'";
+                if ($user_get_equipment['success'] === 1) {
                     // for armor
-                    //echo Debug::d($equip_item2['i_item']);
-                    if ($equip_item2)
+                    if ($equip_armor)
                     {
-                        $equip_item2['i_item'] = $equip_item2['i_item'] * 1;
-                        switch ($equip_item2['i_item']) {
+                        switch ($equip_armor['i_item']) {
                             case 5:
                                 ?>
-                                <div class="leather-armor Hero_Armor" <?= $st_db ?> ><img src="img/leather-armor.png"
-                                                                                          alt=""></div>
+                                <div class="leather-armor Hero_Armor" <?= $st_db ?> ><img src="img/leather-armor.png" alt=""></div>
                                 <div class="heavy-armor Hero_Armor"><img src="img/heavy-armor.png" alt=""></div>
                                 <div class="armor-crow Hero_Armor"><img src="img/crow-armor.png" alt=""></div>
                                 <?php
@@ -149,9 +150,7 @@
                             case 6:
                                 ?>
                                 <div class="leather-armor Hero_Armor"><img src="img/leather-armor.png" alt=""></div>
-                                <div class="heavy-armor Hero_Armor" <?= $st_db ?> ><img src="img/heavy-armor.png"
-                                                                                        alt="">
-                                </div>
+                                <div class="heavy-armor Hero_Armor" <?= $st_db ?> ><img src="img/heavy-armor.png" alt=""></div>
                                 <div class="armor-crow Hero_Armor"><img src="img/crow-armor.png" alt=""></div>
                                 <?php
                                 break;
@@ -159,31 +158,27 @@
                                 ?>
                                 <div class="leather-armor Hero_Armor"><img src="img/leather-armor.png" alt=""></div>
                                 <div class="heavy-armor Hero_Armor"><img src="img/heavy-armor.png" alt=""></div>
-                                <div class="armor-crow Hero_Armor" <?= $st_db ?> ><img src="img/crow-armor.png" alt="">
-                                </div>
+                                <div class="armor-crow Hero_Armor" <?= $st_db ?> ><img src="img/crow-armor.png" alt=""></div>
                                 <?php
                                 break;
                             default:
                                 ?>
+                                <div class="leather-armor Hero_Armor"><img src="img/leather-armor.png" alt=""></div>
+                                <div class="heavy-armor Hero_Armor"><img src="img/heavy-armor.png" alt=""></div>
+                                <div class="armor-crow Hero_Armor"><img src="img/crow-armor.png" alt=""></div>
 
                             <?php
                         }
                     }
 
-                }
-                ?>
-                <?php
-                if ($user_get_equipment['success'] === 111) {
+                    // for weapon
 
-                    //echo Debug::d($equip_item1);
-                    //echo Debug::d($equip_item2);
                     $st_db = "style='display: block;'";
 
-                    // for weapon
-                    if ($equip_item1)
-                    {
-                        $equip_item1['i_item'] = $equip_item1['i_item'] * 1;
-                        switch ($equip_item1['i_item']) {
+                    /// for weapon
+                    ///
+                    if ($equip_weapon) {
+                        switch ($equip_weapon['i_item']) {
                             case 1:
                                 ?>
                                 <div class="stick Hero_Weapon" <?= $st_db ?> ><img src="img/dubinka.png" alt=""></div>
@@ -204,8 +199,7 @@
                                 ?>
                                 <div class="stick Hero_Weapon"><img src="img/dubinka.png" alt=""></div>
                                 <div class="sword Hero_Weapon"><img src="img/sword.png" alt=""></div>
-                                <div class="long-sword Hero_Weapon" <?= $st_db ?> ><img src="img/longsword.png" alt="">
-                                </div>
+                                <div class="long-sword Hero_Weapon" <?= $st_db ?> ><img src="img/longsword.png" alt=""></div>
                                 <div class="ripper Hero_Weapon"><img src="img/ripper.png" alt=""></div>
                                 <?php
                                 break;
@@ -226,18 +220,29 @@
                             <?php
                         }
                     }
-                }
+                    //
+                }else{
+                ?>
+                    <div class="leather-armor Hero_Armor"><img src="img/leather-armor.png" alt=""></div>
+                    <div class="heavy-armor Hero_Armor"><img src="img/heavy-armor.png" alt=""></div>
+                    <div class="armor-crow Hero_Armor"><img src="img/crow-armor.png" alt=""></div>
 
+                    <div class="stick Hero_Weapon"><img src="img/dubinka.png" alt=""></div>
+                    <div class="sword Hero_Weapon"><img src="img/sword.png" alt=""></div>
+                    <div class="long-sword Hero_Weapon"><img src="img/longsword.png" alt=""></div>
+                    <div class="ripper Hero_Weapon"><img src="img/ripper.png" alt=""></div>
+                <?php
+                }
                 ?>
 
-                <div class="leather-armor Hero_Armor"><img src="img/leather-armor.png" alt=""></div>
-                <div class="heavy-armor Hero_Armor"><img src="img/heavy-armor.png" alt=""></div>
-                <div class="armor-crow Hero_Armor"><img src="img/crow-armor.png" alt=""></div>
-
-                <div class="stick Hero_Weapon"><img src="img/dubinka.png" alt=""></div>
-                <div class="sword Hero_Weapon"><img src="img/sword.png" alt=""></div>
-                <div class="long-sword Hero_Weapon"><img src="img/longsword.png" alt=""></div>
-                <div class="ripper Hero_Weapon"><img src="img/ripper.png" alt=""></div>
+<!--                <div class="leather-armor Hero_Armor"><img src="img/leather-armor.png" alt=""></div>-->
+<!--                <div class="heavy-armor Hero_Armor"><img src="img/heavy-armor.png" alt=""></div>-->
+<!--                <div class="armor-crow Hero_Armor"><img src="img/crow-armor.png" alt=""></div>-->
+<!---->
+<!--                <div class="stick Hero_Weapon"><img src="img/dubinka.png" alt=""></div>-->
+<!--                <div class="sword Hero_Weapon"><img src="img/sword.png" alt=""></div>-->
+<!--                <div class="long-sword Hero_Weapon"><img src="img/longsword.png" alt=""></div>-->
+<!--                <div class="ripper Hero_Weapon"><img src="img/ripper.png" alt=""></div>-->
 
                 <div class="master_btn__box">
 					<button class="btn" type="button" class="btnJournal" id="journal">Журнал</button>

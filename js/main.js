@@ -582,6 +582,7 @@ $(document).ready(function() {
             if (dt['success'] == 1) {
                 user_set_user_chars_html();
                 $('#hero_weapon span').html('Пусто');
+                $('.Hero_Weapon').css('display','none');
             }
         }).fail(function () { console.log('error'); });
     });
@@ -597,8 +598,9 @@ $(document).ready(function() {
             complete: function (xhr) { console.log('after_send'); },
         }).done(function (dt) {
             if (dt['success'] == 1) {
-                user_set_user_chars_html(); 
+                user_set_user_chars_html();
                 $('#hero_armor_equiped span').html('Пусто');
+                $('.Hero_Armor').css('display','none');
             }
         }).fail(function () { console.log('error'); });
     });
@@ -800,6 +802,9 @@ $(document).ready(function() {
                     //
                     $('#hero_weapon span').html(dt['item_name']);
                 }
+
+                // чтобы не делать лишний запрос в БД по получению обновленных хар-к героя, просто обновим поля...
+                user_set_user_chars_html();
 
             }else if(dt['success'] == 2){
                 console.log('Невозножжжно экиппировать')
