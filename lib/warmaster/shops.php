@@ -88,3 +88,23 @@ $WM_user_inventory = user_inventory_get($dbh);
 //$armor  = 0; $armor = 25;
 //$ushc = user_set_hero_chars($dbh, $_SESSION['user']['id'], $attack, $armor);
 //echo Debug::d($ushc,'$ushc'); die;
+
+// test
+// тестируем equipment_transfer_from_inventory($dbh, $i_user, $i_item)
+//$etfi = equipment_transfer_from_inventory($dbh, 8, 5);
+//echo Debug::d($etfi,'',1); die;
+
+// test
+// equipment_get_one($dbh, $i_user, $item_id)
+//$ego = equipment_get_one($dbh, 8, 6); // item_id = [3,6]
+//echo Debug::d($ego,'equipment_get_one($dbh, $i_user, $item_id)', 1); die;
+
+// test
+// equipment_get_one_with_itemAndItemtype($dbh, $i_user, $item_id)
+//$ego = equipment_get_one_with_itemAndItemtype($dbh, 8, 1); // item_id = [3,6]
+//echo Debug::d($ego,'equipment_get_one($dbh, $i_user, $item_id)', 1); die;
+
+// test
+// equipment_drop_item_by_id($dbh, $i_user, $i_item_type)
+//$edibi = equipment_drop_item_by_id($dbh, 8, 2);
+//echo Debug::d($edibi,'$edibi', $edibi); die;

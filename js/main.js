@@ -567,6 +567,44 @@ $(document).ready(function() {
         });
     }
 
+    // сейчас сделаем дроп итема с героя - оружие и броня
+    //
+    $('#DropWeapon').on('click', function (e) {
+        var t = 1; var url = './ajax/equipment_drop_item_by_type.php';
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: 'item_type=' + t,
+            dataType: 'json', // ! important string!
+            beforeSend: function (xhr) { console.log('before_send'); },
+            complete: function (xhr) { console.log('after_send'); },
+        }).done(function (dt) {
+            if (dt['success'] == 1) {
+                user_set_user_chars_html();
+                $('#hero_weapon span').html('Пусто');
+            }
+        }).fail(function () { console.log('error'); });
+    });
+    //
+    $('#DropArmor').on('click', function (e) {
+        var t = 2; var url = './ajax/equipment_drop_item_by_type.php';
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: 'item_type=' + t,
+            dataType: 'json', // ! important string!
+            beforeSend: function (xhr) { console.log('before_send'); },
+            complete: function (xhr) { console.log('after_send'); },
+        }).done(function (dt) {
+            if (dt['success'] == 1) {
+                user_set_user_chars_html(); 
+                $('#hero_armor_equiped span').html('Пусто');
+            }
+        }).fail(function () { console.log('error'); });
+    });
+    //// end of drop items from hero
+
+
     function ItemImgFadeOut() {
         var EquipArmor = $('#hero_armor_equiped span').html();
         var EquipWeapon = $('#hero_weapon span').html();

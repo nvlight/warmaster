@@ -422,6 +422,29 @@ function user_set_hero_chars($dbh, $user_id, $type=0, $value=0)
 }
 
 //
+function hero_set_char_byDec($dbh, $user_id, $type=0, $value=0)
+{
+    //
+    $sql = "
+        UPDATE hero_info SET 
+            {$type} = ( {$type} - {$value} )             
+        WHERE i_user = {$user_id}";
+    //
+    try{
+        $dbh->exec($sql);
+        $rs = ['success' => 1, 'message' => 'Запрос выполнен, характеристики героя обновлены!',];
+
+    }catch (Exception $e){
+        $rs = [
+            'success' => 0,
+            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
+            'message' => 'Ошибка при запросе. Попробуйте позднее.'
+        ];
+    }
+    return $rs;
+}
+
+//
 function user_set_stage($dbh, $user_id, $stage=0)
 {
     //
@@ -877,8 +900,8 @@ function user_inventory_get($dbh)
 }
 
 //
-function inventory_get_item_by_id($dbh, $i_user, $_item){
-
+function inventory_get_item_by_id($dbh, $i_user, $i_item){
+    equipment_transfer_from_inventory($dbh, $i_user, $i_item);
 }
 
 //
@@ -977,6 +1000,39 @@ function user_inventory_sell_item($dbh, $user_id, $i_item)
 // #########
 // Equipment
 // #########
+
+
+
+/// При экипировке героя итемом, итем должен уменьшится 1 единицу из инвентаря.
+///
+function equipment_transfer_from_inventory($dbh, $i_user, $i_item)
+{
+    $sql = "
+        UPDATE 
+            inventory 
+        SET 
+            count = (count - 1) 
+        WHERE i_item = {$i_item} and i_user = {$i_user}";
+    try{
+        $dbh->exec($sql);
+        $rs = [
+            'success' => 1,
+            'message' => 'Запрос выполнен, инвентарь обновлен',
+        ];
+
+    }catch (Exception $e){
+        $rs = [
+            'success' => 0,
+            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
+            'message' => 'Ошибка. Попробуйте позднее.'
+        ];
+    }
+    return $rs;
+}
+
+/// Получает всю экиппировку пользователя - всю
+///
+///
 function user_get_equipment($dbh, $i_user){
     //
     $sql = "SELECT 
@@ -1014,38 +1070,97 @@ function user_get_equipment($dbh, $i_user){
     return $rs;
 }
 
-///
-///
-function equipment_set_attackAndArmor($dbh, $user_id, $item_type, $item_value)
-{
-    ///
-    // set attack/gold from item type and value
-    $attack = -1; $armor = -1;
-    if ($item_type === 1){
-        $attack = $item_value;
-    }elseif ($item_type === 2){
-        $armor = $item_value;
-    }
+/// Получает экиппировку пользователя
+/// $i_user
+/// $item_id
+/// return @array ['success' => int, 'message' => string, []'result' => array ]
+function equipment_get_one($dbh, $i_user, $item_id){
     //
-    $result = [];
-    $ushc = user_set_hero_chars($dbh, $user_id, $attack, $armor);
-    if ($ushc['success'] === 1){
-        $result['message2'] = 'Характеристики героя успешно заданы!';
-        $result['success2'] = 1;
-        //
-        if ($item_type === 1){
-            $result['attack'] = $item_value;
-        }elseif ($item_type === 2){
-            $result['armor'] = $item_value;
+    $sql = "SELECT 
+            equipment.*,            
+            shop_item.name,
+            shop_item.value,
+            shop_item.i_item_type            
+        FROM equipment        
+        LEFT JOIN shop_item on shop_item.id = equipment.i_item
+        WHERE
+            equipment.i_item = {intval($item_id)} and i_user = {intval($i_user)} ";
+    try{
+        $sql_rs1  = $dbh->query($sql);
+        $sql_rs2 = ($sql_rs1->fetchAll(MYSQLI_NUM));
+        if (count($sql_rs2)){
+            $rs = [
+                'success' => 1,
+                'message' => 'Запрос выполнен, найдено!',
+                'result' => $sql_rs2[0] // т.к. у нас всего 1
+            ];
+        }else{
+            $rs = [
+                'success' => 2,
+                'message' => 'Запрос выполнен, НЕ найдено!',
+            ];
         }
-    }else{
-        $result['success2'] = 0;
+    }catch (Exception $e){
+        $rs = [
+            'success' => 0,
+            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
+            'message' => 'Ошибка при запросе. Попробуйте позднее.'
+        ];
     }
-
-    return $result;
+    return $rs;
 }
 
-////////
+/// Получает экиппировку пользователя
+/// $i_user
+/// $item_id
+/// return @array ['success' => int, 'message' => string, []'result' => array ]
+function equipment_get_one_with_itemAndItemtype($dbh, $i_user, $i_item_type){
+    //
+    $sql = "SELECT 
+            equipment.*,            
+            shop_item.name,
+            shop_item.value,
+            shop_item.i_item_type,
+            shop_item_type.name shop_item_type_name
+        FROM equipment        
+        LEFT JOIN shop_item on shop_item.id = equipment.i_item
+        LEFT JOIN shop_item_type on shop_item_type.id = shop_item.i_item_type
+        WHERE
+            shop_item.i_item_type = {intval($i_item_type)} and i_user = {intval($i_user)} ";
+    try{
+        $sql_rs1  = $dbh->query($sql);
+        $sql_rs2 = ($sql_rs1->fetchAll(MYSQLI_NUM));
+        if (count($sql_rs2)){
+            $rs = [
+                'success' => 1,
+                'message' => 'Запрос выполнен, найдено!',
+                'result' => $sql_rs2[0] // т.к. у нас всего 1
+            ];
+        }else{
+            $rs = [
+                'success' => 2,
+                'message' => 'Запрос выполнен, НЕ найдено!',
+            ];
+        }
+    }catch (Exception $e){
+        $rs = [
+            'success' => 0,
+            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
+            'message' => 'Ошибка при запросе. Попробуйте позднее.'
+        ];
+    }
+    return $rs;
+}
+
+/// Экиппировка героя - по ИД указанного итема. (ОДЕТЬ)
+/// При этом, единовременно герой может быть одет в броню только один раз, две брони нельзя носить
+/// при попытке взять другую броню, новая броня наденется, а старая удалится
+/// то же самое относится и к оружию
+/// принимаются типы 1 и 2 (оружие и броню) только их можно одеть.
+/// Также если одеть итем, характеристика героя должна повыситься.
+///
+/// Также если одеть итем, из инвентаря (сундука) должен пропасть 1 экземляр этого итема
+/// а пропадать он должен, только если его добавляют --->
 function user_equipment_do($dbh, $user_id, $i_item)
 {
     // получаем сразу же эпипировку и данные текущего итема по ИД
@@ -1221,4 +1336,70 @@ function user_update_equipment($dbh, $i_user, $i_item_old, $i_item_new )
         ];
     }
     return $rs;
+}
+
+/// Удаляет из экипировки элемент по ID
+///
+///
+function equipment_del_by_id($dbh, $i_user, $equip_id)
+{
+    $sql = "DELETE FROM equipment WHERE id = " . intval($equip_id) . " and i_user = " . intval($i_user) . " LIMIT 1";
+    try{
+        $dbh->exec($sql);
+        $rs = ['success' => 1, 'message' => 'Запрос выполнен!',];
+    }catch (Exception $e){
+        $rs = [
+            'success' => 0,
+            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
+            'message' => 'Ошибка при запросе. Попробуйте позднее.'
+        ];
+    }
+    return $rs;
+}
+
+/// Экиппировка - бросить итем.
+/// При этом, характеристики героя должны уменьшиться на соотв. характеристику
+///
+function equipment_drop_item_by_id($dbh, $i_user, $i_item_type)
+{
+    //
+    $ego = equipment_get_one_with_itemAndItemtype($dbh, $i_user, $i_item_type);
+    //echo Debug::d($ego,'$ego',1);
+    if ($ego['success'] === 0){
+        return $ego;
+    }
+    $equip_rs = $ego['result'];
+
+    // защита от дурака
+    if ($ego['success'] == 2){
+        return ['success' => 2, 'message' => 'невозможно удалить, т.к. герой не экипирован в это'];
+    }
+
+    // нашли элемент, который надо удалить.
+    $equip_del_id = $equip_rs['id'];
+
+    // теперь надо снизить характеристики пользователя
+    // для этого узнаем тип изменяемой характеристики
+    $value = intval($equip_rs['value']);
+    $hero_upd_type = intval($equip_rs['i_item_type']);
+    $hero_upd_column = null;
+    switch($hero_upd_type){
+        case 1: $hero_upd_column = 'attack'; break;
+        case 2: $hero_upd_column = 'armor'; break;
+        default: return ['success' => 0, 'message' => 'неизвестная характеристика героя для обновления...'];
+    }
+
+    // также мы должны текущий value уменьшить у героя!
+    // для этого перепишем функцию снизу, и посмотрим как она отработает )
+    $ushc = hero_set_char_byDec($dbh, $i_user, $hero_upd_column, $value);
+    //echo Debug::d($ushc,'',1); die;
+    if ($ushc['success'] === 0){
+        return $ushc;
+    }
+
+    // и в самом конце, мы должно удалить из Equipment элемент с ID = $equip_del_id
+    $edbi = equipment_del_by_id($dbh, $i_user, $equip_del_id);
+    //echo Debug::d($edbi,'$edbi', 1);
+
+    return $edbi;
 }
