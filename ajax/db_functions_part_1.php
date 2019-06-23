@@ -953,6 +953,8 @@ function user_inventory_sell_item($dbh, $user_id, $i_item)
     $user['curr_gold'] = user_get_gold($dbh, $user_id);
     if ($user['curr_gold']['success'] === 1) {
         $cu_gold = $user['curr_gold']['res'][0]['gold'] * 1;
+        // # т.к. мы продаем за пол-цены, усекаем на половину голду.
+        $curr_shop_item['price'] = intval($curr_shop_item['price'] / 2);
         $nu_gold = $cu_gold + $curr_shop_item['price'];
     }else{
         return $user['curr_gold'];
