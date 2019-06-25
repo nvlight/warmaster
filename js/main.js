@@ -306,6 +306,32 @@ $(document).ready(function() {
         });
     }
 
+    // user_inventory_update
+    function inventory_update(){
+        // update inventory after hero drop item
+        var t = 1; var url = './ajax/inventory_get_childs.php';
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: 'item_type=' + t,
+            dataType: 'json', // ! important string!
+            beforeSend: function (xhr) { console.log('before_send'); },
+            complete: function (xhr) { console.log('after_send'); },
+        }).done(function (dt) {
+            if (dt['success'] == 1) {
+                console.log();
+                $('#inventory').html(dt['result']);
+
+                // и установим чекбокс для элемента, который только что положили обратно в инвернтарь
+                // console.log('t: ' + t);
+                // var inv = $('#inventory')
+                // var find_selector = 'li input[data-itemid="' + t + '"]';
+                // var ii = inv.find(find_selector);
+                // ii.prop( "checked", true );
+            }
+        }).fail(function () { console.log('error'); });
+    }
+
     // music - tango
     $('.player').click(function () {
         if (jQuery(this).hasClass('on')) {
@@ -583,6 +609,10 @@ $(document).ready(function() {
                 user_set_user_chars_html();
                 $('#hero_weapon span').html('Пусто');
                 $('.Hero_Weapon').css('display','none');
+
+                // update inventory after hero drop item
+                inventory_update();
+
             }
         }).fail(function () { console.log('error'); });
     });
@@ -601,6 +631,9 @@ $(document).ready(function() {
                 user_set_user_chars_html();
                 $('#hero_armor_equiped span').html('Пусто');
                 $('.Hero_Armor').css('display','none');
+
+                // update inventory after hero drop item
+                inventory_update();
             }
         }).fail(function () { console.log('error'); });
     });
@@ -805,6 +838,8 @@ $(document).ready(function() {
 
                 // чтобы не делать лишний запрос в БД по получению обновленных хар-к героя, просто обновим поля...
                 user_set_user_chars_html();
+
+                inventory_update();
 
             }else if(dt['success'] == 2){
                 console.log('Невозножжжно экиппировать')

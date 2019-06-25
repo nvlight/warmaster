@@ -710,7 +710,7 @@ function user_inventory_is_item_exists($dbh, $i_item, $i_user)
             ];
         }else{
             $rs = [
-                'success' => 0,
+                'success' => 2,
                 'message' => 'Запрос выполнен, НЕ найдено!',
             ];
         }
@@ -791,6 +791,66 @@ function user_inventory_update_item($dbh, $i_item, $i_user, $new_count)
 {
     //
     $sql = "UPDATE inventory SET count = $new_count WHERE i_item = " . intval($i_item) . " and i_user = " . intval($i_user);
+    try{
+        $dbh->exec($sql);
+        $rs = ['success' => 1, 'message' => 'Запрос выполнен!',];
+    }catch (Exception $e){
+        $rs = [
+            'success' => 0,
+            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
+            'message' => 'Ошибка при запросе. Попробуйте позднее.'
+        ];
+    }
+    return $rs;
+}
+
+/// Увеличиваем кол-во итемов в инвентаре, когда пользователь дропает итем
+///
+///
+function inventory_update_incItemCount($dbh, $i_item, $i_user)
+{
+    //
+    $uiiie = user_inventory_is_item_exists($dbh, $i_item, $i_user);
+    if ($uiiie['success'] === 0) return $uiiie;
+
+    //
+    if ($uiiie['success'] === 2){
+        // delete by i_item
+        return user_inventory_add_item($dbh, $i_item);
+    }
+    //
+    $sql = "UPDATE inventory SET count = count + 1 
+        WHERE i_item = " . intval($i_item) . " and i_user = " . intval($i_user);
+    try{
+        $dbh->exec($sql);
+        $rs = ['success' => 1, 'message' => 'Запрос выполнен!',];
+    }catch (Exception $e){
+        $rs = [
+            'success' => 0,
+            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
+            'message' => 'Ошибка при запросе. Попробуйте позднее.'
+        ];
+    }
+    return $rs;
+}
+
+/// Уменьшаем кол-ва итемов в инвентаре, когда пользователь одевает итем
+///
+///
+function inventory_update_decItemCount($dbh, $i_item, $i_user)
+{
+    //
+    $uiiie = user_inventory_is_item_exists($dbh, $i_item, $i_user);
+    if ($uiiie['success'] === 0) return $uiiie;
+
+    //
+    if ($uiiie['success'] === 1){
+        // delete by i_item
+        return user_inventory_del_item($dbh, $i_item);
+    }
+
+    $sql = "UPDATE inventory SET count = count - 1 
+        WHERE i_item = " . intval($i_item) . " and i_user = " . intval($i_user);
     try{
         $dbh->exec($sql);
         $rs = ['success' => 1, 'message' => 'Запрос выполнен!',];
@@ -1232,6 +1292,9 @@ function user_equipment_do($dbh, $user_id, $i_item)
         $ushc['item_value'] = $curr_item['value'];
         $ushc['i_item']     = $curr_item['id'];
         $ushc['operation']  = 'first push';
+        // уменьшаем кол-во итемов в инвентаре, т.к. мы одеваем итем
+        $iudic = inventory_update_decItemCount($dbh, $i_item, $user_id);
+        if ($iudic['success'] === 0) return $iudic;
         return $ushc;
 
     }elseif($gue['success'] === 1){
@@ -1280,6 +1343,9 @@ function user_equipment_do($dbh, $user_id, $i_item)
             $ushc['inc']        = $curr_item['value'];
             $ushc['dec']        = $value;
             $ushc['tmp']        = $egowii['result'];
+            // уменьшаем кол-во итемов в инвентаре, т.к. мы одеваем итем
+            $iudic = inventory_update_decItemCount($dbh, $i_item, $user_id);
+            if ($iudic['success'] === 0) return $iudic;
             return $ushc;
         }else{
             // перед нами другой тип, противоположный тому, что уже есть в БД
@@ -1331,6 +1397,9 @@ function user_equipment_do($dbh, $user_id, $i_item)
                 $ushc['item_value'] = $curr_item['value'];
                 $ushc['i_item']     = $curr_item['id'];
                 $ushc['operation']  = 'update 2';
+                // уменьшаем кол-во итемов в инвентаре, т.к. мы одеваем итем
+                $iudic = inventory_update_decItemCount($dbh, $i_item, $user_id);
+                if ($iudic['success'] === 0) return $iudic;
                 return $ushc;
             }else{
                 $uae = user_add_equipment($dbh, $user_id, $i_item);
@@ -1351,6 +1420,9 @@ function user_equipment_do($dbh, $user_id, $i_item)
                 $ushc['item_value'] = $curr_item['value'];
                 $ushc['i_item']     = $curr_item['id'];
                 $ushc['operation']  = 'second add';
+                // уменьшаем кол-во итемов в инвентаре, т.к. мы одеваем итем
+                $iudic = inventory_update_decItemCount($dbh, $i_item, $user_id);
+                if ($iudic['success'] === 0) return $iudic;
                 return $ushc;
             }
 
@@ -1461,6 +1533,11 @@ function equipment_drop_item_by_id($dbh, $i_user, $i_item_type)
     if ($ushc['success'] === 0){
         return $ushc;
     }
+
+    // теперь увеличим количество этого итема в инвентаре
+    // т.к. раз мы дропаем итем, значит в инвентаре его количество должно увеличиться на единицу!
+    $iuiic = inventory_update_incItemCount($dbh, $equip_rs['i_item'], $i_user);
+    if ($iuiic['success'] === 0 ) return $iuiic;
 
     // и в самом конце, мы должно удалить из Equipment элемент с ID = $equip_del_id
     $edbi = equipment_del_by_id($dbh, $i_user, $equip_del_id);
