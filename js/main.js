@@ -661,7 +661,55 @@ $(document).ready(function() {
 
     //// end of drop items from hero
 
+    /// Пишу функцию, которая будет бросать итема героя при побеге (поражении)
+    ///
+    ///
 
+    function item_drop_in_fight() {
+
+        var url = './ajax/equipment_drop_item_in_fight_by_type.php';
+
+        var t = 1;
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: 'item_type=' + t,
+            dataType: 'json', // ! important string!
+            beforeSend: function (xhr) {},
+            complete: function (xhr) {},
+        }).done(function (dt) {
+            if (dt['success'] == 1) {
+                user_set_user_chars_html();
+                $('#hero_weapon span').html('Пусто');
+                $('.Hero_Weapon').css('display', 'none');
+                // update inventory after hero drop item
+                inventory_update();
+            }
+        }).fail(function (){});
+
+        //
+        var t = 2;
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: 'item_type=' + t,
+            dataType: 'json', // ! important string!
+            beforeSend: function (xhr) {},
+            complete: function (xhr) {},
+        }).done(function (dt) {
+            if (dt['success'] == 1) {
+                user_set_user_chars_html();
+                $('#hero_armor_equiped span').html('Пусто');
+                $('.Hero_Armor').css('display', 'none');
+                // update inventory after hero drop item
+                inventory_update();
+            }
+        }).fail(function (){});
+
+    }
+
+
+    //
     function ItemImgFadeOut() {
         var EquipArmor = $('#hero_armor_equiped span').html();
         var EquipWeapon = $('#hero_weapon span').html();
@@ -1832,6 +1880,7 @@ $(document).ready(function() {
                     DerekWin();
                 } else {
                     BattleMess('<p>' + 'Ты едва выжил в этой схватке и еле унес ноги побросав все снаряжение!' + '</p>' + '<div class="RunAway">' + '<button class="RunAwayBtn DbBtn">' + 'Бежать со всех ног!' + '</button> ' + '</div>');
+                    item_drop_in_fight();
                     CloseTheBattleWindow();
                 }
             } else {

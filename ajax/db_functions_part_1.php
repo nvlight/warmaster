@@ -1633,3 +1633,56 @@ function attack_add_reward($dbh, $i_user, $i_item){
     }
     return user_inventory_add_item($dbh, $i_item);
 }
+
+/// Экиппировка - бросить итем при побеге из боя!
+/// При этом, характеристики героя должны уменьшиться на соотв. характеристику
+/// далее - т.к. предмет брошен в бою, в инвентарь он не попадает
+function equipment_drop_item_in_fight_by_type($dbh, $i_user, $i_item_type)
+{
+    //
+    $ego = equipment_get_one_with_itemAndItemtype($dbh, $i_user, $i_item_type);
+    //echo Debug::d($ego,'$ego',1);
+    if ($ego['success'] === 0){
+        return $ego;
+    }
+    $equip_rs = $ego['result'];
+
+    // защита от дурака
+    if ($ego['success'] == 2){
+        return ['success' => 2, 'message' => 'невозможно удалить, т.к. герой не экипирован в это'];
+    }
+
+    // нашли элемент, который надо удалить.
+    $equip_del_id = $equip_rs['id'];
+
+    // теперь надо снизить характеристики пользователя
+    // для этого узнаем тип изменяемой характеристики
+    $value = intval($equip_rs['value']);
+    $hero_upd_type = intval($equip_rs['i_item_type']);
+    $hero_upd_column = null;
+    switch($hero_upd_type){
+        case 1: $hero_upd_column = 'attack'; break;
+        case 2: $hero_upd_column = 'armor'; break;
+        default: return ['success' => 0, 'message' => 'неизвестная характеристика героя для обновления...'];
+    }
+
+    // также мы должны текущий value уменьшить у героя!
+    // для этого перепишем функцию снизу, и посмотрим как она отработает )
+    $ushc = hero_set_char_byDec($dbh, $i_user, $hero_upd_column, $value);
+    //echo Debug::d($ushc,'',1); die;
+    if ($ushc['success'] === 0){
+        return $ushc;
+    }
+
+    // # внизу идущие 2 строки мы не выполняем, т.к. оружие брошены и герой бежит!
+    // теперь увеличим количество этого итема в инвентаре
+    // т.к. раз мы дропаем итем, значит в инвентаре его количество должно увеличиться на единицу!
+    // $iuiic = inventory_update_incItemCount($dbh, $equip_rs['i_item'], $i_user);
+    // if ($iuiic['success'] === 0 ) return $iuiic;
+
+    // и в самом конце, мы должно удалить из Equipment элемент с ID = $equip_del_id
+    $edbi = equipment_del_by_id($dbh, $i_user, $equip_del_id);
+    //echo Debug::d($edbi,'$edbi', 1);
+
+    return $edbi;
+}
