@@ -871,7 +871,8 @@ button:hover {
 
 .user-top-menu{
     padding: 10px 0;
-    background-color: #2B2B2B;
+    /*background-color: #2B2B2B;*/
+    background-color: rgba(10,10,10,0.5);
     display: flex;
     justify-content: space-around;
     position: fixed;
@@ -1007,6 +1008,7 @@ button:hover {
 .user_bottom_dev_caption{
     margin-top: 20px;
     background-color: #2B2B2B;
+    background-color: rgba(10,10,10,.5);
     color: #ffffff;
     padding: 9px;
     text-align: center;

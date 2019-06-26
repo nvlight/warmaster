@@ -1545,3 +1545,91 @@ function equipment_drop_item_by_id($dbh, $i_user, $i_item_type)
 
     return $edbi;
 }
+
+
+
+/// Сражения героя с крысами, волками, мракорисами, орком и Дереком
+///
+///
+
+/// Есть ли в инвентаре итем с нужным ИД
+///
+function inventory_exists_item_by_id($dbh, $i_item, $i_user)
+{
+    $sql = "SELECT 
+            shop.name shop_name,                        
+            shop_item.name,
+            shop_item.value,
+            shop_item.i_item_type,
+            inventory.count inv_count
+        FROM inventory        
+        LEFT JOIN shop_item on shop_item.id = inventory.i_item
+        LEFT JOIN shop on shop.id = shop_item.i_shop
+        WHERE
+            shop.id = shop_item.i_shop and 
+            shop_item.id = {intval($i_item)} and inventory.i_user = {intval($i_user)} ";
+    try{
+        $sql_rs1  = $dbh->query($sql);
+        $sql_rs2 = ($sql_rs1->fetchAll(MYSQLI_NUM));
+        if (count($sql_rs2)){
+            $rs = [
+                'success' => 1,
+                'message' => 'Запрос выполнен, найдено!',
+                'result' => $sql_rs2[0] // т.к. у нас всего 1
+            ];
+        }else{
+            $rs = [
+                'success' => 2,
+                'message' => 'Запрос выполнен, НЕ найдено!',
+            ];
+        }
+    }catch (Exception $e){
+        $rs = [
+            'success' => 0,
+            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
+            'message' => 'Ошибка при запросе. Попробуйте позднее.'
+        ];
+    }
+    return $rs;
+}
+
+/// Если у героя охотничий нож?
+///
+function inventory_is_hunt_knife_exists($dbh, $i_user){
+    //
+    $i_item = 4; // hunt_knife --> shop_item ID
+    return inventory_exists_item_by_id($dbh, $i_item, $i_user);
+}
+
+/// hero_set_health - установить здоровье героя
+///
+function hero_set_health($dbh, $i_user, $new_health){
+    //
+    $sql = "UPDATE hero_info SET health = {$new_health} WHERE hero_info.i_user = " . intval($i_user);
+    try{
+        $dbh->exec($sql);
+        $rs = ['success' => 1, 'message' => 'Запрос выполнен, здоровье изменено!',
+            //'sql' => $sql
+        ];
+
+    }catch (Exception $e){
+        $rs = [
+            'success' => 0,
+            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
+            'message' => 'Ошибка при запросе. Попробуйте позднее.'
+        ];
+    }
+    return $rs;
+}
+
+/// attack_add_reward
+///
+///
+function attack_add_reward($dbh, $i_user, $i_item){
+
+    $white_ids = [10,11,12];
+    if ( !in_array($i_item, $white_ids)){
+        return ['success' => 0, 'message' => 'Данный ИД не входит в список разрешенных!'];
+    }
+    return user_inventory_add_item($dbh, $i_item);
+}

@@ -307,16 +307,21 @@ $(document).ready(function() {
     }
 
     // user_inventory_update
-    function inventory_update(){
+    function inventory_update() {
         // update inventory after hero drop item
-        var t = 1; var url = './ajax/inventory_get_childs.php';
+        var t = 1;
+        var url = './ajax/inventory_get_childs.php';
         $.ajax({
             url: url,
             method: 'POST',
             data: 'item_type=' + t,
             dataType: 'json', // ! important string!
-            beforeSend: function (xhr) { console.log('before_send'); },
-            complete: function (xhr) { console.log('after_send'); },
+            beforeSend: function (xhr) {
+                console.log('before_send');
+            },
+            complete: function (xhr) {
+                console.log('after_send');
+            },
         }).done(function (dt) {
             if (dt['success'] == 1) {
                 console.log();
@@ -329,7 +334,9 @@ $(document).ready(function() {
                 // var ii = inv.find(find_selector);
                 // ii.prop( "checked", true );
             }
-        }).fail(function () { console.log('error'); });
+        }).fail(function () {
+            console.log('error');
+        });
     }
 
     // music - tango
@@ -397,6 +404,7 @@ $(document).ready(function() {
                 TimerFunc(15, HeroHP, 1, 'Отдых: ', dt['message']);
                 dialogBg('url(./img/bad.jpg) no-repeat top center');
                 $('#hero_hp').html(dt['health']);
+                HeroHPInner = +dt['health'];
             }
         }).fail(function () {
             console.log('error');
@@ -469,11 +477,11 @@ $(document).ready(function() {
 
     // Дерек ===============================================================
     DerekHPBase = 100,
-    DerekHP = DerekHPBase,
-    DerekPower = 30,
-    DerekDamage = DerekPower + 5,
-    DerekCrit = 10,
-    DerekArmor = 0;
+        DerekHP = DerekHPBase,
+        DerekPower = 30,
+        DerekDamage = DerekPower + 5,
+        DerekCrit = 10,
+        DerekArmor = 0;
 
     // Работа с объектом event =================================================
     function ProductfadeOut(class_1, class_2) {
@@ -547,8 +555,7 @@ $(document).ready(function() {
     sellTheItemBtn.addEventListener('click', SellItem);
 
     //
-    function SellItem()
-    {
+    function SellItem() {
         var t = $('input[name=inventory]:checked').data('itemid');
         if (t === undefined) {
             console.log('sell item');
@@ -585,7 +592,7 @@ $(document).ready(function() {
                     var inv = $('#inventory')
                     var find_selector = 'li input[data-itemid="' + t + '"]';
                     var ii = inv.find(find_selector);
-                    ii.prop( "checked", true );
+                    ii.prop("checked", true);
                 }
             }
         }).fail(function () {
@@ -596,47 +603,62 @@ $(document).ready(function() {
     // сейчас сделаем дроп итема с героя - оружие и броня
     //
     $('#DropWeapon').on('click', function (e) {
-        var t = 1; var url = './ajax/equipment_drop_item_by_type.php';
+        var t = 1;
+        var url = './ajax/equipment_drop_item_by_type.php';
         $.ajax({
             url: url,
             method: 'POST',
             data: 'item_type=' + t,
             dataType: 'json', // ! important string!
-            beforeSend: function (xhr) { console.log('before_send'); },
-            complete: function (xhr) { console.log('after_send'); },
+            beforeSend: function (xhr) {
+                console.log('before_send');
+            },
+            complete: function (xhr) {
+                console.log('after_send');
+            },
         }).done(function (dt) {
             if (dt['success'] == 1) {
                 user_set_user_chars_html();
                 $('#hero_weapon span').html('Пусто');
-                $('.Hero_Weapon').css('display','none');
+                $('.Hero_Weapon').css('display', 'none');
 
                 // update inventory after hero drop item
                 inventory_update();
 
             }
-        }).fail(function () { console.log('error'); });
+        }).fail(function () {
+            console.log('error');
+        });
     });
     //
     $('#DropArmor').on('click', function (e) {
-        var t = 2; var url = './ajax/equipment_drop_item_by_type.php';
+        var t = 2;
+        var url = './ajax/equipment_drop_item_by_type.php';
         $.ajax({
             url: url,
             method: 'POST',
             data: 'item_type=' + t,
             dataType: 'json', // ! important string!
-            beforeSend: function (xhr) { console.log('before_send'); },
-            complete: function (xhr) { console.log('after_send'); },
+            beforeSend: function (xhr) {
+                console.log('before_send');
+            },
+            complete: function (xhr) {
+                console.log('after_send');
+            },
         }).done(function (dt) {
             if (dt['success'] == 1) {
                 user_set_user_chars_html();
                 $('#hero_armor_equiped span').html('Пусто');
-                $('.Hero_Armor').css('display','none');
+                $('.Hero_Armor').css('display', 'none');
 
                 // update inventory after hero drop item
                 inventory_update();
             }
-        }).fail(function () { console.log('error'); });
+        }).fail(function () {
+            console.log('error');
+        });
     });
+
     //// end of drop items from hero
 
 
@@ -753,8 +775,7 @@ $(document).ready(function() {
         ['Сырая сталь', 'Охотничий нож', 'Рог Мракориса', 'Хвост крысы', 'Волчья шкура']
     ];
 
-    function EqipItemFunc2()
-    {
+    function EqipItemFunc2() {
         // получим ИД итема и эккипируем им героя!
 
         // # 1. получим ИД итема
@@ -794,7 +815,7 @@ $(document).ready(function() {
                 // item_type: 2
                 // item_value: 5
                 console.log('item_value: ' + dt['item_value'])
-                if (dt['item_type'] == 2){
+                if (dt['item_type'] == 2) {
                     // hero_armor
                     HeroArmorInner = +dt['item_value'];
                     //
@@ -804,31 +825,45 @@ $(document).ready(function() {
                     i_item = +dt['i_item']
                     $('.Hero_Armor').css('display', 'none');
                     switch (i_item) {
-                        case 5: $('.leather-armor').css('display', 'block'); break;
-                        case 6: $('.heavy-armor').css('display', 'block'); break;
-                        case 9: $('.armor-crow').css('display', 'block'); break;
+                        case 5:
+                            $('.leather-armor').css('display', 'block');
+                            break;
+                        case 6:
+                            $('.heavy-armor').css('display', 'block');
+                            break;
+                        case 9:
+                            $('.armor-crow').css('display', 'block');
+                            break;
                     }
                     //
                     $('#hero_armor').html(HeroChars['hero_armor']);
                     //
                     $('#hero_armor_equiped span').html(dt['item_name']);
-                }else if (dt['item_type'] == 1){
+                } else if (dt['item_type'] == 1) {
                     // hero_atack
 
                     HeroDamageInner = 0
                     HeroDamageInner2 = +dt['item_value']  // this is element from Ajax!
                     HeroAtackInner = HeroDamageInner2 + HeroDamageInner + +HeroPowerInner,
-                    //
-                    HeroChars['hero_damage'] = +HeroDamageInner;
+                        //
+                        HeroChars['hero_damage'] = +HeroDamageInner;
                     HeroChars['hero_atack'] = +HeroAtackInner;
                     //
                     i_item = +dt['i_item']
                     $('.Hero_Weapon').css('display', 'none');
                     switch (i_item) {
-                        case 1: $('.stick').css('display', 'block'); break;
-                        case 2: $('.sword').css('display', 'block'); break;
-                        case 3: $('.long-sword').css('display', 'block'); break;
-                        case 8: $('.ripper').css('display', 'block'); break;
+                        case 1:
+                            $('.stick').css('display', 'block');
+                            break;
+                        case 2:
+                            $('.sword').css('display', 'block');
+                            break;
+                        case 3:
+                            $('.long-sword').css('display', 'block');
+                            break;
+                        case 8:
+                            $('.ripper').css('display', 'block');
+                            break;
                     }
                     //
                     $('#hero_atack').html(HeroChars['hero_atack']);
@@ -841,7 +876,7 @@ $(document).ready(function() {
 
                 inventory_update();
 
-            }else if(dt['success'] == 2){
+            } else if (dt['success'] == 2) {
                 console.log('Невозножжжно экиппировать')
                 $('.HomeMessageAlert').html(dt['message']).css('display', 'block');
             }
@@ -1012,29 +1047,29 @@ $(document).ready(function() {
                 }
             }
             $('.master .db').fadeIn();
-            $('#QuestionToLars-1').click(function() {
+            $('#QuestionToLars-1').click(function () {
                 $('.master .db .dinamicTxt').html('<p>' + 'Сила увеличивает мощь твоих ударов!' + '</p>');
             });
-            $('#QuestionToLars-3').click(function() {
+            $('#QuestionToLars-3').click(function () {
                 $('.master .db .dinamicTxt').html('<p>' + 'Тяжелая броня делает тебя крепче, но в ней ты более медлительный и быстрее устаешь, в некоторых ситуациях в тяжелом снаряжении ты будешь более уязвимым.' + '</p>');
             });
-            $('#QuestionToLars-4').click(function() {
+            $('#QuestionToLars-4').click(function () {
                 $('.master .db .dinamicTxt').html('<p>' + 'Ларес: Опасный зверь, но довольно медлительный. Даже не думай подобраться незаметно, учуит за сотню шагов. Если уж встретился  с этой зверюгой лицом к лицу, обращай внимание на первый удар, если схватил большой урон, немедленно отступай!' + '</p>');
                 var HaraldQuestMrakoris = '<span class="QuestTitle">' + 'Рог Мракориса' + '</span>';
                 var HaraldQuestMrakorisTxt = '<li>' + ' - Ларес сказал, чтобы победить Мракориса надо избегать его критической атаки или вовремя отступить' + '</li>';
                 QuestListArr(HaraldQuestMrakoris, HaraldQuestMrakorisTxt, '.HaraldQuestWeapon');
             });
-            $('#QuestionToLars-2').click(function() {
+            $('#QuestionToLars-2').click(function () {
                 sitizen = true;
                 $('.master .db .dinamicTxt').html('<p class="citizen">' + 'Чтобы стать гражданином, кто то из влиятельных жителей города должен за тебя поручиться!' + '</p>' + '<button class="btn LaresQuest">' + 'Помоги стать гражданином...' + '</button>');
-                $('.LaresQuest').click(function() {
+                $('.LaresQuest').click(function () {
                     $('.master .db .dinamicTxt').html('<p>' + 'Ты должен проявить себя в каком либо деле, скажем охотничем... Добудь мне три хвоста болотной крысы и две волчьи шкуры.' + '</p>');
                     var LaresQuest = '<span>' + 'Задание Лареса' + '</span>';
                     var LaresQuestTxt = '<li>' + '- Ларес поможет мне стать гражданином, но для этого я должен добыть для него 2 хвоста болотной крысы и 3 волчьи шкуры' + '</li>';
                     QuestListArr(LaresQuest, LaresQuestTxt, '.HaraldQuest');
                     $('.lares_btn').append('<button class="btn" id="PassLarsQuest">Сдать задание</button>');
 
-                    $('#PassLarsQuest').click(function() {
+                    $('#PassLarsQuest').click(function () {
                         var ItemIndexRatTail = HeroItem[0].indexOf('Хвост крысы');
                         var ItemIndexWoolfSkin = HeroItem[0].indexOf('Волчья шкура');
                         if (ItemIndexRatTail != -1 && ItemIndexWoolfSkin != -1) {
@@ -1072,7 +1107,7 @@ $(document).ready(function() {
     var sitizen = false;
 
     // Показ/Скрытие диалоговых окон
-    $('.db_close').click(function() {
+    $('.db_close').click(function () {
         $('.dialog_box').fadeOut();
         // btnDisabledFalse();
     });
@@ -1116,6 +1151,7 @@ $(document).ready(function() {
             }
         }
     }
+
     // Конец мастер Ларс ==============================================
 
     // Таверна ==============================================
@@ -1139,7 +1175,7 @@ $(document).ready(function() {
     btn_talkToSelina.addEventListener('click', talkToSelina);
 
     function ReturnToSelinasQuestions() {
-        $('.BackToQuestions').click(function() {
+        $('.BackToQuestions').click(function () {
             talkToSelina();
         });
     }
@@ -1173,14 +1209,14 @@ $(document).ready(function() {
             '</ul>'
         );
 
-        $('.HeroAnswear-5').click(function() {
+        $('.HeroAnswear-5').click(function () {
             aboutMissing = true;
             var SelinasQuest = '<span class="QuestTitle">' + 'Где все пропавшие люди?' + '</span>';
             var SelinasQuestTxt = '<ul class="LostPeopleQuest">' + '<li>' + SelinasQuest + '<br>' + ' - С фермы Онара пропадают люди, надо разобраться' + '</li>' + '</ul>';
             QuestListArr(SelinasQuest, SelinasQuestTxt, '#journal_box__inner');
         });
 
-        $('.HeroAnswear-8').click(function() {
+        $('.HeroAnswear-8').click(function () {
             $('.OnarDialogBox').fadeOut();
             $('.overlay').fadeOut();
         });
@@ -1189,11 +1225,12 @@ $(document).ready(function() {
         DialogBox('.OnarDialogBox');
         tabsDialog();
     }
-    $('#btn_toEat').click(function() {
+
+    $('#btn_toEat').click(function () {
         var PriceOfFood = 110;
         SelinaAnswers('Селина: Лучшее жаркое в Хоринисе, всего за 110 монет!' + '<br>' + '<button class="ToEat" style="margin-top:10px;">' + 'Кушать' + '</button>' + '<button class="CancelToEat" style="margin-left:10px; margin-top:10px;">' + 'Отмена' + '</button>');
         $('.taverna .db_1').fadeIn();
-        $('.ToEat').click(function() {
+        $('.ToEat').click(function () {
             // if (HeroGoldInner >= PriceOfFood) {
             //     HeroHPInner = 100;
             //     HeroHP.innerHTML = HeroHPInner;
@@ -1211,34 +1248,35 @@ $(document).ready(function() {
                 method: 'POST',
                 data: '',
                 dataType: 'json', // ! important string!
-                beforeSend: function( xhr ) {
+                beforeSend: function (xhr) {
                     console.log('before_send')
                 },
-                complete: function( xhr ) {
+                complete: function (xhr) {
                     console.log('after_send')
                 },
             }).done(function (dt) {
                 console.log('request is done');
-                if (dt['success'] == 2){
+                if (dt['success'] == 2) {
                     SelinaAnswers(dt['message']);
                     $('#hero_gold').html(dt['gold']);
                     $('#hero_hp').html(dt['health']);
+                    HeroHPInner = dt['health'];
 
-                }else if(dt['success'] == 3){
+                } else if (dt['success'] == 3) {
                     SelinaAnswers(dt['message']);
-                } else if(dt['success'] == 1){
+                } else if (dt['success'] == 1) {
                     SelinaAnswers(dt['message']);
                 }
             }).fail(function () {
                 console.log('error');
             });
         });
-        $('.CancelToEat').click(function() {
+        $('.CancelToEat').click(function () {
             $('.taverna .db_1').fadeOut();
         });
     });
 
-    $('#btn_nagur').click(function() {
+    $('#btn_nagur').click(function () {
         $('.OnarDialogBox').css({
             'background': 'url(./img/nagur.jpg) no-repeat top center',
             'background-size': 'cover'
@@ -1261,7 +1299,7 @@ $(document).ready(function() {
                 '</ul>'
             );
         }
-        $('.buyTheMap').click(function() {
+        $('.buyTheMap').click(function () {
             var mapPrice = 100;
             if (HeroGoldInner >= mapPrice) {
                 var NagurMap = '<span>' + 'Карта Нагура' + '</span>';
@@ -1278,7 +1316,7 @@ $(document).ready(function() {
         });
 
 
-        $('.leaveFromNagur').click(function() {
+        $('.leaveFromNagur').click(function () {
             $('.OnarDialogBox').fadeOut();
             $('.overlay').fadeOut();
         });
@@ -1288,7 +1326,7 @@ $(document).ready(function() {
     });
 
     function tabsDialog() {
-        $('.tab a').click(function(e) {
+        $('.tab a').click(function (e) {
             e.preventDefault();
             $('.toogleHeroQuestions').slideDown();
             $('.ba-1').css('display', 'none');
@@ -1351,7 +1389,7 @@ $(document).ready(function() {
         dinamicTxtSenteza.innerHTML = '<p>' + 'Что тебе опять?' + '</p>';
         btnNextSenteza.innerHTML = '<button class="btn GuardNext">' + 'Далее' + '</button>';
         i = 0;
-        $('.GuardNext').click(function() {
+        $('.GuardNext').click(function () {
             i = i + 1;
             switch (i) {
                 case 1:
@@ -1436,7 +1474,7 @@ $(document).ready(function() {
     // Квест Онара взят
     var OnarQuestTaken = false;
 
-    document.onclick = function(event) {
+    document.onclick = function (event) {
         var target = event.target;
         if (target.id != 'btn_onar') {
             $('.tooltip').css('display', 'none');
@@ -1449,25 +1487,25 @@ $(document).ready(function() {
         }
     };
 
-    $('.taverna').mouseleave(function() {
+    $('.taverna').mouseleave(function () {
         $('.selinaDB').fadeOut();
     });
-    $('.marketPlace').mouseleave(function() {
+    $('.marketPlace').mouseleave(function () {
         $('#shop_box').fadeOut();
     });
-    $('.forge').mouseleave(function() {
+    $('.forge').mouseleave(function () {
         $('.db_forge, .bg_inner__forge').fadeOut();
     });
-    $('.farm').mouseleave(function() {
+    $('.farm').mouseleave(function () {
         $('.dinamicDbSenteza').fadeOut();
     });
-    $('.farm').mouseleave(function() {
+    $('.farm').mouseleave(function () {
         $('#static-db').fadeOut();
     });
-    $('.master').mouseleave(function() {
+    $('.master').mouseleave(function () {
         $('.db_lares').fadeOut();
     });
-    $('.marketPlace').mouseleave(function() {
+    $('.marketPlace').mouseleave(function () {
         $('.db_market').fadeOut();
     });
 
@@ -1490,7 +1528,7 @@ $(document).ready(function() {
             $('.OnarDialogBox').fadeIn();
             $('.overlay').fadeIn();
 
-            $('.leave').click(function() {
+            $('.leave').click(function () {
                 $('.OnarDialogBox').fadeOut();
                 $('.overlay').fadeOut();
             });
@@ -1522,7 +1560,7 @@ $(document).ready(function() {
                     '</ul>'
                 );
 
-                $('.HeroAnswear-2').click(function() {
+                $('.HeroAnswear-2').click(function () {
                     trainResolution = true;
                     $('#btn_nagur').css('display', 'inline-block');
                     var OnarQuest = '<span>' + 'Задание Онара' + '</span>';
@@ -1530,7 +1568,7 @@ $(document).ready(function() {
                     QuestListArr(OnarQuest, OnarQuestTxt, '.LostPeopleQuest');
                 });
 
-                $('.HeroAnswear-8').click(function() {
+                $('.HeroAnswear-8').click(function () {
                     $('.OnarDialogBox').fadeOut();
                     $('.overlay').fadeOut();
                     OnarQuestTaken = true;
@@ -1626,6 +1664,7 @@ $(document).ready(function() {
                 $('.close').html('x');
             }
         }
+
         Overlay();
         $('.close').html('');
         messWindowInner.innerHTML = '';
@@ -1638,6 +1677,7 @@ $(document).ready(function() {
     function Overlay() {
         $('.overlay, #messWindow').fadeIn();
     }
+
     // Конец ферма =============================================================
 
     // Битва ===================================================================
@@ -1688,6 +1728,27 @@ $(document).ready(function() {
         return rand;
     }
 
+    //
+    function reward_add2hero(type) {
+        url = './ajax/attack_add_reward.php';
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: 'reward='+type,
+            dataType: 'json', // ! important string!
+            beforeSend: function (xhr) {
+                console.log('before_send');
+            },
+            complete: function (xhr) {
+                console.log('after_send');
+            },
+        }).done(function (dt) {
+            if (dt['success'] == 1) { inventory_update(); }
+        }).fail(function () {
+            console.log('error');
+        });
+    }
+
     function Atack(BattleEnemyHP, BattleEnemyCrit, BattleEnemyDamage, BattleEnemyArmor) {
         var HeroCrit = CritChance();
         var EnemyCrit = CritChance();
@@ -1709,9 +1770,31 @@ $(document).ready(function() {
             BattleEnemyDamageNew = BattleEnemyDamageNew * 2;
         }
 
-        HeroHPInner = HeroHPInner - BattleEnemyDamageNew;
+        // изменили здоровье героя
+        if (HeroHPInner > 1){
+            HeroHPInner = HeroHPInner - BattleEnemyDamageNew;
+        }
+        // теперь изменим его и в БД
+        // hero_set_health.php
+        url = './ajax/hero_set_health.php';
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: 'health='+HeroHPInner,
+            dataType: 'json', // ! important string!
+            beforeSend: function (xhr) { console.log('before_send'); },
+            complete: function (xhr) { console.log('after_send'); },
+        }).done(function (dt) {
+            if (dt['success'] == 1) {
+                //
+                if (dt['new_health'] !== -1){
+                    HeroHPInner = +dt['new_health']
+                }
+            }
+        }).fail(function () { console.log('error'); });
+
         HeroHP.innerHTML = HeroHPInner;
-        $('.HeroHP').html(HeroHPInner);
+        $('#hero_hp,.HeroHP').html(HeroHPInner);
         BattleEnemyHP = BattleEnemyHP - HeroAtackInnerNew;
 
         var EnemyAttr = $('#AtackToBattle').attr('name');
@@ -1734,14 +1817,15 @@ $(document).ready(function() {
                 break;
         }
 
-        if (HeroHPInner <= 0 && BattleEnemyHP >= 1) {
+        console.log('HeroHPInner: ' + HeroHPInner);
+        if (HeroHPInner <= 1 && BattleEnemyHP >= 1) {
             var HeroWeaponBattle = $('#hero_weapon span').html(),
                 HeroArmorBattle = $('#hero_armor_equiped span').html();
             if (HeroWeaponBattle != 'Пусто') {
-                LostTheItem(HeroWeaponBattle);
+                //LostTheItem(HeroWeaponBattle);
             }
             if (HeroArmorBattle != 'Пусто') {
-                LostTheItem(HeroArmorBattle);
+                //LostTheItem(HeroArmorBattle);
             }
             if (HeroWeaponBattle != 'Пусто' || HeroArmorBattle != 'Пусто') {
                 if (EnemyAttr == 'derek') {
@@ -1763,36 +1847,83 @@ $(document).ready(function() {
         if (HeroHPInner >= 10 && BattleEnemyHP <= 0) {
             HeroItem = '  Охотничий нож   ';
             console.log('EnemyAttr: ' + EnemyAttr);
-            var HeroItemIndex = HeroItem[0].indexOf('Охотничий нож');
-            if (HeroItemIndex != -1) {
-                switch (EnemyAttr) {
-                    case 'rat':
-                        DropItem(50, 'Хвост крысы');
-                        BattleMess('<p>' + 'Ты победил! Добыча: ' + '<span style="font-weight:bold;">Хвост крысы</span>' + '</p>' + '<div class="RunAway">' + '<button class="RunAwayBtn DbBtn">' + 'Уйти' + '</button> ' + '</div>');
-                        break;
-                    case 'woolf':
-                        DropItem(100, 'Волчья шкура');
-                        BattleMess('<p>' + 'Ты победил! Добыча: ' + '<span style="font-weight:bold;">Волчья шкура</span>' + '</p>' + '<div class="RunAway">' + ' <button class="RunAwayBtn DbBtn">' + 'Уйти' + '</button> ' + '</div>');
-                        break;
-                    case 'mrakoris':
-                        DropItem(400, 'Рог Мракориса');
-                        BattleMess('<p>' + 'Ты победил! Добыча: ' + '<span style="font-weight:bold;">Рог Мракориса</span>' + '</p>' + '<div class="RunAway">' + ' <button class="RunAwayBtn DbBtn">' + 'Уйти' + '</button> ' + '</div>');
-                        break;
-                    case 'ork':
-                        BattleMess('<p>' + 'Ты победил!' + '</p>' + '<div class="RunAway">' + ' <button class="RunAwayBtn DbBtn">' + 'Уйти' + '</button> ' + '</div>');
-                        DefeatTheOrk();
-                        break;
-                    case 'derek':
-                        BattleMess('<p>' + 'Ты победил!' + '</p>' + '<div class="RunAway">' + ' <button class="RunAwayBtn DbBtn">' + 'Уйти' + '</button> ' + '</div>');
-                        DefeatTheDerek();
-                        break;
+            // var HeroItemIndex = HeroItem[0].indexOf('Охотничий нож');
+            // if (HeroItemIndex != -1) {
+            //     switch (EnemyAttr) {
+            //         case 'rat':
+            //             DropItem(50, 'Хвост крысы');
+            //             BattleMess('<p>' + 'Ты победил! Добыча: ' + '<span style="font-weight:bold;">Хвост крысы</span>' + '</p>' + '<div class="RunAway">' + '<button class="RunAwayBtn DbBtn">' + 'Уйти' + '</button> ' + '</div>');
+            //             break;
+            //         case 'woolf':
+            //             DropItem(100, 'Волчья шкура');
+            //             BattleMess('<p>' + 'Ты победил! Добыча: ' + '<span style="font-weight:bold;">Волчья шкура</span>' + '</p>' + '<div class="RunAway">' + ' <button class="RunAwayBtn DbBtn">' + 'Уйти' + '</button> ' + '</div>');
+            //             break;
+            //         case 'mrakoris':
+            //             DropItem(400, 'Рог Мракориса');
+            //             BattleMess('<p>' + 'Ты победил! Добыча: ' + '<span style="font-weight:bold;">Рог Мракориса</span>' + '</p>' + '<div class="RunAway">' + ' <button class="RunAwayBtn DbBtn">' + 'Уйти' + '</button> ' + '</div>');
+            //             break;
+            //         case 'ork':
+            //             BattleMess('<p>' + 'Ты победил!' + '</p>' + '<div class="RunAway">' + ' <button class="RunAwayBtn DbBtn">' + 'Уйти' + '</button> ' + '</div>');
+            //             DefeatTheOrk();
+            //             break;
+            //         case 'derek':
+            //             BattleMess('<p>' + 'Ты победил!' + '</p>' + '<div class="RunAway">' + ' <button class="RunAwayBtn DbBtn">' + 'Уйти' + '</button> ' + '</div>');
+            //             DefeatTheDerek();
+            //             break;
+            //     }
+            // } else {
+            //     BattleMess('<p>' + 'Ты победил!' + '</p>' + '<div class="RunAway">' + ' <button class="RunAwayBtn DbBtn">' + 'Уйти' + '</button> ' + '</div>');
+            //     DefeatTheOrk();
+            //     DefeatTheDerek();
+            // }
+            // CloseTheBattleWindow();
+            // мой код - сражение с типами...
+            url = './ajax/inventory_is_hunt_knife_exists.php';
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: '',
+                dataType: 'json', // ! important string!
+                beforeSend: function (xhr) { console.log('before_send'); },
+                complete: function (xhr) { console.log('after_send'); },
+            }).done(function (dt) {
+                if (dt['success'] == 1) {
+                    var HeroItemIndex = true;
+                    if (HeroItemIndex) {
+                        switch (EnemyAttr) {
+                            case 'rat':
+                                DropItem(50, 'Хвост крысы');
+                                BattleMess('<p>' + 'Ты победил! Добыча: ' + '<span style="font-weight:bold;">Хвост крысы</span>' + '</p>' + '<div class="RunAway">' + '<button class="RunAwayBtn DbBtn">' + 'Уйти' + '</button> ' + '</div>');
+                                // добавим для героя добычу, а именно этот хвост крысы!
+                                reward_add2hero(10);
+                                break;
+                            case 'woolf':
+                                DropItem(100, 'Волчья шкура');
+                                BattleMess('<p>' + 'Ты победил! Добыча: ' + '<span style="font-weight:bold;">Волчья шкура</span>' + '</p>' + '<div class="RunAway">' + ' <button class="RunAwayBtn DbBtn">' + 'Уйти' + '</button> ' + '</div>');
+                                reward_add2hero(11);
+                                break;
+                            case 'mrakoris':
+                                DropItem(400, 'Рог Мракориса');
+                                BattleMess('<p>' + 'Ты победил! Добыча: ' + '<span style="font-weight:bold;">Рог Мракориса</span>' + '</p>' + '<div class="RunAway">' + ' <button class="RunAwayBtn DbBtn">' + 'Уйти' + '</button> ' + '</div>');
+                                reward_add2hero(12);
+                                break;
+                            case 'ork':
+                                BattleMess('<p>' + 'Ты победил!' + '</p>' + '<div class="RunAway">' + ' <button class="RunAwayBtn DbBtn">' + 'Уйти' + '</button> ' + '</div>');
+                                DefeatTheOrk();
+                                break;
+                            case 'derek':
+                                BattleMess('<p>' + 'Ты победил!' + '</p>' + '<div class="RunAway">' + ' <button class="RunAwayBtn DbBtn">' + 'Уйти' + '</button> ' + '</div>');
+                                DefeatTheDerek();
+                                break;
+                        }
+                    }
+                } else {
+                    BattleMess('<p>' + 'Ты победил!' + '</p>' + '<div class="RunAway">' + ' <button class="RunAwayBtn DbBtn">' + 'Уйти' + '</button> ' + '</div>');
+                    DefeatTheOrk();
+                    DefeatTheDerek();
                 }
-            } else {
-                BattleMess('<p>' + 'Ты победил!' + '</p>' + '<div class="RunAway">' + ' <button class="RunAwayBtn DbBtn">' + 'Уйти' + '</button> ' + '</div>');
-                DefeatTheOrk();
-                DefeatTheDerek();
-            }
-            CloseTheBattleWindow();
+                CloseTheBattleWindow();
+            }).fail(function () { console.log('error'); });
         }
         if (HeroHPInner <= 10 && BattleEnemyHP <= 0) {
             BattleMess('<p>' + 'Ты победил с большим трудом и истек кровью, здоровье на минимуме!' + '</p>' + '<div class="RunAway">' + ' <button class="RunAwayBtn DbBtn">' + 'Уйти' + '</button> ' + '</div>');
@@ -1805,6 +1936,7 @@ $(document).ready(function() {
         }
     }
 
+    //
     function DerekWin() {
         $('#db_fight .dinamicTxt').html('<p>Ты убит! Весь прогресс будет сброшен! Нужно начинать игру сначала, постарайся лучше подготовиться к этому бою...</p><button class="btn reload">Далее</botton>');
         $('#db_fight').fadeIn();
@@ -1895,10 +2027,10 @@ $(document).ready(function() {
     }
 
     function LostTheItem(heroItem) {
-        IndexOf(heroItem);
-        if (HeroItemIndexInv != -1) {
-            CounterMinus();
-        }
+        // IndexOf(heroItem);
+        // if (HeroItemIndexInv != -1) {
+        //     CounterMinus();
+        // }
         if (HeroItem[1][HeroItemIndexInv] == 0) {
             var DeleteItem = document.querySelector('.counter-' + (HeroItemIndexInv));
             var RemoveItem = $(DeleteItem).parents()[1];
@@ -1928,18 +2060,18 @@ $(document).ready(function() {
             HomeInventory = document.getElementById('inventory'),
             HeroItemIndex = HeroItem[0].indexOf(parameter2);
         if (HeroItemIndex != -1) {
-            HeroItem[1][HeroItemIndex] = +HeroItem[1][HeroItemIndex] + 1;
-            document.querySelector('.counter-' + (HeroItemIndex)).innerHTML = HeroItem[1][HeroItemIndex];
+            //HeroItem[1][HeroItemIndex] = +HeroItem[1][HeroItemIndex] + 1;
+            //document.querySelector('.counter-' + (HeroItemIndex)).innerHTML = HeroItem[1][HeroItemIndex];
         } else {
-            HeroItem[0].push(parameter2);
-            HeroItem[1].push(1);
-            HeroItem[2].push(itemPrice);
-            var NameMassiveLastEl = HeroItem[0][HeroItem[0].length - 1],
-                CountMassiveLastEl = HeroItem[1][HeroItem[1].length - 1],
-                PriceMassiveLastEl = HeroItem[2][HeroItem[2].length - 1],
-                li = document.createElement('li');
-            li.innerHTML = '<label>' + '<input class="inp_radio" type=radio name="inventory">' + ' <span class="itemName">' + NameMassiveLastEl + '</span>' + ' <span class="counter counter-' + (HeroItem[0].length - 1) + ' ">' + CountMassiveLastEl + '</span>' + ', ' + '<span class="priceItemHero">' + PriceMassiveLastEl + '</span>';
-            HomeInventory.appendChild(li);
+            // HeroItem[0].push(parameter2);
+            // HeroItem[1].push(1);
+            // HeroItem[2].push(itemPrice);
+            // var NameMassiveLastEl = HeroItem[0][HeroItem[0].length - 1],
+            //     CountMassiveLastEl = HeroItem[1][HeroItem[1].length - 1],
+            //     PriceMassiveLastEl = HeroItem[2][HeroItem[2].length - 1],
+            //     li = document.createElement('li');
+            // li.innerHTML = '<label>' + '<input class="inp_radio" type=radio name="inventory">' + ' <span class="itemName">' + NameMassiveLastEl + '</span>' + ' <span class="counter counter-' + (HeroItem[0].length - 1) + ' ">' + CountMassiveLastEl + '</span>' + ', ' + '<span class="priceItemHero">' + PriceMassiveLastEl + '</span>';
+            // HomeInventory.appendChild(li);
         }
     }
     // Конец Битва =============================================================

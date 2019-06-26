@@ -108,3 +108,10 @@ $WM_user_inventory = user_inventory_get($dbh);
 // equipment_drop_item_by_id($dbh, $i_user, $i_item_type)
 //$edibi = equipment_drop_item_by_id($dbh, 8, 2);
 //echo Debug::d($edibi,'$edibi', $edibi); die;
+
+// test
+//1echo Debug::d(inventory_is_hunt_knife_exists($dbh, $_SESSION['user']['id'])); die;
+
+
+// test
+//echo Debug::d(hero_set_health($dbh, $_SESSION['user']['id'], 150)); die;
