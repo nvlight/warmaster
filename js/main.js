@@ -46,6 +46,11 @@ $(document).ready(function() {
     HeroGold.innerHTML = HeroGoldInner;
     HeroHP.innerHTML = HeroHPInner;
 
+    //
+    function echo(value){
+        console.log(value);
+    }
+
     // logout
     $('#user_logout').on('click', function (e) {
         e.preventDefault();
@@ -57,28 +62,18 @@ $(document).ready(function() {
             method: 'POST',
             data: '',
             dataType: 'json', // ! important string!
-            beforeSend: function (xhr) {
-                console.log('before_send')
-
-            },
-            complete: function (xhr) {
-                console.log('after_send')
-            },
+            beforeSend: function (xhr) {},
+            complete: function (xhr) {},
         }).done(function (dt) {
-            console.log('request is done');
             if (dt['success'] == 1) {
                 window.location.reload();
             }
-        }).fail(function () {
-            console.log('error');
-        });
-
+        }).fail(function () { console.log('error'); });
         return false;
     });
 
     //
     function user_start_stage() {
-        console.log('user_get_stage...');
         user_stage = -1;
         var user_logout = $(this);
         var url = './ajax/user_get_stage.php';
@@ -88,17 +83,17 @@ $(document).ready(function() {
             data: '',
             dataType: 'json', // ! important string!
             beforeSend: function (xhr) {
-                console.log('before_send')
+                
 
             },
             complete: function (xhr) {
-                console.log('after_send')
+                
             },
         }).done(function (dt) {
-            console.log('request is done');
+            
             if (dt['success'] == 1) {
                 user_stage = dt['res'][0]['stage'];
-                console.log('in Done function - user_stage: ' + user_stage);
+                //console.log('in Done function - user_stage: ' + user_stage);
                 if (user_stage == 0) {
                     gameStart();
                 } else {
@@ -109,7 +104,7 @@ $(document).ready(function() {
         }).fail(function () {
             console.log('error');
         });
-        console.log('before return - user_stage: ' + user_stage);
+        //console.log('before return - user_stage: ' + user_stage);
         return user_stage;
     }
 
@@ -123,21 +118,14 @@ $(document).ready(function() {
             method: 'POST',
             data: 'stage=' + stage,
             dataType: 'json', // ! important string!
-            beforeSend: function (xhr) {
-                console.log('before_send')
-
-            },
-            complete: function (xhr) {
-                console.log('after_send')
-            },
+            beforeSend: function (xhr) {},
+            complete: function (xhr) {},
         }).done(function (dt) {
-            console.log('request is done');
+            
             if (dt['success'] == 1) {
-                console.log(dt['message']);
+                //console.log(dt['message']);
             }
-        }).fail(function () {
-            console.log('error');
-        });
+        }).fail(function () { console.log('error'); });
     }
 
     //
@@ -199,7 +187,7 @@ $(document).ready(function() {
                 // var HorinisTxt = '<ul class="Horinis">' + '<li>' + Horinis + '<br>' + ' - Чертов охранник содрал с меня 200 золотых, чтобы я мог попасть в город, нужно искать работу' + '</li>' + '</ul>';
                 // QuestListArr(Horinis, HorinisTxt, '#journal_box__inner');
                 //journal_box__inner
-                console.log('user_2journal_set_start_message...');
+                //console.log('user_2journal_set_start_message...');
                 var url = './ajax/user_2journal_set_start_message.php';
                 $.ajax({
                     url: url,
@@ -207,13 +195,13 @@ $(document).ready(function() {
                     data: '',
                     dataType: 'json', // ! important string!
                     beforeSend: function (xhr) {
-                        console.log('before_send')
+                        
                     },
                     complete: function (xhr) {
-                        console.log('after_send')
+                        
                     },
                 }).done(function (dt) {
-                    console.log(dt['message']);
+                    //console.log(dt['message']);
                 }).fail(function () {
                     console.log('error');
                 });
@@ -228,7 +216,6 @@ $(document).ready(function() {
 
     //
     function user_set_gold_html() {
-        console.log('user_get_gold...');
         var url = './ajax/user_get_gold.php';
         $.ajax({
             url: url,
@@ -236,15 +223,15 @@ $(document).ready(function() {
             data: '',
             dataType: 'json', // ! important string!
             beforeSend: function (xhr) {
-                console.log('before_send')
+                
             },
             complete: function (xhr) {
-                console.log('after_send')
+                
             },
         }).done(function (dt) {
-            console.log('request is done');
+            
             if (dt['success'] == 1) {
-                console.log(dt['message']);
+                //console.log(dt['message']);
                 //
                 let gold = dt['res'][0]['gold'] * 1;
                 $('#hero_gold').html(gold);
@@ -257,7 +244,7 @@ $(document).ready(function() {
 
     // user_hero_chars
     function user_set_user_chars_html() {
-        console.log('user_get_gold...');
+        
         var url = './ajax/user_get_hero_chars.php';
         $.ajax({
             url: url,
@@ -265,15 +252,15 @@ $(document).ready(function() {
             data: '',
             dataType: 'json', // ! important string!
             beforeSend: function (xhr) {
-                console.log('before_send')
+                
             },
             complete: function (xhr) {
-                console.log('after_send')
+                
             },
         }).done(function (dt) {
-            console.log('request is done');
+            
             if (dt['success'] == 1) {
-                console.log(dt['message']);
+                //console.log(dt['message']);
                 //console.log(dt);
                 $('#hero_power').html(dt['res']['power']);
                 $('#hero_atack').html(dt['res']['attack']);
@@ -317,10 +304,10 @@ $(document).ready(function() {
             data: 'item_type=' + t,
             dataType: 'json', // ! important string!
             beforeSend: function (xhr) {
-                console.log('before_send');
+                ;
             },
             complete: function (xhr) {
-                console.log('after_send');
+                ;
             },
         }).done(function (dt) {
             if (dt['success'] == 1) {
@@ -364,15 +351,15 @@ $(document).ready(function() {
             data: '',
             dataType: 'json', // ! important string!
             beforeSend: function (xhr) {
-                console.log('before_send')
+                
             },
             complete: function (xhr) {
-                console.log('after_send')
+                
             },
         }).done(function (dt) {
-            console.log('request is done');
+            
             if (dt['success'] == 1) {
-                console.log(dt['message']);
+                //console.log(dt['message']);
                 //console.log(dt);
                 $('#hero_hp').html(dt['health']);
                 $('#dinamicTxtHollow').html(dt['message']);
@@ -394,15 +381,15 @@ $(document).ready(function() {
             data: '',
             dataType: 'json', // ! important string!
             beforeSend: function (xhr) {
-                console.log('before_send')
+                
             },
             complete: function (xhr) {
-                console.log('after_send')
+                
             },
         }).done(function (dt) {
-            console.log('request is done');
+            
             if (dt['success'] == 1) {
-                console.log(dt['message']);
+                //console.log(dt['message']);
                 TimerFunc(15, HeroHP, 1, 'Отдых: ', dt['message']);
                 dialogBg('url(./img/bad.jpg) no-repeat top center');
                 $('#hero_hp').html(dt['health']);
@@ -530,15 +517,15 @@ $(document).ready(function() {
             data: 'item_id=' + t,
             dataType: 'json', // ! important string!
             beforeSend: function (xhr) {
-                console.log('before_send')
+                
             },
             complete: function (xhr) {
-                console.log('after_send')
+                
             },
         }).done(function (dt) {
-            console.log('request is done');
+            
             if (dt['success'] == 5) {
-                console.log(dt['message']);
+                //console.log(dt['message']);
                 $('#hero_gold').html(dt['gold']);
                 if (dt['inventory']['success'] == 1) {
                     $('#inventory').html(dt['inventory']['result']);
@@ -578,15 +565,15 @@ $(document).ready(function() {
             data: 'item_id=' + t,
             dataType: 'json', // ! important string!
             beforeSend: function (xhr) {
-                console.log('before_send')
+                
             },
             complete: function (xhr) {
-                console.log('after_send')
+                
             },
         }).done(function (dt) {
-            console.log('request is done');
+            
             if (dt['success'] == 5) {
-                console.log(dt['message']);
+                //console.log(dt['message']);
                 $('#hero_gold').html(dt['gold']);
                 if (dt['inventory']['success'] == 1) {
                     $('#inventory').html(dt['inventory']['result']);
@@ -614,10 +601,10 @@ $(document).ready(function() {
             data: 'item_type=' + t,
             dataType: 'json', // ! important string!
             beforeSend: function (xhr) {
-                console.log('before_send');
+                ;
             },
             complete: function (xhr) {
-                console.log('after_send');
+                ;
             },
         }).done(function (dt) {
             if (dt['success'] == 1) {
@@ -643,10 +630,10 @@ $(document).ready(function() {
             data: 'item_type=' + t,
             dataType: 'json', // ! important string!
             beforeSend: function (xhr) {
-                console.log('before_send');
+                ;
             },
             complete: function (xhr) {
-                console.log('after_send');
+                ;
             },
         }).done(function (dt) {
             if (dt['success'] == 1) {
@@ -851,17 +838,17 @@ $(document).ready(function() {
             data: 'item_id=' + t,
             dataType: 'json', // ! important string!
             beforeSend: function (xhr) {
-                console.log('before_send')
+                
             },
             complete: function (xhr) {
-                console.log('after_send')
+                
             },
         }).done(function (dt) {
-            console.log('request is done');
+            
             //if (dt['success'] == 5 || dt['success'] == 4) {
             if (dt['success'] == 1) {
                 //console.log(dt);
-                console.log(dt['message']);
+                //console.log(dt['message']);
 
                 // item_type: 2
                 // item_value: 5
@@ -1036,7 +1023,7 @@ $(document).ready(function() {
     $('#journal').click(function () {
         $('.overlay, .journal_box').fadeIn();
         // nuzhno eto delo obrabotat
-        console.log('user_get_journal_messages...');
+        //console.log('user_get_journal_messages...');
         var url = './ajax/user_get_journal_messages.php';
         $.ajax({
             url: url,
@@ -1044,13 +1031,13 @@ $(document).ready(function() {
             data: '',
             dataType: 'json', // ! important string!
             beforeSend: function (xhr) {
-                console.log('before_send')
+                
             },
             complete: function (xhr) {
-                console.log('after_send')
+                
             },
         }).done(function (dt) {
-            console.log('request is done');
+            
             if (dt['success'] == 1) {
                 $('#journal_box__inner').html(dt['res']);
             }
@@ -1300,13 +1287,13 @@ $(document).ready(function() {
                 data: '',
                 dataType: 'json', // ! important string!
                 beforeSend: function (xhr) {
-                    console.log('before_send')
+                    
                 },
                 complete: function (xhr) {
-                    console.log('after_send')
+                    
                 },
             }).done(function (dt) {
-                console.log('request is done');
+                
                 if (dt['success'] == 2) {
                     SelinaAnswers(dt['message']);
                     $('#hero_gold').html(dt['gold']);
@@ -1406,9 +1393,9 @@ $(document).ready(function() {
 
     // Флаг на оплату 100 зол Сентезе
     var PaySenteza = false;
-    BtnFarmeGuard.addEventListener('click', FarmeGuard);
-    BtnNotPaySenteza.addEventListener('click', NotPaySenteza);
-    BtnPaySenteza.addEventListener('click', PaySentezaTrue);
+    // BtnFarmeGuard.addEventListener('click', FarmeGuard);
+    // BtnNotPaySenteza.addEventListener('click', NotPaySenteza);
+    // BtnPaySenteza.addEventListener('click', PaySentezaTrue);
     // Флаг на блокировку кнопки Онара, если квест на беседу с ним еще не получен от Сентезы
     btnOnarDisabled = false;
 
@@ -1420,6 +1407,90 @@ $(document).ready(function() {
     function FarmeGuardFalse() {
         SentezaDB1();
     }
+
+    // btn_farmeGuard
+    $('#btn_farmeGuard').on('click', function () {
+        // все по новому - другие порядки теперь на ферме!
+        url = './ajax/user_get_stage.php';
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: '',
+            dataType: 'json', // ! important string!
+            beforeSend: function (xhr) { },
+            complete: function (xhr) { },
+        }).done(function (dt) {
+            if (dt['success'] == 1) {
+                var stage = +dt['res'][0]['stage'];
+                echo('current_stage: ' +stage);
+                // если stage = 1, т.е. первый раз зашли к Сентезе...
+                if (stage === 1) {
+                    $('.db_1.min_db').fadeIn();
+                }else if(stage === 2 || stage === 3){
+                    var some_text = '<p>' + 'Сентеза: С тобой приятно иметь дело :)' + '</p>';
+                    $('#dinamicTxtSenteza').html(some_text);
+                    $('.db_1.min_db').fadeOut();
+                    $('#dinamicDbSenteza').fadeIn();
+                }
+            }
+        }).fail(function () {  });
+
+    });
+    // senteza_go_away
+    $('#senteza_go_away').on('click', function () {
+        $('.db_1.min_db').fadeOut(); //$('.db_1.min_db').fadeIn();
+    });
+
+    //
+    //$('.db_1.min_db').on('click', function () {});
+    $('#senteza_not_pay, #senteza_pay').on('click', function (e) {
+
+        // если мы первый раз пришли к Сентезе, т.е. stage = 1
+        // user_get_stage.php
+        // echo(e);
+        // echo('data-pay: '+$(this).attr('data-pay'));
+        var btn_this = $(this);
+
+        url = './ajax/user_get_stage.php';
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: '',
+            dataType: 'json', // ! important string!
+            beforeSend: function (xhr) { },
+            complete: function (xhr) { },
+        }).done(function (dt) {
+            if (dt['success'] == 1) {
+                var stage = +dt['res'][0]['stage'];
+                echo('current_stage: ' +stage);
+                // если stage = 1, т.е. первый раз зашли к Сентезе...
+                if (stage === 1) {
+                    var t = btn_this.data('pay');
+                    echo('choose senteza (pay / not pay): ' + t);
+                    t = +t;
+                    if (t === 1) {
+                        var some_text = '<p>' + 'Сентеза: Такой разговор мне по душе, можешь проходить :)' + '</p>';
+                        $('#dinamicTxtSenteza').html(some_text);
+                        $('.db_1.min_db').fadeOut();
+                        $('#dinamicDbSenteza').fadeIn();
+                    } else if (t === 2) {
+                        var some_text = '<p>' + "Сентеза избил тебя и забрал все деньги!" + '</p>';
+                        $('#dinamicTxtSenteza').html(some_text);
+                        $('.db_1.min_db').fadeOut();
+                        $('#dinamicDbSenteza').fadeIn();
+                    }
+                }else if(stage === 2 || stage === 3){
+                    var some_text = '<p>' + 'Сентеза: С тобой приятно иметь дело :)' + '</p>';
+                    $('#dinamicTxtSenteza').html(some_text);
+                    $('.db_1.min_db').fadeOut();
+                    $('#dinamicDbSenteza').fadeIn();
+                }
+            }
+        }).fail(function () {  });
+
+        return false;
+
+    });
 
     function afterDialog() {
         dinamicTxtSenteza.innerHTML = '<p>' + 'Сентеза: Я тебе все сказал!' + '</p>';
@@ -1788,10 +1859,10 @@ $(document).ready(function() {
             data: 'reward='+type,
             dataType: 'json', // ! important string!
             beforeSend: function (xhr) {
-                console.log('before_send');
+                ;
             },
             complete: function (xhr) {
-                console.log('after_send');
+                ;
             },
         }).done(function (dt) {
             if (dt['success'] == 1) { inventory_update(); }
@@ -1837,8 +1908,8 @@ $(document).ready(function() {
             method: 'POST',
             data: 'health='+HeroHPInner,
             dataType: 'json', // ! important string!
-            beforeSend: function (xhr) { console.log('before_send'); },
-            complete: function (xhr) { console.log('after_send'); },
+            beforeSend: function (xhr) { ; },
+            complete: function (xhr) { ; },
         }).done(function (dt) {
             if (dt['success'] == 1) {
                 //
@@ -1944,8 +2015,8 @@ $(document).ready(function() {
                 method: 'POST',
                 data: '',
                 dataType: 'json', // ! important string!
-                beforeSend: function (xhr) { console.log('before_send'); },
-                complete: function (xhr) { console.log('after_send'); },
+                beforeSend: function (xhr) { ; },
+                complete: function (xhr) { ; },
             }).done(function (dt) {
                 if (dt['success'] == 1) {
                     var HeroItemIndex = true;

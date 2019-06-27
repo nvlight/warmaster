@@ -332,29 +332,46 @@
 			<!-- Ферма Онара -->
 			<div class="box-item farm border" id="farm">
 				<div class="npc_name"><b>Ферма Онара</b></div>
-				<div class="master_btn__box" id="div">
-					<div class="tooltip">
-						<span>Ты не знаешь где Онар</span>
-					</div>
-					<div class="tooltip2">
-						<span>Говори с охраной</span>
-					</div>
-					<button class="btn" id="btn_farmeGuard" type="button">Сентеза (Охрана)</button>
-					<button class="btn" id="btn_onar" type="button">Онар</button>
-					<button class="btn" id="btn_workFarm" type="button">Работать</button>
-				</div>
-				<div class="dialog_box db_1 min_db" id="static-db">
-					<div class="db_close">х</div>
-					<p>Сентеза: Что тебе нужно? Хочешь пройти дальше, плати 100 монет!</p>
-					<button class="btn" id="btn_pay_senteza">Согласен</button>
-					<button class="btn" id="btn_not_pay_senteza">Послать к черту!</button>
-					<button class="btn">Уйти</button>
-				</div>
-				<div class="dialog_box min_db" id="dinamicDbSenteza">
-					<div class="db_close">х</div>
-					<div id="dinamicTxtSenteza"></div>
-					<div class="btn" id="btnNextSenteza"></div>
-				</div>
+<!--				<div class="master_btn__box" id="div">-->
+<!--					<div class="tooltip">-->
+<!--						<span>Ты не знаешь где Онар</span>-->
+<!--					</div>-->
+<!--					<div class="tooltip2">-->
+<!--						<span>Говори с охраной</span>-->
+<!--					</div>-->
+<!--					<button class="btn" id="btn_farmeGuard" type="button">Сентеза (Охрана)</button>-->
+<!--					<button class="btn" id="btn_onar" type="button">Онар</button>-->
+<!--					<button class="btn" id="btn_workFarm" type="button">Работать</button>-->
+<!--				</div>-->
+<!--				<div class="dialog_box db_1 min_db" id="static-db">-->
+<!--					<div class="db_close">х</div>-->
+<!--					<p>Сентеза: Что тебе нужно? Хочешь пройти дальше, плати 100 монет!</p>-->
+<!--					<button class="btn" id="btn_pay_senteza">Согласен</button>-->
+<!--					<button class="btn" id="btn_not_pay_senteza">Послать к черту!</button>-->
+<!--					<button class="btn">Уйти</button>-->
+<!--				</div>-->
+<!--				<div class="dialog_box min_db" id="dinamicDbSenteza">-->
+<!--					<div class="db_close">х</div>-->
+<!--					<div id="dinamicTxtSenteza"></div>-->
+<!--					<div class="btn" id="btnNextSenteza"></div>-->
+<!--				</div>-->
+                <div class="master_btn__box" id="div">
+                    <button class="btn" id="btn_farmeGuard" type="button">Сентеза (Охрана)</button>
+                    <button class="btn dn" id="btn_onar" type="button">Онар</button>
+                    <button class="btn dn" id="btn_workFarm" type="button">Работать</button>
+                </div>
+                <div class="dialog_box db_1 min_db" id="static-db">
+                    <div class="db_close">х</div>
+                    <p>Сентеза: Что тебе нужно? Хочешь пройти дальше, плати 100 монет!</p>
+                    <button class="btn" id="senteza_pay" data-pay="1">Согласен</button>
+                    <button class="btn" id="senteza_not_pay" data-pay="2">Послать к черту!</button>
+                    <button class="btn" id="senteza_go_away">Уйти</button>
+                </div>
+                <div class="dialog_box min_db" id="dinamicDbSenteza">
+                    <div class="db_close">х</div>
+                    <div id="dinamicTxtSenteza"></div>
+                    <div class="btn" id="btnNextSenteza"></div>
+                </div>
 			</div>
 		</div>
 
