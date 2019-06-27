@@ -102,6 +102,8 @@ function senteza_speak($dbh, $i_user, $choise){
                     $new_gold = $gold - $minus_value;
                     $usg = user_set_gold($dbh, $i_user, $new_gold);
                     if ($usg['success'] === 0 ){ return $usg;}
+                    $uss = user_set_stage($dbh, $i_user, 2);
+                    if ($uss['success'] === 0 ){ return $uss;}
                     return ['success' => 1, 'message' => $message, 'gold' => $new_gold];
                 }
                 // -100 gold
@@ -113,6 +115,9 @@ function senteza_speak($dbh, $i_user, $choise){
                 // set gold to zero (0)
                 $usg = user_set_gold($dbh, $i_user, 0);
                 if ($usg['success'] === 0 ){ return $usg;}
+                //
+                $uss = user_set_stage($dbh, $i_user, 3);
+                if ($uss['success'] === 0 ){ return $uss;}
 
                 return ['success' => 1, 'message' => $message, 'gold' => 0];
             }else{
