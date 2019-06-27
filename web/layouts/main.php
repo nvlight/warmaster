@@ -17,6 +17,18 @@
 
 	<div id="melody-1" class="player" data-src="audio/gothic.mp3"></div>
 	<audio id="my-hidden-player" loop></audio>
+    <div class="debug__right-menu">
+        <p class="mb10"><a href="#" id="hero_data-right-debug-block">Обновить!</a></p>
+        <div id="hero_data">
+            <?php if ($user_data['success'] !== 0): ?>
+                <?php foreach($user_data['res'] as $hk => $hv ): ?>
+                    <strong><?=$hk?></strong>: <?=$hv?> <br>
+                <?php endforeach; ?>
+            <?php endif; ?>
+
+            <?php ?>
+        </div>
+    </div>
     <div style="background-color: #fff;">
         <?php
         //echo Debug::d($_SESSION);

@@ -115,3 +115,4 @@ $WM_user_inventory = user_inventory_get($dbh);
 
 // test
 //echo Debug::d(hero_set_health($dbh, $_SESSION['user']['id'], 150)); die;
+

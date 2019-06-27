@@ -2380,4 +2380,25 @@ $(document).ready(function() {
         console.log(HeroChars);
     })
 
+
+    /// # debug right block
+    // user_reload_debug_block.php
+    $('#hero_data-right-debug-block').on('click', function ()
+    {
+        url = './ajax/user_reload_debug_block.php';
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: '',
+            dataType: 'json', // ! important string!
+            beforeSend: function (xhr) { },
+            complete: function (xhr) { },
+        }).done(function (dt) {
+            if (dt['success'] == 1) {
+                $('#hero_data').html(dt['str']);
+            }
+        }).fail(function () {  });
+    });
+
+
 });

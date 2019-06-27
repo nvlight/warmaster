@@ -1033,3 +1033,27 @@ button:hover {
 #hero_hp, #hero_gold, .username-class{
     padding-right: 10px;
 }
+
+.debug__right-menu{
+    position: fixed;
+    right: 10px;
+    background-color: rgba(10,10,10,.7);
+    color: white;
+    padding: 20px 20px;
+    top: 162px;
+    border-radius: 5px;
+    width: 179px;
+}
+
+
+.debug__right-menu p a{
+    color: #ffffff;
+    text-decoration: none;
+}
+.debug__right-menu p a:hover{
+    text-decoration: underline;
+}
+
+.mb10{
+    margin-bottom: 10px;
+}
