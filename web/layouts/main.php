@@ -49,7 +49,7 @@
                 Начать игру заново
             </button>
             <button id="getHeroPower">
-                getHeroPower
+                getHeroChars
             </button>
         </div>
 

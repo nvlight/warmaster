@@ -376,6 +376,8 @@ $(document).ready(function() {
                 //console.log(dt);
                 $('#hero_hp').html(dt['health']);
                 $('#dinamicTxtHollow').html(dt['message']);
+                HeroHPInner = +dt['health'];
+                HeroChars['hero_hp'] = +HeroHPInner;
             }
         }).fail(function () {
             console.log('error');
@@ -405,6 +407,7 @@ $(document).ready(function() {
                 dialogBg('url(./img/bad.jpg) no-repeat top center');
                 $('#hero_hp').html(dt['health']);
                 HeroHPInner = +dt['health'];
+                HeroChars['hero_hp'] = +HeroHPInner;
             }
         }).fail(function () {
             console.log('error');
@@ -1309,7 +1312,7 @@ $(document).ready(function() {
                     $('#hero_gold').html(dt['gold']);
                     $('#hero_hp').html(dt['health']);
                     HeroHPInner = dt['health'];
-
+                    user_set_user_chars_html();
                 } else if (dt['success'] == 3) {
                     SelinaAnswers(dt['message']);
                 } else if (dt['success'] == 1) {
@@ -1797,7 +1800,11 @@ $(document).ready(function() {
         });
     }
 
-    function Atack(BattleEnemyHP, BattleEnemyCrit, BattleEnemyDamage, BattleEnemyArmor) {
+    function Atack(BattleEnemyHP, BattleEnemyCrit, BattleEnemyDamage, BattleEnemyArmor)
+    {
+        // сразу же до драки обновим характеристики героя
+        user_set_user_chars_html();
+
         var HeroCrit = CritChance();
         var EnemyCrit = CritChance();
         var HeroAtackInnerNew = HeroAtackInner - BattleEnemyArmor;
@@ -1837,6 +1844,7 @@ $(document).ready(function() {
                 //
                 if (dt['new_health'] !== -1){
                     HeroHPInner = +dt['new_health']
+                    user_set_user_chars_html(); // обновим хар-ки героя по окончании боя, если  герой бросил снаряжение
                 }
             }
         }).fail(function () { console.log('error'); });
@@ -1880,12 +1888,15 @@ $(document).ready(function() {
                     DerekWin();
                 } else {
                     BattleMess('<p>' + 'Ты едва выжил в этой схватке и еле унес ноги побросав все снаряжение!' + '</p>' + '<div class="RunAway">' + '<button class="RunAwayBtn DbBtn">' + 'Бежать со всех ног!' + '</button> ' + '</div>');
+                    user_set_user_chars_html();
                     item_drop_in_fight();
                     CloseTheBattleWindow();
                 }
             } else {
                 BattleMess('<p>' + 'Ты тяжело ранен, но чудом сумел скрыться, истекая кровью!' + '</p>' + '<div class="RunAway">' + ' <button class="RunAwayBtn DbBtn">' + 'Бежать со всех ног!' + '</button> ' + '</div>');
+                user_set_user_chars_html();
                 if (EnemyAttr == 'derek') {
+
                     DerekWin();
                 } else {
                     CloseTheBattleWindow();
@@ -1939,6 +1950,7 @@ $(document).ready(function() {
                 if (dt['success'] == 1) {
                     var HeroItemIndex = true;
                     if (HeroItemIndex) {
+                        user_set_user_chars_html(); // обновим хар-ки героя по окончании боя, если  герой бросил снаряжение
                         switch (EnemyAttr) {
                             case 'rat':
                                 DropItem(50, 'Хвост крысы');
@@ -1975,6 +1987,7 @@ $(document).ready(function() {
             }).fail(function () { console.log('error'); });
         }
         if (HeroHPInner <= 10 && BattleEnemyHP <= 0) {
+            user_set_user_chars_html(); // обновим хар-ки героя по окончании боя, если  герой бросил снаряжение
             BattleMess('<p>' + 'Ты победил с большим трудом и истек кровью, здоровье на минимуме!' + '</p>' + '<div class="RunAway">' + ' <button class="RunAwayBtn DbBtn">' + 'Уйти' + '</button> ' + '</div>');
             DefeatTheOrk();
             DefeatTheDerek();
