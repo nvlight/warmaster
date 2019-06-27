@@ -1427,10 +1427,12 @@ $(document).ready(function() {
                 if (stage === 1) {
                     $('.db_1.min_db').fadeIn();
                 }else if(stage === 2 || stage === 3){
-                    var some_text = '<p>' + 'Сентеза: С тобой приятно иметь дело :)' + '</p>';
-                    $('#dinamicTxtSenteza').html(some_text);
-                    $('.db_1.min_db').fadeOut();
-                    $('#dinamicDbSenteza').fadeIn();
+                    //echo('we in!');
+                    // var some_text = '<p>' + 'Сентеза: С тобой приятно иметь дело :)' + '</p>';
+                    // $('#dinamicTxtSenteza').html(some_text);
+                    // $('.db_1.min_db').fadeOut();
+                    // $('#dinamicDbSenteza').fadeIn();
+                    senteza_speak(0);
                 }
             }
         }).fail(function () {  });
@@ -1440,6 +1442,31 @@ $(document).ready(function() {
     $('#senteza_go_away').on('click', function () {
         $('.db_1.min_db').fadeOut(); //$('.db_1.min_db').fadeIn();
     });
+
+
+    // function senteza speak
+    function senteza_speak(choise){
+        url = './ajax/senteza_speak.php';
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: 'choise='+choise,
+            dataType: 'json', // ! important string!
+            beforeSend: function (xhr) { },
+            complete: function (xhr) { },
+        }).done(function (dt) {
+            if (dt['success'] == 1) {
+                if (dt['gold'] !== undefined){
+                    $('#hero_gold').html(dt['gold']);
+                }
+                $('#dinamicTxtSenteza').html(dt['message']);
+                $('.db_1.min_db').fadeOut();
+                $('#dinamicDbSenteza').fadeIn();
+            }else{
+                $('.db_1.min_db').fadeOut();
+            }
+        }).fail(function () {  });
+    }
 
     //
     //$('.db_1.min_db').on('click', function () {});
@@ -1468,22 +1495,24 @@ $(document).ready(function() {
                     var t = btn_this.data('pay');
                     echo('choose senteza (pay / not pay): ' + t);
                     t = +t;
-                    if (t === 1) {
-                        var some_text = '<p>' + 'Сентеза: Такой разговор мне по душе, можешь проходить :)' + '</p>';
-                        $('#dinamicTxtSenteza').html(some_text);
-                        $('.db_1.min_db').fadeOut();
-                        $('#dinamicDbSenteza').fadeIn();
-                    } else if (t === 2) {
-                        var some_text = '<p>' + "Сентеза избил тебя и забрал все деньги!" + '</p>';
-                        $('#dinamicTxtSenteza').html(some_text);
-                        $('.db_1.min_db').fadeOut();
-                        $('#dinamicDbSenteza').fadeIn();
-                    }
+                    senteza_speak(t);
+                    // if (t === 1) {
+                    //     var some_text = '<p>' + 'Сентеза: Такой разговор мне по душе, можешь проходить :)' + '</p>';
+                    //     $('#dinamicTxtSenteza').html(some_text);
+                    //     $('.db_1.min_db').fadeOut();
+                    //     $('#dinamicDbSenteza').fadeIn();
+                    // } else if (t === 2) {
+                    //     var some_text = '<p>' + "Сентеза избил тебя и забрал все деньги!" + '</p>';
+                    //     $('#dinamicTxtSenteza').html(some_text);
+                    //     $('.db_1.min_db').fadeOut();
+                    //     $('#dinamicDbSenteza').fadeIn();
+                    // }
                 }else if(stage === 2 || stage === 3){
-                    var some_text = '<p>' + 'Сентеза: С тобой приятно иметь дело :)' + '</p>';
-                    $('#dinamicTxtSenteza').html(some_text);
-                    $('.db_1.min_db').fadeOut();
-                    $('#dinamicDbSenteza').fadeIn();
+                    senteza_speak(0);
+                    // var some_text = '<p>' + 'Сентеза: С тобой приятно иметь дело :)' + '</p>';
+                    // $('#dinamicTxtSenteza').html(some_text);
+                    // $('.db_1.min_db').fadeOut();
+                    // $('#dinamicDbSenteza').fadeIn();
                 }
             }
         }).fail(function () {  });
@@ -2469,6 +2498,7 @@ $(document).ready(function() {
                 $('#hero_data').html(dt['str']);
             }
         }).fail(function () {  });
+        return false;
     });
 
 
