@@ -343,21 +343,18 @@ $(document).ready(function() {
 
     //
     function go2Hollow() {
-        console.log('user_go2Hollow...');
+
+        // позднее нужно будет сюда записать записимость этой части от текущего уровня прохождения
         var url = './ajax/user_go2Hollow.php';
+        //var url = './ajax/user_get_stage.php';
         $.ajax({
             url: url,
             method: 'POST',
             data: '',
             dataType: 'json', // ! important string!
-            beforeSend: function (xhr) {
-                
-            },
-            complete: function (xhr) {
-                
-            },
+            beforeSend: function (xhr) { },
+            complete: function (xhr) { },
         }).done(function (dt) {
-            
             if (dt['success'] == 1) {
                 //console.log(dt['message']);
                 //console.log(dt);
@@ -365,10 +362,16 @@ $(document).ready(function() {
                 $('#dinamicTxtHollow').html(dt['message']);
                 HeroHPInner = +dt['health'];
                 HeroChars['hero_hp'] = +HeroHPInner;
+                // предусмотреть случай, когда герой экиппирован, т.е. нужно сбросить снаряжение и изменить харак-и
+                if (dt['drop_items'] !== undefined){
+                    user_set_user_chars_html();
+                    $('#hero_weapon span').html('Пусто');
+                    $('.Hero_Weapon').css('display', 'none');
+                    $('#hero_armor_equiped span').html('Пусто');
+                    $('.Hero_Armor').css('display', 'none');
+                }
             }
-        }).fail(function () {
-            console.log('error');
-        });
+        }).fail(function () { console.log('error'); });
     }
 
     //
@@ -651,7 +654,7 @@ $(document).ready(function() {
 
     //// end of drop items from hero
 
-    /// Пишу функцию, которая будет бросать итема героя при побеге (поражении)
+    /// Пишу функцию, которая будет бросать итемы героя при побеге (поражении)
     ///
     ///
 

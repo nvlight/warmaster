@@ -141,3 +141,74 @@ function senteza_speak($dbh, $i_user, $choise){
 /// Дополнительная вспомогательная функция
 ///
 ///
+
+/// Equipment is exists?
+///
+///
+function equipment_is_exists($dbh, $i_user){
+
+    $sql = "SELECT count(*) cnt FROM equipment WHERE i_user = " . intval($i_user);
+    try{
+        $sql_rs1  = $dbh->query($sql);
+        $sql_rs2 = ($sql_rs1->fetchAll(MYSQLI_NUM));
+
+        if (count($sql_rs2)){
+            $rs = [
+                'success' => 1,
+                'message' => 'Запрос выполнен, найдено!',
+                'result' => $sql_rs2
+            ];
+        }else{
+            $rs = [
+                'success' => 2,
+                'message' => 'Запрос выполнен, НЕ найдено!',
+            ];
+        }
+    }catch (Exception $e){
+        $rs = [
+            'success' => 0,
+            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
+            'message' => 'Ошибка при запросе. Попробуйте позднее.'
+        ];
+    }
+    return $rs;
+}
+
+/// Equipment is exists by i_item_type
+///
+///
+function equipment_is_exists_by_item_type($dbh, $i_user, $i_item_type){
+
+    $sql = "
+        SELECT 
+            shop_item.i_item_type item_type
+        FROM 
+            equipment        
+        left JOIN shop_item on shop_item.id = equipment.i_item        
+        WHERE 
+            i_user = " . intval($i_user) . " and i_item_type = {$i_item_type} ";
+    try{
+        $sql_rs1  = $dbh->query($sql);
+        $sql_rs2 = ($sql_rs1->fetchAll(MYSQLI_NUM));
+
+        if (count($sql_rs2)){
+            $rs = [
+                'success' => 1,
+                'message' => 'Запрос выполнен, найдено!',
+                'result' => $sql_rs2
+            ];
+        }else{
+            $rs = [
+                'success' => 2,
+                'message' => 'Запрос выполнен, НЕ найдено!',
+            ];
+        }
+    }catch (Exception $e){
+        $rs = [
+            'success' => 0,
+            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
+            'message' => 'Ошибка при запросе. Попробуйте позднее.'
+        ];
+    }
+    return $rs;
+}
