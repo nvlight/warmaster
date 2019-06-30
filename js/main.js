@@ -222,24 +222,15 @@ $(document).ready(function() {
             method: 'POST',
             data: '',
             dataType: 'json', // ! important string!
-            beforeSend: function (xhr) {
-                
-            },
-            complete: function (xhr) {
-                
-            },
+            beforeSend: function (xhr) {},
+            complete: function (xhr) {},
         }).done(function (dt) {
-            
             if (dt['success'] == 1) {
-                //console.log(dt['message']);
-                //
                 let gold = dt['res'][0]['gold'] * 1;
                 $('#hero_gold').html(gold);
                 HeroGoldInner = gold;
             }
-        }).fail(function () {
-            console.log('error');
-        });
+        }).fail(function () { console.log('error'); });
     }
 
     // user_hero_chars
@@ -1243,7 +1234,7 @@ $(document).ready(function() {
             '<ul class="toogleHeroQuestions">' +
             '<li> > <i class="HeroAnswear-3"><a href="#tab-14">Что находится на востоке?</a></i></li>' +
             '<li> > <i class="HeroAnswear-4"><a href="#tab-15">Что значит быть гражданином Хориниса?</a></i></li>' +
-            '<li> > <i class="HeroAnswear-5"><a href="#tab-16">Расскажи о туманной лощине?</a></i></li>' +
+            '<li> > <i class="HeroAnswear-6"><a href="#tab-16">Расскажи о туманной лощине?</a></i></li>' +
             '<li> > <i class="HeroAnswear-5"><a href="#tab-17">Какие слухи в последнее время?</a></i></li>' +
             '<li> > <i class="HeroAnswear-8"> <a style="cursor:pointer;">Покинуть таверну</a></i></li>' +
             '</ul>' +
@@ -1255,6 +1246,20 @@ $(document).ready(function() {
             var SelinasQuest = '<span class="QuestTitle">' + 'Где все пропавшие люди?' + '</span>';
             var SelinasQuestTxt = '<ul class="LostPeopleQuest">' + '<li>' + SelinasQuest + '<br>' + ' - С фермы Онара пропадают люди, надо разобраться' + '</li>' + '</ul>';
             QuestListArr(SelinasQuest, SelinasQuestTxt, '#journal_box__inner');
+            // where is the all lost peoples
+            var urlEating = './ajax/quest_the_lost_peoples.php';
+            $.ajax({
+                url: urlEating,
+                method: 'POST',
+                data: '',
+                dataType: 'json', // ! important string!
+                beforeSend: function (xhr) {},
+                complete: function (xhr) {},
+            }).done(function (dt) {
+                if (dt['success'] == 1) {
+                    $('#btn_onar').removeClass('dn');
+                }
+            }).fail(function () { console.log('error');});
         });
 
         $('.HeroAnswear-8').click(function () {
@@ -1436,6 +1441,9 @@ $(document).ready(function() {
                     // $('.db_1.min_db').fadeOut();
                     // $('#dinamicDbSenteza').fadeIn();
                     senteza_speak(0);
+                }else if(stage === 4){
+                    ///
+                    dialogGuard2();
                 }
             }
         }).fail(function () {  });
@@ -1459,12 +1467,14 @@ $(document).ready(function() {
             complete: function (xhr) { },
         }).done(function (dt) {
             if (dt['success'] == 1) {
-                if (dt['gold'] !== undefined){
-                    $('#hero_gold').html(dt['gold']);
-                }
+
                 $('#dinamicTxtSenteza').html(dt['message']);
                 $('.db_1.min_db').fadeOut();
                 $('#dinamicDbSenteza').fadeIn();
+                if (dt['gold'] !== undefined){
+                    $('#hero_gold').html(dt['gold']);
+                    $('#btn_workFarm2').removeClass('dn');
+                }
             }else{
                 $('.db_1.min_db').fadeOut();
             }
@@ -1516,6 +1526,8 @@ $(document).ready(function() {
                     // $('#dinamicTxtSenteza').html(some_text);
                     // $('.db_1.min_db').fadeOut();
                     // $('#dinamicDbSenteza').fadeIn();
+                }else if (stage === 4){
+
                 }
             }
         }).fail(function () {  });
@@ -1561,6 +1573,36 @@ $(document).ready(function() {
             }
             BtnFarmeGuard.removeEventListener('click', afterFirstDialog);
             BtnFarmeGuard.addEventListener('click', afterDialog);
+            if (i == 5) {
+                $('#dinamicDbSenteza').fadeOut();
+                btnOnarDisabled = true;
+            }
+        });
+        DinamicDBSenteza();
+    }
+
+    function dialogGuard2() {
+        dinamicTxtSenteza.innerHTML = '<p>' + 'Что тебе опять?' + '</p>';
+        btnNextSenteza.innerHTML = '<button class="btn GuardNext">' + 'Далее' + '</button>';
+        i = 0;
+        $('.GuardNext').click(function () {
+            i = i + 1;
+            switch (i) {
+                case 1:
+                    dinamicTxtSenteza.innerHTML = '<p>' + 'Вы: Говорят у вас пропадают люди?' + '</p>';
+                    break;
+                case 2:
+                    dinamicTxtSenteza.innerHTML = '<p>' + 'Сентеза: Небось в таверне об этом только и твердят, тебе какое дело?' + '</p>';
+                    break;
+                case 3:
+                    dinamicTxtSenteza.innerHTML = '<p>' + 'Вы: Я могу решить эту проблему!' + '</p>';
+                    break;
+                case 4:
+                    dinamicTxtSenteza.innerHTML = '<p>' + 'Сентеза: Ха!) Поговори с Онаром, он на складах, верну 100 золотых на твоих похоронах :)' + '</p>';
+                    break;
+            }
+            // BtnFarmeGuard.removeEventListener('click', afterFirstDialog);
+            // BtnFarmeGuard.addEventListener('click', afterDialog);
             if (i == 5) {
                 $('#dinamicDbSenteza').fadeOut();
                 btnOnarDisabled = true;
@@ -1784,6 +1826,12 @@ $(document).ready(function() {
     //     }
     // }
 
+    //
+    $('#btn_workFarm2').on('click', function () {
+        GoToWork2();
+    });
+
+    //
     function GoToWork() {
         if (PaySenteza !== true) {
             $('.master_btn__box .tooltip2').fadeIn();
@@ -1803,6 +1851,49 @@ $(document).ready(function() {
             // });
             // $('.FarmWorker').fadeIn();
         }
+    }
+
+    //
+    function GoToWork2() {
+        var url = './ajax/user_get_gold.php';
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: '',
+            dataType: 'json', // ! important string!
+            beforeSend: function (xhr) {},
+            complete: function (xhr) {},
+        }).done(function (dt) {
+            if (dt['success'] == 1) {
+                let gold = dt['res'][0]['gold'] * 1;
+                if (gold >= 200) {
+                    $('#btnNextSenteza').css('display', 'none');
+                    $('#dinamicDbSenteza #dinamicTxtSenteza').html('<p>На данный момент нет работы!</p>');
+                    $('#dinamicDbSenteza').fadeIn();
+                    return;
+                }else if (gold < 200) {
+                    //user_set_gold_withInc.php
+                    var url = './ajax/user_set_gold_withInc.php';
+                    $.ajax({
+                        url: url,
+                        method: 'POST',
+                        data: '',
+                        dataType: 'json', // ! important string!
+                        beforeSend: function (xhr) {},
+                        complete: function (xhr) {},
+                    }).done(function (dt) {
+                        if (dt['success'] == 1) {
+                            //
+                            $('#hero_gold').html(dt['gold']);
+                        }
+                    }).fail(function () { console.log('error'); });
+
+                    TimerFunc(10, HeroGold, HeroGoldInner = HeroGoldInner + 100, 'Ты работаешь в поле: ', 'Ты заработал 100 монет');
+                    dialogBg('url(./img/farmworker.jpg) no-repeat top center');
+                }
+            }
+        }).fail(function () { console.log('error'); });
+
     }
 
     // Функция обратного отсчета ===============================================

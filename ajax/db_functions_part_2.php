@@ -133,6 +133,7 @@ function senteza_speak($dbh, $i_user, $choise){
             return ['success' => 1, 'message' => $message];
             break;
 
+
         default: return ['success' => 0, 'message' => 'Этот уровень в списках не присутствует...'];
     }
 
@@ -211,4 +212,55 @@ function equipment_is_exists_by_item_type($dbh, $i_user, $i_item_type){
         ];
     }
     return $rs;
+}
+
+
+///
+///
+///
+//
+function user_set_gold_withInc($dbh, $i_user, $gold)
+{
+    //
+    $sql = "UPDATE hero_info SET gold = gold + {$gold} WHERE i_user = " . intval($i_user);
+    //echo $sql;
+    try{
+        $dbh->exec($sql);
+        $rs = ['success' => 1, 'message' => 'Запрос выполнен, золото установлено!', 'gold' => $gold];
+
+    }catch (Exception $e){
+        $rs = [
+            'success' => 0,
+            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
+            'message' => 'Ошибка при запросе. Попробуйте позднее.'
+        ];
+    }
+    return $rs;
+}
+
+///
+///
+///
+function quest_the_lost_peoples($dbh, $i_user){
+
+    $curr_stage = user_get_stage($dbh, $i_user);
+    if ($curr_stage['success'] === 0) return $curr_stage;
+    $real_stage = intval($curr_stage['res'][0]['stage']);
+
+    $new_stage = 4;
+    switch($real_stage){
+        case 2:
+            $uss = user_set_stage($dbh, $i_user, $new_stage);
+            if ($uss['success'] === 0) { return $uss; }
+            return die(json_encode($uss));
+            break;
+        case 3:
+            $uss = user_set_stage($dbh, $i_user, $new_stage);
+            if ($uss['success'] === 0) { return $uss; }
+            return die(json_encode($uss));
+            break;
+        default: return die(json_encode(['success' => 0, 'message' => 'default']));
+    };
+
+    return ;
 }

@@ -355,9 +355,18 @@
 <!--					<div id="dinamicTxtSenteza"></div>-->
 <!--					<div class="btn" id="btnNextSenteza"></div>-->
 <!--				</div>-->
+                <?php
+                $ugs = user_get_stage($dbh, $_SESSION['user']['id']);
+                if ($ugs['success'] === 1) {
+                    $stage = intval($ugs['res'][0]['stage']);
+                }else{
+                    $stage = 1;
+                }
+                ?>
                 <div class="master_btn__box" id="div">
                     <button class="btn" id="btn_farmeGuard" type="button">Сентеза (Охрана)</button>
-                    <button class="btn dn" id="btn_onar" type="button">Онар</button>
+                    <button class="btn <?php if ($stage <= 3) echo 'dn'; ?>"" id="btn_onar" type="button">Онар</button>
+                    <button class="btn <?php if ($stage === 1) echo 'dn'; ?>" id="btn_workFarm2" type="button">Работать</button>
                     <button class="btn dn" id="btn_workFarm" type="button">Работать</button>
                 </div>
                 <div class="dialog_box db_1 min_db" id="static-db">

@@ -19,3 +19,5 @@ $i_user = $_SESSION['user']['id'];
 //echo Debug::d($eiebit1);
 //echo Debug::d($eiebit2);
 //die;
+
+//echo Debug::d(equipment_is_exists($dbh, $i_user)); die;
