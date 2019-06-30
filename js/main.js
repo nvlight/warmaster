@@ -194,12 +194,8 @@ $(document).ready(function() {
                     method: 'POST',
                     data: '',
                     dataType: 'json', // ! important string!
-                    beforeSend: function (xhr) {
-                        
-                    },
-                    complete: function (xhr) {
-                        
-                    },
+                    beforeSend: function (xhr) {},
+                    complete: function (xhr) {},
                 }).done(function (dt) {
                     //console.log(dt['message']);
                 }).fail(function () {
@@ -1258,6 +1254,11 @@ $(document).ready(function() {
             }).done(function (dt) {
                 if (dt['success'] == 1) {
                     $('#btn_onar').removeClass('dn');
+                    // тут же нужно добавить этот квест в список квестов и обновить их в журнале...
+                    //
+                    if (dt['msgs'] !== undefined){
+                        $('#journal_box__inner').html('').html(dt['msgs']);
+                    }
                 }
             }).fail(function () { console.log('error');});
         });
@@ -1553,7 +1554,9 @@ $(document).ready(function() {
 
     function dialogGuard() {
         dinamicTxtSenteza.innerHTML = '<p>' + 'Что тебе опять?' + '</p>';
+        $('#btnNextSenteza').css('display', 'block');
         btnNextSenteza.innerHTML = '<button class="btn GuardNext">' + 'Далее' + '</button>';
+        $('#btnNextSenteza').css('display', 'block');
         i = 0;
         $('.GuardNext').click(function () {
             i = i + 1;
@@ -1584,6 +1587,7 @@ $(document).ready(function() {
     function dialogGuard2() {
         dinamicTxtSenteza.innerHTML = '<p>' + 'Что тебе опять?' + '</p>';
         btnNextSenteza.innerHTML = '<button class="btn GuardNext">' + 'Далее' + '</button>';
+        $('#btnNextSenteza').css('display', 'block');
         i = 0;
         $('.GuardNext').click(function () {
             i = i + 1;

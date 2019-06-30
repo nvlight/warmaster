@@ -21,3 +21,30 @@ $i_user = $_SESSION['user']['id'];
 //die;
 
 //echo Debug::d(equipment_is_exists($dbh, $i_user)); die;
+
+//$message = <<<MESSAGE
+//<ul class="LostPeopleQuest">
+//	<li>
+//		<span class="QuestTitle">Где все пропавшие люди?</span>
+//		<br>
+//		 - С фермы Онара пропадают люди, надо разобраться
+//	</li>
+//</ul>
+//MESSAGE;
+//
+//$rs = journal_add_message($dbh, $i_user, $message);
+//if ($rs['success'] === 0 ) die(json_encode($rs));
+//
+//$rs = journal_get_all_messages($dbh, $i_user);
+//if ($rs['success'] === 0 ) die(json_encode($rs));
+//
+//// сборка всех сообщений в 1
+//$msgs = '';
+//foreach($rs['result'] as $k => $v){
+//    $msgs .= $v['message'];
+//}
+//$rs['msgs'] = $msgs;
+//
+//echo Debug::d($rs);
+//
+//die;

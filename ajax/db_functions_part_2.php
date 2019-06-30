@@ -243,6 +243,16 @@ function user_set_gold_withInc($dbh, $i_user, $gold)
 ///
 function quest_the_lost_peoples($dbh, $i_user){
 
+    $message = <<<MESSAGE
+<ul class="LostPeopleQuest">
+	<li> 
+		<span class="QuestTitle">Где все пропавшие люди?</span> 
+		<br>
+		 - С фермы Онара пропадают люди, надо разобраться 		 
+	</li>
+</ul>
+MESSAGE;
+
     $curr_stage = user_get_stage($dbh, $i_user);
     if ($curr_stage['success'] === 0) return $curr_stage;
     $real_stage = intval($curr_stage['res'][0]['stage']);
@@ -252,15 +262,104 @@ function quest_the_lost_peoples($dbh, $i_user){
         case 2:
             $uss = user_set_stage($dbh, $i_user, $new_stage);
             if ($uss['success'] === 0) { return $uss; }
+            //
+            $rs = journal_add_message($dbh, $i_user, $message);
+            if ($rs['success'] === 0 ) die(json_encode($rs));
+
+            $rs = journal_get_all_messages($dbh, $i_user);
+            if ($rs['success'] === 0 ) die(json_encode($rs));
+
+            // сборка всех сообщений в 1
+            $msgs = '';
+            foreach($rs['result'] as $k => $v){
+                $msgs .= $v['message'];
+            }
+            $uss['msgs'] = $msgs;
             return die(json_encode($uss));
             break;
         case 3:
             $uss = user_set_stage($dbh, $i_user, $new_stage);
             if ($uss['success'] === 0) { return $uss; }
+            //
+            $rs = journal_add_message($dbh, $i_user, $message);
+            if ($rs['success'] === 0 ) die(json_encode($rs));
+
+            $rs = journal_get_all_messages($dbh, $i_user);
+            if ($rs['success'] === 0 ) die(json_encode($rs));
+
+            // сборка всех сообщений в 1
+            $msgs = '';
+            foreach($rs['result'] as $k => $v){
+                $msgs .= $v['message'];
+            }
+            $uss['msgs'] = $msgs;
             return die(json_encode($uss));
             break;
         default: return die(json_encode(['success' => 0, 'message' => 'default']));
     };
 
     return ;
+}
+
+
+///
+///
+///
+function journal_add_message($dbh, $i_user, $message)
+{
+    try{
+        $stmt = $dbh->prepare("INSERT INTO game_journal (i_user, message) VALUES (:i_user, :message)");
+
+        $stmt->bindParam(':i_user', $i_user);
+        $stmt->bindParam(':message', $message);
+
+        $stmt->execute();
+
+        $rs = [
+            'success' => 1,
+            'message' => 'Запись в журнал занесен!',
+            'inner' => $message
+        ];
+
+    }catch (Exception $e){
+        $rs = [
+            'success' => 0,
+            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
+            'message' => 'Ошибка при запросе. Попробуйте позднее.'
+        ];
+    }
+
+}
+
+
+/// journal_get_all_messages
+///
+///
+function journal_get_all_messages($dbh, $i_user)
+{
+    $sql = "SELECT * FROM game_journal WHERE i_user = " . intval($i_user);
+    try{
+        $sql_rs1  = $dbh->query($sql);
+        $sql_rs2 = ($sql_rs1->fetchAll(MYSQLI_NUM));
+
+        if (count($sql_rs2)){
+            $rs = [
+                'success' => 1,
+                'message' => 'Запрос выполнен, найдено!',
+                'result' => $sql_rs2
+            ];
+        }else{
+            $rs = [
+                'success' => 2,
+                'message' => 'Запрос выполнен, НЕ найдено!',
+            ];
+        }
+    }catch (Exception $e){
+        $rs = [
+            'success' => 0,
+            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
+            'message' => 'Ошибка при запросе. Попробуйте позднее.'
+        ];
+    }
+    return $rs;
 }
