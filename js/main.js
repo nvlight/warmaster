@@ -1445,7 +1445,7 @@ $(document).ready(function() {
                 }else if(stage === 4){
                     ///
                     dialogGuard2();
-                }else if(stage === 5){
+                }else if(stage >= 5){
                     afterDialog();
                 }
             }
@@ -1529,7 +1529,7 @@ $(document).ready(function() {
                     // $('#dinamicTxtSenteza').html(some_text);
                     // $('.db_1.min_db').fadeOut();
                     // $('#dinamicDbSenteza').fadeIn();
-                }else if (stage === 4){
+                }else if (stage >= 4){
 
                 }
             }

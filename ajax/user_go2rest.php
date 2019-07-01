@@ -24,13 +24,14 @@ $health = user_get_health($dbh, $user_id)['res'][0]['health'] * 1;
 $max_rest_health = $params['max_rest_health'];
 
 try{
-    $new_set_health = user_set_health($dbh, $user_id, $max_rest_health);
-    $new_set_health['health'] = $max_rest_health;
 
     if ($health < 50){
+        $new_set_health = user_set_health($dbh, $user_id, $max_rest_health);
+        $new_set_health['health'] = $max_rest_health;
         $new_set_health['message'] = 'Часть здоровья восстановлена';
     }else{
         $new_set_health['message'] = 'Ты отдохнул. Сон восстанавливает не более 50% здоровья';
+        $new_set_health['success'] = 1;
     }
 
     $rs = $new_set_health;
