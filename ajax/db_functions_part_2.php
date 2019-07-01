@@ -444,3 +444,54 @@ MESSAGE;
 
     return ;
 };
+
+
+
+/// nagur_map_exists.php
+///
+///
+function nagur_map_exists($dbh, $i_user){
+
+    $i_item = 13;
+    $is_map_exists = inventory_exists_item_by_id($dbh, $i_item, $i_user);
+    //echo Debug::d($is_map_exists);
+    if ($is_map_exists['success'] === 0) return $is_map_exists;
+
+    return $is_map_exists;
+}
+
+/// nagur_buy_map
+///
+///
+function nagur_buy_map($dbh, $i_user){
+
+    $map_price = 100;
+
+    $curr_stage = user_get_stage($dbh, $i_user);
+    if ($curr_stage['success'] === 0) return $curr_stage;
+    $real_stage = intval($curr_stage['res'][0]['stage']);
+
+    if ($real_stage < 6){
+        return ['success' => 2, 'Как вы сюда попали то?! Это закрытая территория!'];
+    }
+
+    $nagur_map_exists = nagur_map_exists($dbh, $i_user);
+    if ($nagur_map_exists['success'] === 0) return $nagur_map_exists;
+    if ($nagur_map_exists['success'] === 1) {
+        return ['success' => 2, 'Карта топей уже у вас имеется, незачем его еще раз попупать, да и она так не продается!'];
+    }
+
+    $curr_gold = user_get_gold($dbh, $i_user);
+    if ($curr_gold['success'] !== 1) return $curr_gold;
+
+    $real_gold = intval($curr_gold['res'][0]['gold']);
+    if ($real_gold < $map_price){
+        return ['success' => 2, 'message' => '<p><b>Нагур:</b> Возвращайся когда будешь достаточно богат для клочка карты</p>'];
+    }else{
+        /// нужно отнять цену карты -> UPD gold
+        /// нужно занести в журнал, что Нагур продал нам карту, -> UPD zhournal
+        /// нужно в инвентарь занести карту -> add Map 2 Inventory! -> UPD again
+        return ['success' => 1, 'message' => '<p><b>Нагур:</b> Vse horosho Vasya!</p>'];
+    }
+
+}

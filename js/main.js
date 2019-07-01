@@ -290,12 +290,8 @@ $(document).ready(function() {
             method: 'POST',
             data: 'item_type=' + t,
             dataType: 'json', // ! important string!
-            beforeSend: function (xhr) {
-                ;
-            },
-            complete: function (xhr) {
-                ;
-            },
+            beforeSend: function (xhr) {},
+            complete: function (xhr) {},
         }).done(function (dt) {
             if (dt['success'] == 1) {
                 console.log();
@@ -1295,15 +1291,10 @@ $(document).ready(function() {
                 method: 'POST',
                 data: '',
                 dataType: 'json', // ! important string!
-                beforeSend: function (xhr) {
-                    
-                },
-                complete: function (xhr) {
-                    
-                },
+                beforeSend: function (xhr) {},
+                complete: function (xhr) {},
             }).done(function (dt) {
-                
-                if (dt['success'] == 2) {
+                if (dt['success'] == 2){
                     SelinaAnswers(dt['message']);
                     $('#hero_gold').html(dt['gold']);
                     $('#hero_hp').html(dt['health']);
@@ -1323,7 +1314,103 @@ $(document).ready(function() {
         });
     });
 
-    $('#btn_nagur').click(function () {
+    $('#btn_nagur').click(function ()
+    {
+        $('.OnarDialogBox').css({
+            'background': 'url(./img/nagur.jpg) no-repeat top center',
+            'background-size': 'cover'
+        });
+
+        /// если ли уже карта в наличии?
+        let urlEating = './ajax/nagur_map_exists.php';
+        $.ajax({
+            url: urlEating,
+            method: 'POST',
+            data: '',
+            dataType: 'json', // ! important string!
+            beforeSend: function (xhr) {},
+            complete: function (xhr) {},
+        }).done(function (dt) {
+            if (dt['success'] === 1) {
+                $('.db-onar .dinamicTxt').html(' ');
+                $('.db-onar .dinamicTxt').append(
+                    '<div class="NagurDB"><p><b>Нагур:</b> У меня для тебя больше ничего нет</p></div>' +
+                    '<ul class="HeroQuestionsList" style="display:flex; padding-top:10px;">' +
+                    '<li> <button class="btn leaveFromNagur">Уйти</button></li>' +
+                    '</ul>'
+                );
+                $('.leaveFromNagur').click(function () {
+                    $('.OnarDialogBox').fadeOut();
+                    $('.overlay').fadeOut();
+                });
+
+                $('.db-onar').fadeIn();
+                DialogBox('.OnarDialogBox');
+            }else{
+                $('.db-onar .dinamicTxt').html(' ');
+                $('.db-onar .dinamicTxt').append(
+                    '<div class="NagurDB"><p><b>Нагур:</b> Продам карту топей, цена 100 золотых!</p></div>' +
+                    '<ul class="HeroQuestionsList" style="display:flex; padding-top:10px;">' +
+                    '<li style="margin-right:10px;"> <button class="btn buyTheMap">Купить</button></li>' +
+                    '<li> <button class="btn leaveFromNagur">Уйти</button></li>' +
+                    '</ul>'
+                );
+
+                //
+                $('.buyTheMap').click(function () {
+                    echo('buyTheMap');
+                    // var mapPrice = 100;
+                    // if (HeroGoldInner >= mapPrice) {
+                    //     var NagurMap = '<span>' + 'Карта Нагура' + '</span>';
+                    //     var NagurQuestTxt = '<li>' + ' - Таинственный Нагур продал мне карту топей, теперь я могу исследовать туманную лощину!' + '</li>';
+                    //     QuestListArr(NagurMap, NagurQuestTxt, '.LostPeopleQuest');
+                    //     HeroGoldInner = HeroGoldInner - mapPrice;
+                    //     HeroGold.innerHTML = HeroGoldInner;
+                    //     $('.NagurDB').html('<p><b>Нагур:</b> Удачи!</p>');
+                    //     MapHollow = true;
+                    // }
+                    // if (HeroGoldInner < mapPrice && MapHollow != true) {
+                    //     $('.NagurDB').html('<p><b>Нагур:</b> Возвращайся когда будешь достаточно богат для клочка карты</p>');
+                    // }
+                    let urlEating = './ajax/nagur_buy_map.php';
+                    $.ajax({
+                        url: urlEating,
+                        method: 'POST',
+                        data: '',
+                        dataType: 'json', // ! important string!
+                        beforeSend: function (xhr) {},
+                        complete: function (xhr) {},
+                    }).done(function (dt) {
+                        if (dt['success'] == 2){
+                            // $('#hero_gold').html(dt['gold']); --> gold_update
+                            // $('#journal_box__inner').html('').html(dt['msgs']); --> journal_update
+                            // inventory_update()
+                            $('.NagurDB').html(dt['message']);
+                        } else if (dt['success'] == 1) {
+                            //
+                            $('.btn.buyTheMap').parent().addClass('dn');
+                            $('.NagurDB').html(dt['message']);
+                        }
+                    }).fail(function () {
+                        console.log('error');
+                    });
+                });
+
+                $('.leaveFromNagur').click(function () {
+                    $('.OnarDialogBox').fadeOut();
+                    $('.overlay').fadeOut();
+                });
+
+                $('.db-onar').fadeIn();
+                DialogBox('.OnarDialogBox');
+            }
+        }).fail(function () {
+            console.log('error');
+        });
+
+    });
+
+    $('#btn_nagur2').click(function () {
         $('.OnarDialogBox').css({
             'background': 'url(./img/nagur.jpg) no-repeat top center',
             'background-size': 'cover'
@@ -2498,29 +2585,7 @@ $(document).ready(function() {
                 $('.dialog_box').fadeOut();
             });
             $('.GoToHollow').click(function() {
-
-                // var HeroWeaponBattle = $('#hero_weapon span').html(),
-                //     HeroArmorBattle = $('#hero_armor_equiped span').html();
-                // if (HeroWeaponBattle != 'Пусто') {
-                //     LostTheItem(HeroWeaponBattle);
-                // }
-                // if (HeroArmorBattle != 'Пусто') {
-                //     LostTheItem(HeroArmorBattle);
-                // }
-                // if (HeroWeaponBattle != 'Пусто' || HeroArmorBattle != 'Пусто') {
-                //     $('#dinamicTxtHollow').html('<p>' + 'Ты почти захлебнулся в трясине, но чудом спасся освободившись от тянущего на дно снаряжения. Здоровье на минимуме!' + '</p>');
-                // }
-                // if (HeroWeaponBattle == 'Пусто' && HeroArmorBattle == 'Пусто') {
-                //     $('#dinamicTxtHollow').html('<p>Ты едва не захлебнулся в трясине. Здоровье на минимуме!</p>');
-                // }
-                // HeroHPInner = 1;
-                // HeroHP.innerHTML = HeroHPInner;
-
-                // теперь исходя из текущего здоровья и экипировки обработать.
-                // если есть экиппировка, выбросить все,
-                // здоровье свести на минимум.
                 go2Hollow();
-
             });
         }
         if (MapHollow == true && DefeatOrk == false) {

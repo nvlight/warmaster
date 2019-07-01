@@ -48,3 +48,6 @@ $i_user = $_SESSION['user']['id'];
 //echo Debug::d($rs);
 //
 //die;
+
+/// nagur_map_exists($dbh,$user_id)
+//echo Debug::d(nagur_map_exists($dbh,8),'',1); die;

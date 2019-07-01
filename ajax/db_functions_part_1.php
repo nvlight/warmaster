@@ -987,6 +987,7 @@ function user_inventory_get($dbh)
 
 //
 function inventory_get_item_by_id($dbh, $i_user, $i_item){
+    /// ???
     equipment_transfer_from_inventory($dbh, $i_user, $i_item);
 }
 
