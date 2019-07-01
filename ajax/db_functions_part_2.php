@@ -281,8 +281,8 @@ function user_set_gold_withInc($dbh, $i_user, $gold)
 ///
 ///
 ///
-function quest_the_lost_peoples($dbh, $i_user){
-
+function quest_the_lost_peoples($dbh, $i_user)
+{
     $message = <<<MESSAGE
 <ul class="LostPeopleQuest">
 	<li> 
@@ -386,3 +386,61 @@ function journal_get_all_messages($dbh, $i_user)
     }
     return $rs;
 }
+
+///
+///
+///
+function senteza_go2_onar($dbh, $i_user){
+    // set stage to 5 and Onar is enabled
+    $new_stage = 5;
+    return user_set_stage($dbh, $i_user, $new_stage);
+}
+
+///
+///
+///
+function onar_talk($dbh, $i_user){
+    /// надо добавить сообщение в журнал
+    /// надо сменить стаде с 5 на 6
+    ///
+    $message = <<<MESSAGE
+<ul class="OnarsQuest">
+	<li><span class="QuestTitle">Задание Онара</span>
+	<br>
+	- Пропавшие Борка и Дерек вовсе не пропали, захватили с собой сундук с золотом Онара и скрылись. Онар уверен, что они прячутся в туманной лощине. Нужно найти их живыми или мертвыми и вернуть сундук с золотом
+	<br>
+	- Онар за меня поручился, теперь я могу тренироваться у Лареса
+	</li>
+</ul>
+MESSAGE;
+
+    $curr_stage = user_get_stage($dbh, $i_user);
+    if ($curr_stage['success'] === 0) return $curr_stage;
+    $real_stage = intval($curr_stage['res'][0]['stage']);
+
+    switch($real_stage){
+        case 5:
+            $new_stage = 6;
+            $uss = user_set_stage($dbh, $i_user, $new_stage);
+            if ($uss['success'] === 0) { return $uss; }
+            //
+            $rs = journal_add_message($dbh, $i_user, $message);
+            if ($rs['success'] === 0 ) die(json_encode($rs));
+
+            $rs = journal_get_all_messages($dbh, $i_user);
+            if ($rs['success'] === 0 ) die(json_encode($rs));
+
+            // сборка всех сообщений в 1
+            $msgs = '';
+            foreach($rs['result'] as $k => $v){
+                $msgs .= $v['message'];
+            }
+            $uss['msgs'] = $msgs;
+            return die(json_encode($uss));
+            break;
+        //case 6:
+        default: return die(json_encode(['success' => 0, 'message' => 'default']));
+    };
+
+    return ;
+};

@@ -198,6 +198,9 @@ body {
     z-index: 1;
     display: none;
 }
+.dib{
+    display: inline-block;
+}
 
 .Hero_Weapon {
     display: none;
