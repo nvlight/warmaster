@@ -1253,7 +1253,7 @@ $(document).ready(function() {
                 complete: function (xhr) {},
             }).done(function (dt) {
                 if (dt['success'] == 1) {
-                    $('#btn_onar').removeClass('dn');
+                    //$('#btn_onar').removeClass('dn');
                     // тут же нужно добавить этот квест в список квестов и обновить их в журнале...
                     //
                     if (dt['msgs'] !== undefined){
@@ -1577,6 +1577,8 @@ $(document).ready(function() {
             BtnFarmeGuard.removeEventListener('click', afterFirstDialog);
             BtnFarmeGuard.addEventListener('click', afterDialog);
             if (i == 5) {
+                $('#btn_onar').removeClass('dn');
+                // теперь надо изменить stage
                 $('#dinamicDbSenteza').fadeOut();
                 btnOnarDisabled = true;
             }
@@ -1608,6 +1610,7 @@ $(document).ready(function() {
             // BtnFarmeGuard.removeEventListener('click', afterFirstDialog);
             // BtnFarmeGuard.addEventListener('click', afterDialog);
             if (i == 5) {
+                $('#btn_onar').removeClass('dn');
                 $('#dinamicDbSenteza').fadeOut();
                 btnOnarDisabled = true;
             }
@@ -1771,7 +1774,7 @@ $(document).ready(function() {
                 $('.HeroAnswear-8').click(function () {
                     $('.OnarDialogBox').fadeOut();
                     $('.overlay').fadeOut();
-                    OnarQuestTaken = true;
+                    //OnarQuestTaken = true;
                     btnOnarDisabled = true;
                 });
                 $('.db-onar').fadeIn();

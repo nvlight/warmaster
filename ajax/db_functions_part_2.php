@@ -89,7 +89,7 @@ function senteza_speak($dbh, $i_user, $choise){
     switch($stager){
         case 1:
             if ($choise === 1 ){
-                $message = '<p>' . 'Сентеза: Такой разговор мне по душе, можешь проходить :)' . '</p>';
+                $message2 = '<p>' . 'Сентеза: Такой разговор мне по душе, можешь проходить :)' . '</p>';
 
                 $curr_gold = user_get_gold($dbh, $i_user);
                 if ($curr_gold['success'] === 0){ return $curr_gold; }
@@ -104,13 +104,33 @@ function senteza_speak($dbh, $i_user, $choise){
                     if ($usg['success'] === 0 ){ return $usg;}
                     $uss = user_set_stage($dbh, $i_user, 2);
                     if ($uss['success'] === 0 ){ return $uss;}
-                    return ['success' => 1, 'message' => $message, 'gold' => $new_gold];
+
+                    // добавлю сообщение в журнал
+                    $message = <<<MESSAGE
+<ul class="OnarsFarm">
+	<li><span class="QuestTitle">Ферма Онара</span><br>
+	- Меня пропустили на ферму, теперь я могу заработать немного денег в полях. Но для этого пришлось отвалить Сентезе 100 золотых, чертов ублюдок! </li>
+</ul>
+MESSAGE;
+                    $rs = journal_add_message($dbh, $i_user, $message);
+                    if ($rs['success'] === 0 ) die(json_encode($rs));
+
+                    $rs = journal_get_all_messages($dbh, $i_user);
+                    if ($rs['success'] === 0 ) die(json_encode($rs));
+
+                    // сборка всех сообщений в 1
+                    $msgs = '';
+                    foreach($rs['result'] as $k => $v){
+                        $msgs .= $v['message'];
+                    }
+                    $rs['msgs'] = $msgs;
+                    return ['success' => 1, 'message' => $message2, 'gold' => $new_gold, 'msgs' => $msgs];
                 }
                 // -100 gold
                 // hero_gold_set_withDec($dbh, $i_user, $dec_value)
                 return ['success' => 1, 'message' => $message];
             } elseif ($choise === 2){
-                $message = '<p>' . "Сентеза избил тебя и забрал все деньги!" . '</p>';
+                $message2 = '<p>' . "Сентеза избил тебя и забрал все деньги!" . '</p>';
 
                 // set gold to zero (0)
                 $usg = user_set_gold($dbh, $i_user, 0);
@@ -119,7 +139,27 @@ function senteza_speak($dbh, $i_user, $choise){
                 $uss = user_set_stage($dbh, $i_user, 3);
                 if ($uss['success'] === 0 ){ return $uss;}
 
-                return ['success' => 1, 'message' => $message, 'gold' => 0];
+                // добавлю сообщение в журнал
+                $message = <<<MESSAGE
+<ul class="OnarsFarm">
+	<li><span class="QuestTitle">Ферма Онара</span><br>
+	- Меня пропустили на ферму, теперь я могу заработать немного денег в полях. Этот ублюдок, Сентеза навалял мне по полной и отжал все бабло! </li>
+</ul>
+MESSAGE;
+                $rs = journal_add_message($dbh, $i_user, $message);
+                if ($rs['success'] === 0 ) die(json_encode($rs));
+
+                $rs = journal_get_all_messages($dbh, $i_user);
+                if ($rs['success'] === 0 ) die(json_encode($rs));
+
+                // сборка всех сообщений в 1
+                $msgs = '';
+                foreach($rs['result'] as $k => $v){
+                    $msgs .= $v['message'];
+                }
+                $rs['msgs'] = $msgs;
+
+                return ['success' => 1, 'message' => $message2, 'gold' => 0, 'msgs' => $msgs];
             }else{
                 return ['success' => 0, 'message' => 'Ответ Сентезы не входит в допустимый список'];
             }
@@ -260,23 +300,6 @@ MESSAGE;
     $new_stage = 4;
     switch($real_stage){
         case 2:
-            $uss = user_set_stage($dbh, $i_user, $new_stage);
-            if ($uss['success'] === 0) { return $uss; }
-            //
-            $rs = journal_add_message($dbh, $i_user, $message);
-            if ($rs['success'] === 0 ) die(json_encode($rs));
-
-            $rs = journal_get_all_messages($dbh, $i_user);
-            if ($rs['success'] === 0 ) die(json_encode($rs));
-
-            // сборка всех сообщений в 1
-            $msgs = '';
-            foreach($rs['result'] as $k => $v){
-                $msgs .= $v['message'];
-            }
-            $uss['msgs'] = $msgs;
-            return die(json_encode($uss));
-            break;
         case 3:
             $uss = user_set_stage($dbh, $i_user, $new_stage);
             if ($uss['success'] === 0) { return $uss; }

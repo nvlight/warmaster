@@ -365,7 +365,7 @@
                 ?>
                 <div class="master_btn__box" id="div">
                     <button class="btn" id="btn_farmeGuard" type="button">Сентеза (Охрана)</button>
-                    <button class="btn <?php if ($stage <= 3) echo 'dn'; ?>"" id="btn_onar" type="button">Онар</button>
+                    <button class="btn <?php if ($stage <= 4) echo 'dn'; ?>"" id="btn_onar" type="button">Онар</button>
                     <button class="btn <?php if ($stage === 1) echo 'dn'; ?>" id="btn_workFarm2" type="button">Работать</button>
                     <button class="btn dn" id="btn_workFarm" type="button">Работать</button>
                 </div>
