@@ -533,3 +533,106 @@ function inventory_add_item_map($dbh){
     $i_item = 13;
     return user_inventory_add_item($dbh, $i_item);
 }
+
+/// lares_training
+///
+///
+function lares_training($dbh, $i_user)
+{
+    $stage = user_get_stage($dbh, $i_user);
+    if ($stage['success'] === 0) return $stage;
+    $real_stage = intval($stage['res'][0]['stage']);
+
+    switch($real_stage){
+        case 1: case 2: case 3: case 4: case 5:
+            $msg = '<p>Ларес: Кто ты такой? Я не тренирую всех подряд!</p>';
+            $rs = ['success' => 1, 'message' => $msg];
+            break;
+        case 6:
+            /// сначала узнаем кол-во силы, если сила >= 5 то выходим,
+            $power = get_hero_chars($dbh, $i_user);
+            if ($power['success'] === 0) { return $power;}
+            $real_power = intval($power['res']['power']);
+            if ($real_power >= 5) {
+                $msg = '<p>Ларес: Ты достаточно силен, мне больше нечему тебя учить</p>';
+                $rs = ['success' => 1, 'message' => $msg, 'power' => $real_power];
+                break;
+            }
+
+            // есть ли оружие у героя, если нет, то сразу выходим
+            //$hero_have_weapon = false;
+            $weapon_is_exists = equipment_get_one_with_itemAndItemtype($dbh, $i_user, 1);
+            if ($weapon_is_exists['success'] === 0) return $weapon_is_exists;
+            //
+            $equip_i_item = intval($weapon_is_exists['result']['i_item']);
+            if ($weapon_is_exists['success'] === 1) $hero_have_weapon = true;
+            else { $hero_have_weapon = false; }
+            if (!$hero_have_weapon){
+                $msg = '<p>Ларес: Онар хорошо отзывался о тебе. У тебя есть оружие? возвращайся когда будет с чем тренироваться!</p>';
+                $rs = ['success' => 1, 'message' => $msg, 'power' => $real_power];
+                break;
+            }
+
+            // с дубинкой нельзя на тренировку!
+            if ($equip_i_item === 1){
+                $msgs = '<p>Ларес: Дубинкой можешь крыс в лесу погонять! Возвращайся с достойным оружием!</p>';
+                $rs = ['success' => 1, 'message' => $msgs, 'power' => $real_power];
+                break;
+            }
+
+            // тренировка стоит 200 монет
+            $curr_gold = user_get_gold($dbh, $i_user);
+            if ($curr_gold['success'] === 0){ return $curr_gold; }
+            $gold = intval($curr_gold['res'][0]['gold']);
+            $train_price = 200;
+            if ($gold < $train_price){
+                $msgs = '<p>Ларес: Тренировка стоит 200 монет, возваращайся когда будет чем платить!</p>';
+                $rs = ['success' => 1, 'message' => $msgs, 'gold' => $gold];
+                break;
+            }else{
+                $new_gold = $gold - $train_price;
+                $usg = user_set_gold($dbh, $i_user, $new_gold);
+                if ($usg['success'] === 0){ return $usg; }
+
+                // теперь нужно увеличить силу героя на 1!
+                $type = 'power'; $value = 1;
+                $ushcw = user_set_hero_chars_withInc($dbh, $i_user, $type, $value);
+                if ($ushcw['success'] === 0 ) return $ushcw;
+
+                $rs = ['success' => 2, 'message' => 'trainging finally...', 'gold' => $new_gold, 'power' => $real_power];
+                break;
+            }
+
+            $rs = ['success' => 1, 'message' => 'Training... but ist cannot be!', 'power' => $real_power];
+            break;
+        default:
+            $rs = ['success' => 1, 'message' => 'default'];
+
+    }
+    return $rs;
+}
+
+/// lares_soviet
+///
+///
+function lares_soviet($dbh, $i_user)
+{
+    $stage = user_get_stage($dbh, $i_user);
+    if ($stage['success'] === 0) return $stage;
+    $real_stage = intval($stage['res'][0]['stage']);
+
+    switch($real_stage){
+        case 1: case 2: case 3: case 4: case 5:
+        $msg = '<p>Ларес: Думаешь я раздаю советы каждому встречному!</p>';
+        $rs = ['success' => 1, 'message' => $msg];
+        break;
+        case 6:
+
+            $rs = ['success' => 1, 'message' => 'Soviet...'];
+            break;
+        default:
+            $rs = ['success' => 1, 'message' => 'default'];
+
+    }
+    return $rs;
+}

@@ -238,12 +238,8 @@ $(document).ready(function() {
             method: 'POST',
             data: '',
             dataType: 'json', // ! important string!
-            beforeSend: function (xhr) {
-                
-            },
-            complete: function (xhr) {
-                
-            },
+            beforeSend: function (xhr) {},
+            complete: function (xhr) {},
         }).done(function (dt) {
             
             if (dt['success'] == 1) {
@@ -1016,14 +1012,9 @@ $(document).ready(function() {
             method: 'POST',
             data: '',
             dataType: 'json', // ! important string!
-            beforeSend: function (xhr) {
-                
-            },
-            complete: function (xhr) {
-                
-            },
+            beforeSend: function (xhr) {},
+            complete: function (xhr) {},
         }).done(function (dt) {
-            
             if (dt['success'] == 1) {
                 $('#journal_box__inner').html(dt['res']);
             }
@@ -1056,7 +1047,26 @@ $(document).ready(function() {
         }
     }
 
-    function masterAdvice() {
+    //
+    function masterAdvice(){
+        var url = './ajax/lares_soviet.php';
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: '',
+            dataType: 'json', // ! important string!
+            beforeSend: function (xhr) {},
+            complete: function (xhr) {},
+        }).done(function (dt) {
+            if (dt['success'] == 1) {
+                $('.db_lares .dinamicTxt').html(dt['message']);
+                $('.db_lares').fadeIn();
+            }
+        }).fail(function () {
+            console.log('error');
+        });
+    }
+    function masterAdvice2() {
         if (trainResolution == true) {
             if (sitizen != true) {
                 if (HaraldMission == true) {
@@ -1144,7 +1154,33 @@ $(document).ready(function() {
         $('.master .db').fadeIn();
     }
 
-    function training() {
+    //
+    function training(){
+        var url = './ajax/lares_training.php';
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: '',
+            dataType: 'json', // ! important string!
+            beforeSend: function (xhr) {},
+            complete: function (xhr) {},
+        }).done(function (dt) {
+            if (dt['success'] == 1) {
+                $('.db_lares .dinamicTxt').html(dt['message']);
+                $('.db_lares').fadeIn();
+            }else if(dt['success'] == 2){
+                let gold = +dt['gold'];
+                $('#hero_gold').html(gold);
+                HeroGoldInner = gold;
+                TimerFunc(10, HeroGold, HeroGoldInner = HeroGoldInner - 200, 'Тренировка: ', 'Твоя сила увеличилась на 1');
+                //
+                dialogBg('url(./img/traning.jpg)');
+            }
+        }).fail(function () {
+            console.log('error');
+        });
+    }
+    function training2() {
         var HeroWeaponEquiped = $('#hero_weapon span').html();
         if (trainResolution == false) {
             $('.master .db .dinamicTxt').html('<p>' + 'Ларес: Кто ты такой? Я не тренирую всех подряд!' + '</p>');
@@ -1167,11 +1203,6 @@ $(document).ready(function() {
                 HeroPowerInner = HeroPowerInner + 1;
                 HeroPower.innerHTML = HeroPowerInner;
                 dialogBg('url(./img/traning.jpg)');
-                // $('.FarmWorker').css({
-                //     'background': 'url(./img/traning.jpg)',
-                //     'background-size': 'cover'
-                // });
-                // $('.FarmWorker').fadeIn();
             }
         }
     }
@@ -1179,21 +1210,10 @@ $(document).ready(function() {
     // Конец мастер Ларс ==============================================
 
     // Таверна ==============================================
-    // var BtnRumors = document.getElementById('btn_rumors');
-    // BtnRumors.addEventListener('click', rumors);
 
     // Значение для активации разговора с Онаром
     var aboutMissing = false;
 
-    // Слухи с таверны активируем возможность разговора с Онаром в aboutMissing
-    // function rumors() {
-    //     $('.taverna .db_1 .DialogWithSelina').html('Селина: Неделю назад на ферме Онара пропал работник, два дня назад пропал еще один. Никто не знает, что с ними. Люди обеспокоены...');
-    //     $('.taverna .db_1').fadeIn();
-    //     aboutMissing = true;
-    //     var SelinasQuest = '<span class="QuestTitle">' + 'Где все пропавшие люди?' + '</span>';
-    //     var SelinasQuestTxt = '<ul class="LostPeopleQuest">' + '<li>' + SelinasQuest + '<br>' + ' - С фермы Онара пропадают люди, надо разобраться' + '</li>' + '</ul>';
-    //     QuestListArr(SelinasQuest, SelinasQuestTxt, '#journal_box__inner');
-    // }
     var BackToQuestions = '<br>' + '<button class="BackToQuestions">' + 'Назад' + '</button>';
     var btn_talkToSelina = document.getElementById('btn_talkToSelina');
     btn_talkToSelina.addEventListener('click', talkToSelina);
@@ -1274,17 +1294,6 @@ $(document).ready(function() {
         SelinaAnswers('Селина: Лучшее жаркое в Хоринисе, всего за 110 монет!' + '<br>' + '<button class="ToEat" style="margin-top:10px;">' + 'Кушать' + '</button>' + '<button class="CancelToEat" style="margin-left:10px; margin-top:10px;">' + 'Отмена' + '</button>');
         $('.taverna .db_1').fadeIn();
         $('.ToEat').click(function () {
-            // if (HeroGoldInner >= PriceOfFood) {
-            //     HeroHPInner = 100;
-            //     HeroHP.innerHTML = HeroHPInner;
-            //     HeroGoldInner = HeroGoldInner - PriceOfFood;
-            //     HeroGold.innerHTML = HeroGoldInner;
-            //     SelinaAnswers('Здоровье полностью восстановлено!');
-            //     return;
-            // }
-            // if (HeroGoldInner < PriceOfFood) {
-            //     SelinaAnswers('Селина: твоих денег не достаточно для оплаты :) ');
-            // }
             let urlEating = './ajax/user_eat.php';
             $.ajax({
                 url: urlEating,
@@ -1298,7 +1307,7 @@ $(document).ready(function() {
                     SelinaAnswers(dt['message']);
                     $('#hero_gold').html(dt['gold']);
                     $('#hero_hp').html(dt['health']);
-                    HeroHPInner = dt['health'];
+                    HeroHPInner = +dt['health'];
                     user_set_user_chars_html();
                 } else if (dt['success'] == 3) {
                     SelinaAnswers(dt['message']);
@@ -2580,6 +2589,7 @@ $(document).ready(function() {
     }
 
     $('#FoggyHollow').click(function() {
+        MapHollow = true; DefeatOrk = true;
         if (MapHollow == false && DefeatOrk == false) {
             $('#dinamicTxtHollow').html('<p>Кругом сплошные болота! Ты не знаешь эти места, нужна карта или проводник, иначе рискуешь угодить в трясину!</p> <button class="btn GoToHollow">Пройти дальше</button> <button class="btn close_db-hollow">Вернуться</button>');
             $('.db-hollow').fadeIn();
@@ -2604,6 +2614,7 @@ $(document).ready(function() {
                     FightOrkHollow();
                 });
                 $('.RunFromOrk').click(function() {
+                    $('.db-hollow').css('display','none');
                     $('.fight-box').fadeOut();
                     $('.overlay').fadeOut();
                 });
@@ -2763,9 +2774,9 @@ $(document).ready(function() {
                         $('.TalkToDerek').click(function() {
                             $('.KillersDialogBox').fadeOut();
                             $('.HollowDB .dinamicTxt').html('<img src="./img/dead.jpg"><p>Нагур шел быстрым шагом, он опаздывал к условленному времени. Борка и Дерек ждали его в топях, только Нагур знал топь вдоль и поперек, чтобы провести их по тайной тропе и вывести с южной стороны болот. За это он получит 1000 золотых, вполне не плохо за то, чтобы прогуляться по болоту и вернуться домой. Главное, чтобы об этом походе не узнал Онар, ведь тогда с него точно шкуру спустят.</p>' +
-                                '<p> Нагур прошел узкое ущелье, ведущее в топь и остановился в оцепенении. На траве лежали обезглавленные тела двух наемников, их головы валялись тут же. Нагур их узнал, отпетые головорезы Онара, неужели они нашли убежище Борки!? Пройдя чуть дальше Нагур обнаружил еще одно тело под деревом. Воин сжимавший рукоять меча сидел на земле, прислонившись спиной к дереву, другой рукой он прижимал страшную рану в боку. Он весь истек кровью, его голова была низко опущена, воин был мертв. Нагур узнал его, это был тот кому он продал карту топей! Не повезло бедняге. Осмотрев тело, Нагур обнаружил сундук с кучей золота и он знал откуда эта все. Борка и Дерек были мертвы, как и тот кто забрал у них это золото! Нагур понял, что у него только один шанс выжить, он спешно прошел вглубь через болота и вышел на берег через тайнуб тропу. На берегу стояла не большая посудина Борки, Нагур сел в нее и отплыл к континенту, он был доволен.</p>' +
+                                '<p> Нагур прошел узкое ущелье, ведущее в топь и остановился в оцепенении. На траве лежали обезглавленные тела двух наемников, их головы валялись тут же. Нагур их узнал, отпетые головорезы Онара, неужели они нашли убежище Борки!? Пройдя чуть дальше Нагур обнаружил еще одно тело под деревом. Воин сжимавший рукоять меча сидел на земле, прислонившись спиной к дереву, другой рукой он прижимал страшную рану в боку. Он весь истек кровью, его голова была низко опущена, воин был мертв. Нагур узнал его, это был тот кому он продал карту топей! Не повезло бедняге. Осмотрев тело, Нагур обнаружил сундук с кучей золота и он знал откуда эта все. Борка и Дерек были мертвы, как и тот кто забрал у них это золото! Нагур понял, что у него только один шанс выжить, он спешно прошел вглубь через болота и вышел на берег через тайную тропу. На берегу стояла не большая посудина Борки, Нагур сел в нее и отплыл к континенту, он был доволен.</p>' +
                                 '<p> У Нагура теперь много денег, он в мыслях попращался со старой жизнью проводника, построит дом на континенте и заживет новой счастливой жизнью</p>' +
-                                '<p>Так закончилась это приключение игрок, к соржалению ты погиб в этой истории, возможно если бы ты сделал другой выбор, твоя история могла сложиться по другому.</p>' +
+                                '<p>Так закончилось это приключение игрок, к сожалению ты погиб в этой истории, возможно если бы ты сделал другой выбор, твоя история могла бы сложиться по другому.</p>' +
                                 '<button class="btn endGame">Закончить игру</button>');
                             DialogBox('.HollowDB');
                             $('.endGame').click(function() {
