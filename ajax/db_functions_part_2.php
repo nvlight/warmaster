@@ -563,7 +563,14 @@ function lares_training($dbh, $i_user)
             //$hero_have_weapon = false;
             $weapon_is_exists = equipment_get_one_with_itemAndItemtype($dbh, $i_user, 1);
             if ($weapon_is_exists['success'] === 0) return $weapon_is_exists;
-            //
+
+            // т.е. мы без оружия...
+            if ($weapon_is_exists['success'] === 2){
+                $msg = '<p>Ларес: Онар хорошо отзывался о тебе. У тебя есть оружие? возвращайся когда будет с чем тренироваться!</p>';
+                $rs = ['success' => 1, 'message' => $msg, 'power' => $real_power];
+                break;
+            }
+            // мы с оружием
             $equip_i_item = intval($weapon_is_exists['result']['i_item']);
             if ($weapon_is_exists['success'] === 1) $hero_have_weapon = true;
             else { $hero_have_weapon = false; }
@@ -599,7 +606,7 @@ function lares_training($dbh, $i_user)
                 $ushcw = user_set_hero_chars_withInc($dbh, $i_user, $type, $value);
                 if ($ushcw['success'] === 0 ) return $ushcw;
 
-                $rs = ['success' => 2, 'message' => 'trainging finally...', 'gold' => $new_gold, 'power' => $real_power];
+                $rs = ['success' => 2, 'message' => 'trainging finally...', 'gold' => $new_gold, 'power' => $real_power + 1];
                 break;
             }
 

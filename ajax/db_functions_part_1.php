@@ -1327,6 +1327,12 @@ function user_equipment_do($dbh, $user_id, $i_item)
             ///
             /// # end of update
 
+            // обнаружился интересный баг, если экиппировать итем, который уже есть в инвентаре, его кол-во уменьшается на 1
+            // исправляем это будем добавления в инвентарь итема с текущим ИД
+            $uiai = user_inventory_add_item($dbh, $i_item_old);
+            if ($uiai['success'] === 0) return $uiai;
+
+
             $uue = user_update_equipment($dbh,$user_id, $i_item_old, $i_item_new);
             if ($uue['success'] === 0){
                 return $uue;
@@ -1381,6 +1387,11 @@ function user_equipment_do($dbh, $user_id, $i_item)
                 if ($ushc['success'] === 0){ return $ushc; }
                 ///
                 /// # end of update
+
+                // обнаружился интересный баг, если экиппировать итем, который уже есть в инвентаре, его кол-во уменьшается на 1
+                // исправляем это будем добавления в инвентарь итема с текущим ИД
+                $uiai = user_inventory_add_item($dbh, $i_item_old);
+                if ($uiai['success'] === 0) return $uiai;
 
                 $uue = user_update_equipment($dbh,$user_id, $i_item_old, $i_item_new);
                 if ($uue['success'] === 0){

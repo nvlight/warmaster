@@ -1170,7 +1170,9 @@ $(document).ready(function() {
                 $('.db_lares').fadeIn();
             }else if(dt['success'] == 2){
                 let gold = +dt['gold'];
+                let power = +dt['power'];
                 $('#hero_gold').html(gold);
+                $('#hero_power').html(power);
                 HeroGoldInner = gold;
                 TimerFunc(10, HeroGold, HeroGoldInner = HeroGoldInner - 200, 'Тренировка: ', 'Твоя сила увеличилась на 1');
                 //
