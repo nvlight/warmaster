@@ -1047,7 +1047,7 @@ $(document).ready(function() {
         }
     }
 
-    //
+    // Soviet
     function masterAdvice(){
         var url = './ajax/lares_soviet.php';
         $.ajax({
@@ -1061,6 +1061,66 @@ $(document).ready(function() {
             if (dt['success'] == 1) {
                 $('.db_lares .dinamicTxt').html(dt['message']);
                 $('.db_lares').fadeIn();
+            }else if(dt['success'] == 2){
+
+                let stage = +dt['stage'];
+                switch(stage){
+                    case 6:
+                        $('.master .db .dinamicTxt').html('<p class="LarsTxt LarsTxtFirst" id="QuestionToLars-1">' + 'На что влияет сила?' + '</p>' + '<p class="LarsTxt LarsTxtSecond" id="QuestionToLars-3">' + 'Какую броню лучше носить?' + '</p>' + '<p class="LarsTxt" id="QuestionToLars-2">' + 'Как стать гражданином Хориниса?' + '</p>');
+                        break;
+                    case 7:
+                        $('.master .db .dinamicTxt').html('<p class="LarsTxt LarsTxtFirst" id="QuestionToLars-1">' + 'На что влияет сила?' + '</p>' + '<p class="LarsTxt LarsTxtSecond" id="QuestionToLars-3">' + 'Какую броню лучше носить?' + '</p>');
+                        break;
+                    case 8:
+                        $('.master .db .dinamicTxt').html('<p class="LarsTxt LarsTxtFirst" id="QuestionToLars-1">' + 'На что влияет сила?' + '</p>' + '<p class="LarsTxt LarsTxtSecond" id="QuestionToLars-3">' + 'Какую броню лучше носить?' + '</p>' + '<p class="LarsTxt" id="QuestionToLars-4">' + 'Что можешь рассказать о Мракорисе?' + '</p>');
+                        break;
+                    case 9:
+                        $('.master .db .dinamicTxt').html('<p class="LarsTxt LarsTxtFirst" id="QuestionToLars-1">' + 'На что влияет сила?' + '</p>' + '<p class="LarsTxt LarsTxtSecond" id="QuestionToLars-3">' + 'Какую броню лучше носить?' + '</p>');
+                        break;
+                }
+
+                $('.master .db').fadeIn();
+                // далее идет код, который дает подсказки для советов Лареса...
+                $('#QuestionToLars-1').click(function () {
+                    $('.master .db .dinamicTxt').html('<p>' + 'Сила увеличивает мощь твоих ударов!' + '</p>');
+                });
+                $('#QuestionToLars-3').click(function () {
+                    $('.master .db .dinamicTxt').html('<p>' + 'Тяжелая броня делает тебя крепче, но в ней ты более медлительный и быстрее устаешь, в некоторых ситуациях в тяжелом снаряжении ты будешь более уязвимым.' + '</p>');
+                });
+                $('#QuestionToLars-4').click(function () {
+                    $('.master .db .dinamicTxt').html('<p>' + 'Ларес: Опасный зверь, но довольно медлительный. Даже не думай подобраться незаметно, учуит за сотню шагов. Если уж встретился  с этой зверюгой лицом к лицу, обращай внимание на первый удар, если схватил большой урон, немедленно отступай!' + '</p>');
+                    var HaraldQuestMrakoris = '<span class="QuestTitle">' + 'Рог Мракориса' + '</span>';
+                    var HaraldQuestMrakorisTxt = '<li>' + ' - Ларес сказал, чтобы победить Мракориса надо избегать его критической атаки или вовремя отступить' + '</li>';
+                    QuestListArr(HaraldQuestMrakoris, HaraldQuestMrakorisTxt, '.HaraldQuestWeapon');
+                });
+
+                // stat grazhdaninom Horinisa...
+                $('#QuestionToLars-2').click(function ()
+                {
+                    $('.master .db .dinamicTxt').html('<p class="citizen">' + 'Чтобы стать гражданином, кто то из влиятельных жителей города должен за тебя поручиться!' + '</p>' + '<button class="btn LaresQuest">' + 'Помоги стать гражданином...' + '</button>');
+                    $('.LaresQuest').click(function () {
+                        /// отправить АЯКС запрос и увеличить stage на 1, далее добавить сообщение в журнал, что задание получено.
+                        var url = './ajax/lares_grazhdanin_horinisa.php';
+                        $.ajax({
+                            url: url,
+                            method: 'POST',
+                            data: '',
+                            dataType: 'json', // ! important string!
+                            beforeSend: function (xhr) {},
+                            complete: function (xhr) {},
+                        }).done(function (dt) {
+                            if (dt['success'] == 1) {
+                                $('.master .db .dinamicTxt').html('<p>' + 'Ты должен проявить себя в каком либо деле, скажем охотничем... Добудь мне три хвоста болотной крысы и две волчьи шкуры.' + '</p>');
+                                $('#journal_box__inner').html('').html(dt['msgs']);
+                                $('.lares_btn').append('<button class="btn" id="PassLarsQuest">Сдать задание</button>');
+                            }
+                        }).fail(function () {
+                            console.log('error');
+                        });
+                    });
+
+                });
+                //
             }
         }).fail(function () {
             console.log('error');
@@ -1137,6 +1197,34 @@ $(document).ready(function() {
         }
     }
 
+    // Lares sdat zadanie - hvosti i shkuri...s
+    $('#PassLarsQuest').on('click',function ()
+    {
+        var url = './ajax/lares_sdat_zadanie.php';
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: '',
+            dataType: 'json', // ! important string!
+            beforeSend: function (xhr) {},
+            complete: function (xhr) {},
+        }).done(function (dt) {
+            if (dt['success'] === 1) {
+                $('.master .db .dinamicTxt').html('Ларес: Ну чтож, мы поздравления, ты теперь гражданин Хориниса!');
+                $('.db_lares').fadeIn();
+                $("#PassLarsQuest").remove();
+                AccessToTheForge = true;
+                $('#journal_box__inner').html('').html(dt['msgs']);
+            } else {
+                $('.master .db .dinamicTxt').html('Там что, было слишком много крыс и волков?');
+                $('.db_lares').fadeIn();
+            }
+        }).fail(function () {
+            console.log('error');
+        });
+
+    });
+
     var HornOfMrakoris = false;
     var sitizen = false;
 
@@ -1205,32 +1293,6 @@ $(document).ready(function() {
         }).fail(function () {
             console.log('error');
         });
-    }
-    function training2() {
-        var HeroWeaponEquiped = $('#hero_weapon span').html();
-        if (trainResolution == false) {
-            $('.master .db .dinamicTxt').html('<p>' + 'Ларес: Кто ты такой? Я не тренирую всех подряд!' + '</p>');
-            $('.master .db').fadeIn();
-        } else if (HeroPowerInner >= 5) {
-            $('.master .db .dinamicTxt').html('<p>' + 'Ларес: Ты достаточно силен, мне больше нечему тебя учить' + '</p>');
-            MasterDb();
-        } else if (trainResolution == true && HeroWeaponEquiped == 'Пусто') {
-            $('.master .db .dinamicTxt').html('<p>' + 'Ларес: Онар хорошо отзывался о тебе. У тебя есть оружие? возвращайся когда будет с чем тренироваться!' + '</p>');
-            MasterDb();
-        } else if (trainResolution == true && HeroWeaponEquiped !== 'Пусто') {
-            if (HeroWeaponEquiped == 'Дубинка') {
-                $('.master .db .dinamicTxt').html('<p>' + 'Ларес: Дубинкой можешь крыс в лесу погонять! Возвращайся с достойным оружием!' + '</p>');
-                MasterDb();
-            } else if (HeroGoldInner < 200) {
-                $('.master .db .dinamicTxt').html('<p>' + 'Ларес: Тренировка стоит 200 монет, возваращайся когда будет чем платить!' + '</p>');
-                MasterDb();
-            } else if (HeroWeaponEquiped !== 'Ржавый меч' && HeroWeaponEquiped !== 'Дубинка' && HeroGoldInner >= 200) {
-                TimerFunc(10, HeroGold, HeroGoldInner = HeroGoldInner - 200, 'Тренировка: ', 'Твоя сила увеличилась на 1');
-                HeroPowerInner = HeroPowerInner + 1;
-                HeroPower.innerHTML = HeroPowerInner;
-                dialogBg('url(./img/traning.jpg)');
-            }
-        }
     }
 
     // Конец мастер Ларс ==============================================

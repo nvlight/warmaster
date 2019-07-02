@@ -33,12 +33,15 @@
         <?php
         //echo Debug::d($_SESSION);
         //echo Debug::d($user_get_equipment,'',1);
+        $user_id = intval($_SESSION['user']['id']);
+        $dbh = $mysql['connect'];
 
         // найдем тут экиппировку и html для ее вывода.
         // также тут пропишем названия оружия и/или доспехов, если таковые есть
         // ### ! сначала нужно выводить броню ! Это от дизайна артефакт
         $weapon_column = "Пусто"; $equip_weapon = null;
         $armor_column  = "Пусто"; $equip_armor = null;
+
 
         if ($user_get_equipment['success'] == 1)
         foreach ($user_get_equipment['result'] as $k => $v)
@@ -53,6 +56,13 @@
             }
         }
 
+        // get current stage!
+        $ugs = user_get_stage($dbh, $_SESSION['user']['id']);
+        if ($ugs['success'] === 1) {
+            $stage = intval($ugs['res'][0]['stage']);
+        }else{
+            $stage = 1;
+        }
         ?>
     </div>
     <div class="user-top-menu">
@@ -72,8 +82,7 @@
                 <span class="dollar1">Gold: </span>
                 <span id="hero_gold">
                     <?php
-                    $user_id = intval($_SESSION['user']['id']);
-                    $dbh = $mysql['connect'];
+
 
                     $curr_gold = user_get_gold($dbh, $user_id);
                     //echo Debug::d($curr_gold,'',2);
@@ -301,6 +310,9 @@
 				<div class="master_btn__box lares_btn">
 					<button class="btn" id="btn_master" type="submit">Тренироваться</button>
 					<button class="btn" id="btn_advice" type="submit">Совет</button>
+                    <?php if ($stage === 7): ?>
+                        <button class="btn" id="PassLarsQuest">Сдать задание</button>'
+                    <?php endif; ?>
 				</div>
 				<div class="dialog_box db db_lares bg-img">
 					<div class="db_close">х</div>
@@ -355,14 +367,7 @@
 <!--					<div id="dinamicTxtSenteza"></div>-->
 <!--					<div class="btn" id="btnNextSenteza"></div>-->
 <!--				</div>-->
-                <?php
-                $ugs = user_get_stage($dbh, $_SESSION['user']['id']);
-                if ($ugs['success'] === 1) {
-                    $stage = intval($ugs['res'][0]['stage']);
-                }else{
-                    $stage = 1;
-                }
-                ?>
+
                 <div class="master_btn__box" id="div">
                     <button class="btn" id="btn_farmeGuard" type="button">Сентеза (Охрана)</button>
                     <button class="btn <?php if ($stage <= 4) echo 'dn'; ?>"  id="btn_onar" type="button">Онар</button>

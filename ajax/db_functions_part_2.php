@@ -630,8 +630,11 @@ function lares_soviet($dbh, $i_user)
         $rs = ['success' => 1, 'message' => $msg];
         break;
         case 6:
+        case 7:
+        case 8:
+        case 9:
 
-            $rs = ['success' => 1, 'message' => 'Soviet...'];
+            $rs = ['success' => 2, 'message' => 'Soviet...', 'stage' => $real_stage];
             break;
         default:
             $rs = ['success' => 1, 'message' => 'default'];
@@ -723,5 +726,104 @@ function lares_real_training($dbh, $i_user)
             $rs = ['success' => 1, 'message' => 'default'];
 
     }
+    return $rs;
+}
+
+/// lares_grazhdanin_horinisa
+///
+///
+function lares_grazhdanin_horinisa($dbh, $i_user)
+{
+    $stage = hero_get_chars($dbh, $i_user);
+    if ($stage['success'] === 0) { return $stage; }
+
+    $stager = intval($stage['res']['stage']);
+    if ($stager !== 6){
+        $rs = ['success' => 0, 'Мы должны находить на уровне 6, чтобы принять задание на гражданство...'];
+        return $rs;
+    }
+    $new_stage = 7;
+    $uss = user_set_stage($dbh, $i_user, $new_stage);
+    if ($uss['success'] === 0) return $uss;
+
+//    var LaresQuest = '<span>' + 'Задание Лареса' + '</span>';
+//    var LaresQuestTxt = '<li>' + '- Ларес поможет мне стать гражданином, но для этого я должен добыть для него 2 хвоста болотной крысы и 3 волчьи шкуры' + '</li>';
+//    QuestListArr(LaresQuest, LaresQuestTxt, '.HaraldQuest');
+
+    // добавлю сообщение в журнал
+    $message = <<<MESSAGE
+<ul class="LaresQuest">
+	<li><span class="QuestTitle">Задание Лареса</span>
+		<br>
+		- Ларес поможет мне стать гражданином, но для этого я должен добыть для него 2 хвоста болотной крысы и 3 волчьи шкуры	
+	</li>
+</ul>
+MESSAGE;
+    $rs = journal_add_message($dbh, $i_user, $message);
+    if ($rs['success'] === 0 ) die(json_encode($rs));
+
+    $rs = journal_get_all_messages($dbh, $i_user);
+    if ($rs['success'] === 0 ) die(json_encode($rs));
+
+    // сборка всех сообщений в 1
+    $msgs = '';
+    foreach($rs['result'] as $k => $v){
+        $msgs .= $v['message'];
+    }
+    $rs['msgs'] = $msgs;
+    return $rs;
+
+}
+
+/// lares_sdat_zadanie
+///
+///
+function lares_sdat_zadanie($dbh, $i_user)
+{
+    $stage = hero_get_chars($dbh, $i_user);
+    if ($stage['success'] === 0) { return $stage; }
+
+    $stager = intval($stage['res']['stage']);
+    if ($stager !== 7){
+        $rs = ['success' => 0, 'Мы должны находить на уровне 7, чтобы сдать задание на гражданство...'];
+        return $rs;
+    }
+
+    // test
+    $rs = ['success' => 0, 'ok ok, im test it!'];
+    return $rs;
+
+    // #1 сначала проверим, есть ли в наличии 2 хвоста и 3 шкуры...
+
+    // #2 а после, если все хорошо, сменим уровень на 8, добавим сообщение в журнал и все отдадим дальше...
+    $new_stage = 8;
+    $uss = user_set_stage($dbh, $i_user, $new_stage);
+    if ($uss['success'] === 0) return $uss;
+
+//    var LaresQuest = '<span>' + 'Задание Лареса' + '</span>';
+//    var LaresQuestTxt = '<li>' + '- Ларес поможет мне стать гражданином, но для этого я должен добыть для него 2 хвоста болотной крысы и 3 волчьи шкуры' + '</li>';
+//    QuestListArr(LaresQuest, LaresQuestTxt, '.HaraldQuest');
+
+    // добавлю сообщение в журнал
+    $message = <<<MESSAGE
+<ul class="LaresQuestDone">
+	<li><span class="QuestTitle">Я гражданин</span>
+		<br>
+		- - Ларес поручился за меня, я теперь гражданин Хориниса!
+	</li>
+</ul>
+MESSAGE;
+    $rs = journal_add_message($dbh, $i_user, $message);
+    if ($rs['success'] === 0 ) die(json_encode($rs));
+
+    $rs = journal_get_all_messages($dbh, $i_user);
+    if ($rs['success'] === 0 ) die(json_encode($rs));
+
+    // сборка всех сообщений в 1
+    $msgs = '';
+    foreach($rs['result'] as $k => $v){
+        $msgs .= $v['message'];
+    }
+    $rs['msgs'] = $msgs;
     return $rs;
 }
