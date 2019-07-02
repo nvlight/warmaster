@@ -1169,14 +1169,38 @@ $(document).ready(function() {
                 $('.db_lares .dinamicTxt').html(dt['message']);
                 $('.db_lares').fadeIn();
             }else if(dt['success'] == 2){
-                let gold = +dt['gold'];
-                let power = +dt['power'];
-                $('#hero_gold').html(gold);
-                $('#hero_power').html(power);
-                HeroGoldInner = gold;
-                TimerFunc(10, HeroGold, HeroGoldInner = HeroGoldInner - 200, 'Тренировка: ', 'Твоя сила увеличилась на 1');
-                //
-                dialogBg('url(./img/traning.jpg)');
+
+                $('.db_lares .dinamicTxt').html(dt['html']);
+                $('.db_lares').fadeIn();
+                $('#goTrainNow').on('click', function () {
+                    // теперь нужно добавить еще 1 запрос, там будет кнопка с подсказкой 'тренироваться' и стоимость...
+                    var url = './ajax/lares_real_training.php';
+                    $.ajax({
+                        url: url,
+                        method: 'POST',
+                        data: '',
+                        dataType: 'json', // ! important string!
+                        beforeSend: function (xhr) {},
+                        complete: function (xhr) {},
+                    }).done(function (dt) {
+                        if (dt['success'] == 1) {
+                            $('.db_lares .dinamicTxt').html(dt['message']);
+                            $('.db_lares').fadeIn();
+                        }else if(dt['success'] == 2){
+                            let gold = +dt['gold'];
+                            let power = +dt['power'];
+                            $('#hero_gold').html(gold);
+                            $('#hero_power').html(power);
+                            HeroGoldInner = gold;
+                            //
+                            TimerFunc(10, HeroGold, HeroGoldInner = HeroGoldInner - 200, 'Тренировка: ', 'Твоя сила увеличилась на 1');
+                            dialogBg('url(./img/traning.jpg)');
+                        }
+                    }).fail(function () {
+                        console.log('error');
+                    });
+
+                });
             }
         }).fail(function () {
             console.log('error');
