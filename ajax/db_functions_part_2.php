@@ -489,9 +489,47 @@ function nagur_buy_map($dbh, $i_user){
         return ['success' => 2, 'message' => '<p><b>Нагур:</b> Возвращайся когда будешь достаточно богат для клочка карты</p>'];
     }else{
         /// нужно отнять цену карты -> UPD gold
+        $hero_upd_column = 'gold'; $gold2set = $real_gold - $map_price;
+        $ushc = hero_set_char_byDec($dbh, $i_user, $hero_upd_column, $map_price);
+        if ($ushc['success'] === 0) return $ushc;
+
         /// нужно занести в журнал, что Нагур продал нам карту, -> UPD zhournal
+        $nagurMessage = <<<MESSAGE
+<ul class="NagurMapBuyed">
+	<li><span class="QuestTitle">Задание Онара</span>
+		<br>
+		- Таинственный Нагур продал мне карту топей, теперь я могу исследовать туманную лощину!	
+	</li>
+</ul>
+MESSAGE;
+        $rs = journal_add_message($dbh, $i_user, $nagurMessage);
+        if ($rs['success'] === 0 ) die(json_encode($rs));
+
+        $rs = journal_get_all_messages($dbh, $i_user);
+        if ($rs['success'] === 0 ) die(json_encode($rs));
+        // сборка всех сообщений в 1
+        $msgs = '';
+        foreach($rs['result'] as $k => $v){
+            $msgs .= $v['message'];
+        }
+
         /// нужно в инвентарь занести карту -> add Map 2 Inventory! -> UPD again
-        return ['success' => 1, 'message' => '<p><b>Нагур:</b> Vse horosho Vasya!</p>'];
+        $iaim = inventory_add_item_map($dbh);
+        if ($iaim['success'] === 0) return $iaim;
+
+        $new_rs = ['success' => 1, 'message' => '<p><b>Нагур:</b> Удачи!</p>'];
+        $new_rs['msgs'] = $msgs;
+        $new_rs['gold'] = $gold2set;
+
+        return $new_rs;
     }
 
+}
+
+/// inventory_add_item_map($dbh, $i_user){
+///
+///
+function inventory_add_item_map($dbh){
+    $i_item = 13;
+    return user_inventory_add_item($dbh, $i_item);
 }

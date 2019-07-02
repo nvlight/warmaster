@@ -1382,14 +1382,16 @@ $(document).ready(function() {
                         complete: function (xhr) {},
                     }).done(function (dt) {
                         if (dt['success'] == 2){
-                            // $('#hero_gold').html(dt['gold']); --> gold_update
-                            // $('#journal_box__inner').html('').html(dt['msgs']); --> journal_update
-                            // inventory_update()
                             $('.NagurDB').html(dt['message']);
                         } else if (dt['success'] == 1) {
                             //
                             $('.btn.buyTheMap').parent().addClass('dn');
                             $('.NagurDB').html(dt['message']);
+                            HeroGoldInner = +dt['gold'];
+                            HeroChars['hero_gold'] = HeroGoldInner;
+                            $('#hero_gold').html(HeroGoldInner); //--> gold_update
+                            $('#journal_box__inner').html('').html(dt['msgs']); //--> journal_update
+                            inventory_update();
                         }
                     }).fail(function () {
                         console.log('error');
