@@ -1210,7 +1210,7 @@ $(document).ready(function() {
             complete: function (xhr) {},
         }).done(function (dt) {
             if (dt['success'] === 1) {
-                $('.master .db .dinamicTxt').html('Ларес: Ну чтож, мы поздравления, ты теперь гражданин Хориниса!');
+                $('.master .db .dinamicTxt').html('Ларес: Ну что жe, мои поздравления, ты теперь гражданин Хориниса!');
                 $('.db_lares').fadeIn();
                 $("#PassLarsQuest").remove();
                 AccessToTheForge = true;
@@ -1897,7 +1897,7 @@ $(document).ready(function() {
         }).done(function (dt) {
             if (dt['success'] == 1) {
                 let stage = +dt['res'][0]['stage'];
-                if (stage === 6)
+                if (stage >= 6)
                 {
                     $('.OnarDialogBox').css({
                         'background': 'url(./img/onar.jpg) no-repeat top center',

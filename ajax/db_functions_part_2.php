@@ -549,6 +549,8 @@ function lares_training($dbh, $i_user)
             $rs = ['success' => 1, 'message' => $msg];
             break;
         case 6:
+        case 7:
+        case 8:
             /// сначала узнаем кол-во силы, если сила >= 5 то выходим,
             $power = get_hero_chars($dbh, $i_user);
             if ($power['success'] === 0) { return $power;}
@@ -626,14 +628,13 @@ function lares_soviet($dbh, $i_user)
 
     switch($real_stage){
         case 1: case 2: case 3: case 4: case 5:
-        $msg = '<p>Ларес: Думаешь я раздаю советы каждому встречному!</p>';
-        $rs = ['success' => 1, 'message' => $msg];
-        break;
+            $msg = '<p>Ларес: Думаешь я раздаю советы каждому встречному!</p>';
+            $rs = ['success' => 1, 'message' => $msg];
+            break;
         case 6:
         case 7:
         case 8:
         case 9:
-
             $rs = ['success' => 2, 'message' => 'Soviet...', 'stage' => $real_stage];
             break;
         default:
@@ -794,6 +795,8 @@ function lares_sdat_zadanie($dbh, $i_user)
     return $rs;
 
     // #1 сначала проверим, есть ли в наличии 2 хвоста и 3 шкуры...
+    
+
 
     // #2 а после, если все хорошо, сменим уровень на 8, добавим сообщение в журнал и все отдадим дальше...
     $new_stage = 8;
