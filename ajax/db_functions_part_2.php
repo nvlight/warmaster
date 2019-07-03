@@ -791,28 +791,52 @@ function lares_sdat_zadanie($dbh, $i_user)
     }
 
     // test
-    $rs = ['success' => 0, 'ok ok, im test it!'];
-    return $rs;
+    // $rs = ['success' => 0, 'ok ok, im test it!'];
+    // return $rs;
 
     // #1 сначала проверим, есть ли в наличии 2 хвоста и 3 шкуры...
-    
+    // #2 после вычтем столько же из инвентаря
+    $lfhis = laser_find_hvosti_i_shkuri($dbh, $i_user);
+    //die(Debug::d($lfhis,'$lfhis',1));
+    if ($lfhis['success'] !== 1) return $lfhis;
 
+    // hvosti i shkuri
+    $nrs = ['success' => 0, 'message' => 'Не хватает хвостов и/или шкур!'];
+    $hs = $lfhis['result'];
+    if (count($hs) < 2) return $nrs;
+    $hvosti = $hs[0];
+    $shkuri = $hs[1];
+    if ( intval($hvosti['i_item_type']) !== 5) {
+        $hvosti = $hs[1];
+        $shkuri = $hs[0];
+    }
+    if ( !(intval($hvosti['count']) >= 2 && intval($shkuri['count']) >= 3) ){
+        return $nrs;
+    }
+    // выполняем теперь #2
+    // #2.1
+    // hvosti chisem
+    $iudicbv1 = inventory_update_decItemCountByValue($dbh, 10, $i_user, 2);
+    if ($iudicbv1['success'] === 0) return $iudicbv1;
+    // shkuri chisem
+    $iudicbv1 = inventory_update_decItemCountByValue($dbh, 11, $i_user, 3);
+    if ($iudicbv1['success'] === 0) return $iudicbv1;
 
-    // #2 а после, если все хорошо, сменим уровень на 8, добавим сообщение в журнал и все отдадим дальше...
+    // #2.2
+    $iczic = inventory_clear_zeroItemCounts($dbh, $i_user);
+    if ($iczic['success'] === 0) return $iczic;
+
+    // #3 а после, если все хорошо, сменим уровень на 8, добавим сообщение в журнал и все отдадим дальше...
     $new_stage = 8;
     $uss = user_set_stage($dbh, $i_user, $new_stage);
     if ($uss['success'] === 0) return $uss;
-
-//    var LaresQuest = '<span>' + 'Задание Лареса' + '</span>';
-//    var LaresQuestTxt = '<li>' + '- Ларес поможет мне стать гражданином, но для этого я должен добыть для него 2 хвоста болотной крысы и 3 волчьи шкуры' + '</li>';
-//    QuestListArr(LaresQuest, LaresQuestTxt, '.HaraldQuest');
 
     // добавлю сообщение в журнал
     $message = <<<MESSAGE
 <ul class="LaresQuestDone">
 	<li><span class="QuestTitle">Я гражданин</span>
 		<br>
-		- - Ларес поручился за меня, я теперь гражданин Хориниса!
+		- Ларес поручился за меня, я теперь гражданин Хориниса!
 	</li>
 </ul>
 MESSAGE;
@@ -828,5 +852,97 @@ MESSAGE;
         $msgs .= $v['message'];
     }
     $rs['msgs'] = $msgs;
+    return $rs;
+}
+
+/// Lares - find hvosti i zhkuri
+///
+///
+function laser_find_hvosti_i_shkuri($dbh, $i_user)
+{
+    $sql = <<<SQL
+    SELECT
+        shop_item.id,
+        shop_item.name,
+        shop_item.i_item_type,
+        inventory.count
+    FROM inventory
+         LEFT JOIN shop_item on shop_item.id = inventory.i_item
+         left JOIN shop on shop.id = shop_item.i_shop
+    WHERE
+        inventory.i_user = {$i_user} and (i_item_type = 5 or i_item_type = 6);
+SQL;
+    try{
+        $sql_rs1  = $dbh->query($sql);
+        $sql_rs2 = ($sql_rs1->fetchAll(MYSQLI_NUM));
+
+        if (count($sql_rs2)){
+            $rs = [
+                'success' => 1,
+                'message' => 'Запрос выполнен, найдено!',
+                'result' => $sql_rs2
+            ];
+        }else{
+            $rs = [
+                'success' => 2,
+                'message' => 'Запрос выполнен, НЕ найдено!',
+            ];
+        }
+    }catch (Exception $e){
+        $rs = [
+            'success' => 0,
+            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
+            'message' => 'Ошибка при запросе. Попробуйте позднее.'
+        ];
+    }
+    return $rs;
+
+}
+
+
+/// Уменьшаем кол-ва итемов в инвентаре на заданное количество
+///
+///
+function inventory_is_exists_withNeedItemCountByValue($dbh, $i_item, $i_user, $value){
+    //
+}
+
+/// Уменьшаем кол-ва итемов в инвентаре на заданное количество
+///
+///
+function inventory_update_decItemCountByValue($dbh, $i_item, $i_user, $value)
+{
+    //
+    $sql = "UPDATE inventory SET count = count - {$value} 
+        WHERE i_item = " . intval($i_item) . " and i_user = " . intval($i_user);
+    try{
+        $dbh->exec($sql);
+        $rs = ['success' => 1, 'message' => 'Запрос выполнен!',];
+    }catch (Exception $e){
+        $rs = [
+            'success' => 0,
+            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
+            'message' => 'Ошибка при запросе. Попробуйте позднее.'
+        ];
+    }
+    return $rs;
+}
+
+/// Очищаем итемы пользователя, у которых количество равно нулю
+///
+///
+function inventory_clear_zeroItemCounts($dbh, $i_user){
+    //
+    $sql = "delete from inventory where i_user = {$i_user} and count = 0";
+    try{
+        $dbh->exec($sql);
+        $rs = ['success' => 1, 'message' => 'Запрос выполнен!',];
+    }catch (Exception $e){
+        $rs = [
+            'success' => 0,
+            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
+            'message' => 'Ошибка при запросе. Попробуйте позднее.'
+        ];
+    }
     return $rs;
 }

@@ -1072,10 +1072,9 @@ $(document).ready(function() {
                         $('.master .db .dinamicTxt').html('<p class="LarsTxt LarsTxtFirst" id="QuestionToLars-1">' + 'На что влияет сила?' + '</p>' + '<p class="LarsTxt LarsTxtSecond" id="QuestionToLars-3">' + 'Какую броню лучше носить?' + '</p>');
                         break;
                     case 8:
-                        $('.master .db .dinamicTxt').html('<p class="LarsTxt LarsTxtFirst" id="QuestionToLars-1">' + 'На что влияет сила?' + '</p>' + '<p class="LarsTxt LarsTxtSecond" id="QuestionToLars-3">' + 'Какую броню лучше носить?' + '</p>' + '<p class="LarsTxt" id="QuestionToLars-4">' + 'Что можешь рассказать о Мракорисе?' + '</p>');
-                        break;
                     case 9:
-                        $('.master .db .dinamicTxt').html('<p class="LarsTxt LarsTxtFirst" id="QuestionToLars-1">' + 'На что влияет сила?' + '</p>' + '<p class="LarsTxt LarsTxtSecond" id="QuestionToLars-3">' + 'Какую броню лучше носить?' + '</p>');
+                    case 10:
+                        $('.master .db .dinamicTxt').html('<p class="LarsTxt LarsTxtFirst" id="QuestionToLars-1">' + 'На что влияет сила?' + '</p>' + '<p class="LarsTxt LarsTxtSecond" id="QuestionToLars-3">' + 'Какую броню лучше носить?' + '</p>' + '<p class="LarsTxt" id="QuestionToLars-4">' + 'Что можешь рассказать о Мракорисе?' + '</p>');
                         break;
                 }
 
@@ -1215,6 +1214,7 @@ $(document).ready(function() {
                 $("#PassLarsQuest").remove();
                 AccessToTheForge = true;
                 $('#journal_box__inner').html('').html(dt['msgs']);
+                inventory_update();
             } else {
                 $('.master .db .dinamicTxt').html('Там что, было слишком много крыс и волков?');
                 $('.db_lares').fadeIn();
@@ -2143,49 +2143,12 @@ $(document).ready(function() {
 
     // Наняться на работу ======================================================
     var timeOfwork = document.getElementById('timeOfwork');
-    BtnWorkFarm.addEventListener('click', GoToWork);
     var timeStop = document.getElementById('stop');
-    // var arrButtons = [];
-    // var arrButtons = document.getElementsByTagName('button');
-
-    // function btnDisabledTrue() {
-    //     for (var i = 0; i < arrButtons.length; i++) {
-    //         arrButtons[i].disabled = true;
-    //     }
-    // }
-    //
-    // function btnDisabledFalse() {
-    //     for (var i = 0; i < arrButtons.length; i++) {
-    //         arrButtons[i].disabled = false;
-    //     }
-    // }
 
     //
     $('#btn_workFarm2').on('click', function () {
         GoToWork2();
     });
-
-    //
-    function GoToWork() {
-        if (PaySenteza !== true) {
-            $('.master_btn__box .tooltip2').fadeIn();
-        }
-        if (PaySenteza == true && HeroGoldInner >= 200) {
-            $('#btnNextSenteza').css('display', 'none');
-            $('#dinamicDbSenteza #dinamicTxtSenteza').html('<p>На данный момент нет работы!</p>');
-            $('#dinamicDbSenteza').fadeIn();
-            return;
-        }
-        if (PaySenteza == true && HeroGoldInner < 200) {
-            TimerFunc(10, HeroGold, HeroGoldInner = HeroGoldInner + 100, 'Ты работаешь в поле: ', 'Ты заработал 100 монет');
-            dialogBg('url(./img/farmworker.jpg) no-repeat top center');
-            // $('.FarmWorker').css({
-            //     'background': 'url(./img/farmworker.jpg) no-repeat top center',
-            //     'background-size': 'cover'
-            // });
-            // $('.FarmWorker').fadeIn();
-        }
-    }
 
     //
     function GoToWork2() {
@@ -2315,12 +2278,8 @@ $(document).ready(function() {
             method: 'POST',
             data: 'reward='+type,
             dataType: 'json', // ! important string!
-            beforeSend: function (xhr) {
-                ;
-            },
-            complete: function (xhr) {
-                ;
-            },
+            beforeSend: function (xhr) {},
+            complete: function (xhr) {},
         }).done(function (dt) {
             if (dt['success'] == 1) { inventory_update(); }
         }).fail(function () {
