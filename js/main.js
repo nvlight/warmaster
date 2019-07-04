@@ -362,12 +362,8 @@ $(document).ready(function() {
             method: 'POST',
             data: '',
             dataType: 'json', // ! important string!
-            beforeSend: function (xhr) {
-                
-            },
-            complete: function (xhr) {
-                
-            },
+            beforeSend: function (xhr) {},
+            complete: function (xhr) {},
         }).done(function (dt) {
             
             if (dt['success'] == 1) {
@@ -498,14 +494,9 @@ $(document).ready(function() {
             method: 'POST',
             data: 'item_id=' + t,
             dataType: 'json', // ! important string!
-            beforeSend: function (xhr) {
-                
-            },
-            complete: function (xhr) {
-                
-            },
+            beforeSend: function (xhr) {},
+            complete: function (xhr) {},
         }).done(function (dt) {
-            
             if (dt['success'] == 5) {
                 //console.log(dt['message']);
                 $('#hero_gold').html(dt['gold']);
@@ -546,12 +537,8 @@ $(document).ready(function() {
             method: 'POST',
             data: 'item_id=' + t,
             dataType: 'json', // ! important string!
-            beforeSend: function (xhr) {
-                
-            },
-            complete: function (xhr) {
-                
-            },
+            beforeSend: function (xhr) {},
+            complete: function (xhr) {},
         }).done(function (dt) {
             
             if (dt['success'] == 5) {
@@ -582,12 +569,8 @@ $(document).ready(function() {
             method: 'POST',
             data: 'item_type=' + t,
             dataType: 'json', // ! important string!
-            beforeSend: function (xhr) {
-                ;
-            },
-            complete: function (xhr) {
-                ;
-            },
+            beforeSend: function (xhr) {},
+            complete: function (xhr) {},
         }).done(function (dt) {
             if (dt['success'] == 1) {
                 user_set_user_chars_html();
@@ -596,7 +579,6 @@ $(document).ready(function() {
 
                 // update inventory after hero drop item
                 inventory_update();
-
             }
         }).fail(function () {
             console.log('error');
@@ -611,12 +593,8 @@ $(document).ready(function() {
             method: 'POST',
             data: 'item_type=' + t,
             dataType: 'json', // ! important string!
-            beforeSend: function (xhr) {
-                ;
-            },
-            complete: function (xhr) {
-                ;
-            },
+            beforeSend: function (xhr) {},
+            complete: function (xhr) {},
         }).done(function (dt) {
             if (dt['success'] == 1) {
                 user_set_user_chars_html();
@@ -632,13 +610,9 @@ $(document).ready(function() {
     });
 
     //// end of drop items from hero
-
     /// Пишу функцию, которая будет бросать итемы героя при побеге (поражении)
-    ///
-    ///
-
-    function item_drop_in_fight() {
-
+    function item_drop_in_fight()
+    {
         var url = './ajax/equipment_drop_item_in_fight_by_type.php';
 
         var t = 1;
@@ -658,7 +632,6 @@ $(document).ready(function() {
                 inventory_update();
             }
         }).fail(function (){});
-
         //
         var t = 2;
         $.ajax({
@@ -677,9 +650,7 @@ $(document).ready(function() {
                 inventory_update();
             }
         }).fail(function (){});
-
     }
-
 
     //
     function ItemImgFadeOut() {
@@ -694,19 +665,13 @@ $(document).ready(function() {
     }
 
     // Вспомогательные функции =================================================
-    function IndexOf(string) {
-        HeroItemIndexInv = HeroItem[0].indexOf(string);
-    }
 
-    function CounterMinus() {
-        HeroItem[1][HeroItemIndexInv] = +HeroItem[1][HeroItemIndexInv] - 1;
-        document.querySelector('.counter-' + (HeroItemIndexInv)).innerHTML = HeroItem[1][HeroItemIndexInv];
-    }
-
+    //
     function TalkToHaraldTxt(text) {
         $('#db_forge .dinamicTxt').html(text);
     }
 
+    //
     function FadeInForgeDB() {
         $('#db_forge').fadeIn();
     }
@@ -718,7 +683,6 @@ $(document).ready(function() {
     BtnForge.addEventListener('click', Forge);
 
     // Флаг доступа к кузнице
-
     var AccessToTheForge = false;
     var HaraldMission = false;
     var HornOfMrakoris = false;
@@ -727,7 +691,110 @@ $(document).ready(function() {
         $('.bg_inner__forge').slideToggle(300);
     });
 
-    function Forge() {
+    //
+    function Forge()
+    {
+        var url = './ajax/blacksmith_talk.php';
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: '',
+            dataType: 'json', // ! important string!
+            beforeSend: function (xhr) {},
+            complete: function (xhr) {},
+        }).done(function (dt) {
+            if (dt['success'] == 1) {
+
+                if (dt['stage'] < 8) {
+                    $('.forge .db_forge .dinamicTxt').html(dt['message']);
+                    $('.forge .db_forge').fadeIn();
+                }else if (dt['stage'] === 8){
+                    $('.forge .db_forge .dinamicTxt').html(dt['message']);
+                    $('.forge .db_forge').fadeIn();
+                    $('.forge #questHaraldTake').on('click', function (e) {
+                        echo('questHaraldTake ---> its taken!');
+                        var url = './ajax/blacksmith_teak_mrakkoris_quest.php';
+                        $.ajax({
+                            url: url,
+                            method: 'POST',
+                            data: '',
+                            dataType: 'json', // ! important string!
+                            beforeSend: function (xhr) {},
+                            complete: function (xhr) {},
+                        }).done(function (dt) {
+                            if (dt['success'] == 1) {
+                                $('.forge .db_forge').fadeOut();
+                                if (dt['msgs'] !== undefined){
+                                    $('#journal_box__inner').html('').html(dt['msgs']);
+                                }
+                                //$('.forge .db_forge .dinamicTxt').html('Задание принято!');
+                                //$('.forge .db_forge').fadeIn();
+                            }
+                        }).fail(function () {
+                            console.log('error');
+                        });
+                    });
+                }else {
+                    //
+                    var t = $('input[name=forgeItem]:checked').data('itemid');
+                    //echo('t = ' + t);
+                    if (t === undefined) {
+                        $('.forge .db_forge .dinamicTxt').html('Не выбран предмет для ковки!');
+                        $('.forge .db_forge').fadeIn();
+                    }else{
+                        // echo('t = ' + t);
+                        // теперь нужно написать аякс запрос на ковку итема,
+                        // для этого нужно минуснуть сырую сталь и рог мракориса за 1 экземпляр
+                        var url = './ajax/blacksmith_do_forge.php';
+                        $.ajax({
+                            url: url,
+                            method: 'POST',
+                            data: 'itemid='+t,
+                            dataType: 'json', // ! important string!
+                            beforeSend: function (xhr) {},
+                            complete: function (xhr) {},
+                        }).done(function (dt) {
+                            if (dt['success'] == 1) {
+                                $('#hero_gold').html(dt['gold']);
+                                inventory_update();
+                                $('.forge .db_forge .dinamicTxt').html(dt['message']);
+                                $('.forge .db_forge').fadeIn();
+                            }else if(dt['success'] == 2){
+                                $('.forge .db_forge .dinamicTxt').html(dt['message']);
+                                $('.forge .db_forge').fadeIn();
+                            }
+                        }).fail(function () {
+                            console.log('error');
+                        });
+                    }
+
+                }
+            }
+        }).fail(function () {
+            console.log('error');
+        });
+        //
+        // TalkToHaraldTxt('<p>Говоришь нужно легендарное оружие? Изготовка оружия такого уровня это ритуал в высшем смысле этого слова, требуется особый состав для обработки стали. Добудь мне рог Мракориса! <button class="btn" id="questHaraldTake">Тренироваться</button> </p>');
+        // FadeInForgeDB();
+        // var HaraldQuestWeapon = '<span class="QuestTitle">' + 'Легендарное оружие' + '</span>';
+        // var HaraldQuestWeaponTxt = '<ul class="HaraldQuestWeapon">' + '<li>' + HaraldQuestWeapon + '<br>' + ' - Харальд может изготовить мне уникальное оружие и броню. Чтобы приготовить состав для обработки стали требуется вытащить рог из опасного зверя, конечно же перед этим убив его, но как убить Мракориса?' + '</li>' + '</ul>';
+        // QuestListArr(HaraldQuestWeapon, HaraldQuestWeaponTxt, '#journal_box__inner');
+        // HornOfMrakoris = true;
+
+        // TalkToHaraldTxt('<p>Харальд: Наша кузница производит снаряжение только для ополчения и граждан этого города! Тебя я не знаю.</p>');
+        // HaraldMission = true;
+        // var HaraldQuest = '<span class="QuestTitle">' + 'Гражданин Хориниса' + '</span>';
+        // var HaraldQuestTxt = '<ul class="HaraldQuest">' + '<li>' + HaraldQuest + '<br>' + ' - Чтобы Харальд выковал мне хорошее оружие, мне нужно стать гражданином Хориниса' + '</li>' + '</ul>';
+        // QuestListArr(HaraldQuest, HaraldQuestTxt, '#journal_box__inner');
+        // FadeInForgeDB();
+
+    }
+
+
+
+
+    //
+    function ForgeBackUp() {
         var itemCheck = $('input[name=forgeItem]:checked'),
 
             HeroItemPrice = $('input[name=forgeItem]:checked').siblings('.priceItemHero').html(),
@@ -788,12 +855,6 @@ $(document).ready(function() {
     //var EquipItem = document.getElementById('equipItem');
     var EquipItem = document.getElementById('equipItem');
     EquipItem.addEventListener('click', EqipItemFunc2);
-    // Тип предметов - оружие, броня, сырье
-    var ItemTypesArr = [
-        ['Полуторный меч', 'Двуручный меч', 'Дубинка', 'Потрошитель Дракона'],
-        ['Кожаная броня', 'Пластинчатый доспех', 'Доспех Ворона'],
-        ['Сырая сталь', 'Охотничий нож', 'Рог Мракориса', 'Хвост крысы', 'Волчья шкура']
-    ];
 
     function EqipItemFunc2() {
         // получим ИД итема и эккипируем им героя!
@@ -819,12 +880,8 @@ $(document).ready(function() {
             method: 'POST',
             data: 'item_id=' + t,
             dataType: 'json', // ! important string!
-            beforeSend: function (xhr) {
-                
-            },
-            complete: function (xhr) {
-                
-            },
+            beforeSend: function (xhr) {},
+            complete: function (xhr) {},
         }).done(function (dt) {
             
             //if (dt['success'] == 5 || dt['success'] == 4) {
@@ -865,8 +922,8 @@ $(document).ready(function() {
                     HeroDamageInner = 0
                     HeroDamageInner2 = +dt['item_value']  // this is element from Ajax!
                     HeroAtackInner = HeroDamageInner2 + HeroDamageInner + +HeroPowerInner,
-                        //
-                        HeroChars['hero_damage'] = +HeroDamageInner;
+                    //
+                    HeroChars['hero_damage'] = +HeroDamageInner;
                     HeroChars['hero_atack'] = +HeroAtackInner;
                     //
                     i_item = +dt['i_item']
@@ -906,91 +963,10 @@ $(document).ready(function() {
 
     }
 
-    function EqipItemFunc() {
-        var itemCheckInvName = $('input[name=inventory]:checked').next().html(),
-            itemChecked = $('input[name=inventory]:checked'),
-            ItemStats = $(itemChecked).siblings(".damageItemHero").html();
-        console.log(itemCheckInvName);
-        console.log(itemChecked);
-        console.log(ItemStats);
-        HeroItemIndex = ItemTypesArr[1].indexOf(itemCheckInvName);
-        HeroItemWeapon = ItemTypesArr[0].indexOf(itemCheckInvName);
-        HeroItemMaterial = ItemTypesArr[2].indexOf(itemCheckInvName);
-        if (HeroItemIndex != -1) {
-            $('#hero_armor_equiped span').html(itemCheckInvName);
-            HeroArmorInner = HeroArmorBase;
-            HeroArmorInner = HeroArmorInner + Number(ItemStats);
-            HeroArmor.innerHTML = HeroArmorInner;
-        }
-        if (HeroItemMaterial != -1) {
-            $('.HomeMessageAlert').fadeIn();
-        }
-        if (HeroItemWeapon != -1) {
-            var checkWeapon = $('#hero_weapon span').html();
-            if (checkWeapon != itemCheckInvName) {
-                $('#hero_weapon span').html(itemCheckInvName);
-                HeroAtackInner = HeroDamageInner + HeroPowerInner;
-                HeroAtackInner = HeroAtackInner + Number(ItemStats);
-                HeroAtack.innerHTML = HeroAtackInner;
-            }
-        }
-        ItemsImg();
-    }
-
-    function ItemsImg() {
-        var EquipArmor = $('#hero_armor_equiped span').html();
-        var EquipWeapon = $('#hero_weapon span').html();
-        if (EquipArmor != 'Пусто') {
-            switch (EquipArmor) {
-                case 'Кожаная броня':
-                    HeroItemImgDN('.Hero_Armor');
-                    $('.leather-armor').css('display', 'block');
-                    break;
-
-                case 'Пластинчатый доспех':
-                    HeroItemImgDN('.Hero_Armor');
-                    $('.heavy-armor').css('display', 'block');
-                    break;
-
-                case 'Доспех Ворона':
-                    HeroItemImgDN('.Hero_Armor');
-                    $('.armor-crow').css('display', 'block');
-                    break;
-            }
-        }
-        if (EquipWeapon != 'Пусто') {
-            switch (EquipWeapon) {
-                case 'Дубинка':
-                    HeroItemImgDN('.Hero_Weapon');
-                    $('.stick').css('display', 'block');
-                    break;
-
-                case 'Полуторный меч':
-                    HeroItemImgDN('.Hero_Weapon');
-                    $('.sword').css('display', 'block');
-                    break;
-
-                case 'Двуручный меч':
-                    HeroItemImgDN('.Hero_Weapon');
-                    $('.long-sword').css('display', 'block');
-                    break;
-
-                case 'Потрошитель Дракона':
-                    HeroItemImgDN('.Hero_Weapon');
-                    $('.ripper').css('display', 'block');
-                    break;
-            }
-        }
-    }
-
-    function HeroItemImgDN(ItemImgClassName) {
-        $(ItemImgClassName).css('display', 'none');
-    }
-
     // Журнал ==================================================================
-    var JournalBox = document.getElementById('journal_box__inner');
     var QuestList = [];
 
+    //
     function QuestListArr(QuestName, QuestArticle, QuestClass) {
         var QuestNameIn = QuestName;
         var QuestArticleIn = QuestArticle;
@@ -1125,76 +1101,6 @@ $(document).ready(function() {
             console.log('error');
         });
     }
-    function masterAdvice2() {
-        if (trainResolution == true) {
-            if (sitizen != true) {
-                if (HaraldMission == true) {
-                    $('.master .db .dinamicTxt').html('<p class="LarsTxt LarsTxtFirst" id="QuestionToLars-1">' + 'На что влияет сила?' + '</p>' + '<p class="LarsTxt LarsTxtSecond" id="QuestionToLars-3">' + 'Какую броню лучше носить?' + '</p>' + '<p class="LarsTxt" id="QuestionToLars-2">' + 'Как стать гражданином Хориниса?' + '</p>');
-                }
-            } else {
-                if (HornOfMrakoris == true) {
-                    $('.master .db .dinamicTxt').html('<p class="LarsTxt LarsTxtFirst" id="QuestionToLars-1">' + 'На что влияет сила?' + '</p>' + '<p class="LarsTxt LarsTxtSecond" id="QuestionToLars-3">' + 'Какую броню лучше носить?' + '</p>' + '<p class="LarsTxt" id="QuestionToLars-4">' + 'Что можешь рассказать о Мракорисе?' + '</p>');
-                }
-                if (HornOfMrakoris != true && HaraldMission != true) {
-                    $('.master .db .dinamicTxt').html('<p class="LarsTxt LarsTxtFirst" id="QuestionToLars-1">' + 'На что влияет сила?' + '</p>' + '<p class="LarsTxt LarsTxtSecond" id="QuestionToLars-3">' + 'Какую броню лучше носить?' + '</p>');
-                }
-            }
-            $('.master .db').fadeIn();
-            $('#QuestionToLars-1').click(function () {
-                $('.master .db .dinamicTxt').html('<p>' + 'Сила увеличивает мощь твоих ударов!' + '</p>');
-            });
-            $('#QuestionToLars-3').click(function () {
-                $('.master .db .dinamicTxt').html('<p>' + 'Тяжелая броня делает тебя крепче, но в ней ты более медлительный и быстрее устаешь, в некоторых ситуациях в тяжелом снаряжении ты будешь более уязвимым.' + '</p>');
-            });
-            $('#QuestionToLars-4').click(function () {
-                $('.master .db .dinamicTxt').html('<p>' + 'Ларес: Опасный зверь, но довольно медлительный. Даже не думай подобраться незаметно, учуит за сотню шагов. Если уж встретился  с этой зверюгой лицом к лицу, обращай внимание на первый удар, если схватил большой урон, немедленно отступай!' + '</p>');
-                var HaraldQuestMrakoris = '<span class="QuestTitle">' + 'Рог Мракориса' + '</span>';
-                var HaraldQuestMrakorisTxt = '<li>' + ' - Ларес сказал, чтобы победить Мракориса надо избегать его критической атаки или вовремя отступить' + '</li>';
-                QuestListArr(HaraldQuestMrakoris, HaraldQuestMrakorisTxt, '.HaraldQuestWeapon');
-            });
-            $('#QuestionToLars-2').click(function () {
-                sitizen = true;
-                $('.master .db .dinamicTxt').html('<p class="citizen">' + 'Чтобы стать гражданином, кто то из влиятельных жителей города должен за тебя поручиться!' + '</p>' + '<button class="btn LaresQuest">' + 'Помоги стать гражданином...' + '</button>');
-                $('.LaresQuest').click(function () {
-                    $('.master .db .dinamicTxt').html('<p>' + 'Ты должен проявить себя в каком либо деле, скажем охотничем... Добудь мне три хвоста болотной крысы и две волчьи шкуры.' + '</p>');
-                    var LaresQuest = '<span>' + 'Задание Лареса' + '</span>';
-                    var LaresQuestTxt = '<li>' + '- Ларес поможет мне стать гражданином, но для этого я должен добыть для него 2 хвоста болотной крысы и 3 волчьи шкуры' + '</li>';
-                    QuestListArr(LaresQuest, LaresQuestTxt, '.HaraldQuest');
-                    $('.lares_btn').append('<button class="btn" id="PassLarsQuest">Сдать задание</button>');
-
-                    $('#PassLarsQuest').click(function () {
-                        var ItemIndexRatTail = HeroItem[0].indexOf('Хвост крысы');
-                        var ItemIndexWoolfSkin = HeroItem[0].indexOf('Волчья шкура');
-                        if (ItemIndexRatTail != -1 && ItemIndexWoolfSkin != -1) {
-                            var CountTail = $('.counter-' + (ItemIndexRatTail)).html();
-                            var CountSkin = $('.counter-' + (ItemIndexWoolfSkin)).html();
-
-                            if (CountTail >= 2 && CountSkin >= 3) {
-                                $('.master .db .dinamicTxt').html('Ларес: Ну чтож, мы поздравления, ты теперь гражданин Хориниса!');
-                                $('.db_lares').fadeIn();
-                                $("#PassLarsQuest").remove();
-                                PassTheItems(ItemIndexRatTail, 2);
-                                PassTheItems(ItemIndexWoolfSkin, 3);
-                                AccessToTheForge = true;
-                                var LaresQuestPass = '<span>' + 'Я гражданин' + '</span>';
-                                var LaresQuestPassTxt = '<li>' + '- Ларес поручился за меня, я теперь гражданин Хориниса!' + '</li>';
-                                QuestListArr(LaresQuestPass, LaresQuestPassTxt, '.HaraldQuest');
-                            } else {
-                                $('.master .db .dinamicTxt').html('Условие не выполнено!');
-                                $('.db_lares').fadeIn();
-                            }
-                        } else {
-                            $('.master .db .dinamicTxt').html('Условие не выполнено!');
-                            $('.db_lares').fadeIn();
-                        }
-                    });
-                });
-            });
-        } else {
-            $('.master .db .dinamicTxt').html('<p>' + 'Ларес: Думаешь я раздаю советы каждому встречному!' + '</p>');
-            $('.master .db').fadeIn();
-        }
-    }
 
     // Lares sdat zadanie - hvosti i shkuri...s
     $('#PassLarsQuest').on('click',function ()
@@ -1209,10 +1115,9 @@ $(document).ready(function() {
             complete: function (xhr) {},
         }).done(function (dt) {
             if (dt['success'] === 1) {
-                $('.master .db .dinamicTxt').html('Ларес: Ну что жe, мои поздравления, ты теперь гражданин Хориниса!');
+                $('.master .db .dinamicTxt').html(dt['lares_msgs']);
                 $('.db_lares').fadeIn();
                 $("#PassLarsQuest").remove();
-                AccessToTheForge = true;
                 $('#journal_box__inner').html('').html(dt['msgs']);
                 inventory_update();
             } else {
@@ -1227,6 +1132,8 @@ $(document).ready(function() {
 
     var HornOfMrakoris = false;
     var sitizen = false;
+    // доступ в кузницу!
+
 
     // Показ/Скрытие диалоговых окон
     $('.db_close').click(function () {
@@ -1342,10 +1249,6 @@ $(document).ready(function() {
         );
 
         $('.HeroAnswear-5').click(function () {
-            aboutMissing = true;
-            var SelinasQuest = '<span class="QuestTitle">' + 'Где все пропавшие люди?' + '</span>';
-            var SelinasQuestTxt = '<ul class="LostPeopleQuest">' + '<li>' + SelinasQuest + '<br>' + ' - С фермы Онара пропадают люди, надо разобраться' + '</li>' + '</ul>';
-            QuestListArr(SelinasQuest, SelinasQuestTxt, '#journal_box__inner');
             // where is the all lost peoples
             var urlEating = './ajax/quest_the_lost_peoples.php';
             $.ajax({
@@ -1454,21 +1357,9 @@ $(document).ready(function() {
                 );
 
                 //
-                $('.buyTheMap').click(function () {
+                $('.buyTheMap').click(function ()
+                {
                     echo('buyTheMap');
-                    // var mapPrice = 100;
-                    // if (HeroGoldInner >= mapPrice) {
-                    //     var NagurMap = '<span>' + 'Карта Нагура' + '</span>';
-                    //     var NagurQuestTxt = '<li>' + ' - Таинственный Нагур продал мне карту топей, теперь я могу исследовать туманную лощину!' + '</li>';
-                    //     QuestListArr(NagurMap, NagurQuestTxt, '.LostPeopleQuest');
-                    //     HeroGoldInner = HeroGoldInner - mapPrice;
-                    //     HeroGold.innerHTML = HeroGoldInner;
-                    //     $('.NagurDB').html('<p><b>Нагур:</b> Удачи!</p>');
-                    //     MapHollow = true;
-                    // }
-                    // if (HeroGoldInner < mapPrice && MapHollow != true) {
-                    //     $('.NagurDB').html('<p><b>Нагур:</b> Возвращайся когда будешь достаточно богат для клочка карты</p>');
-                    // }
                     let urlEating = './ajax/nagur_buy_map.php';
                     $.ajax({
                         url: urlEating,
@@ -1509,55 +1400,6 @@ $(document).ready(function() {
 
     });
 
-    $('#btn_nagur2').click(function () {
-        $('.OnarDialogBox').css({
-            'background': 'url(./img/nagur.jpg) no-repeat top center',
-            'background-size': 'cover'
-        });
-        if (MapHollow != true) {
-            $('.db-onar .dinamicTxt').html(' ');
-            $('.db-onar .dinamicTxt').append(
-                '<div class="NagurDB"><p><b>Нагур:</b> Продам карту топей, цена 100 золотых!</p></div>' +
-                '<ul class="HeroQuestionsList" style="display:flex; padding-top:10px;">' +
-                '<li style="margin-right:10px;"> <button class="btn buyTheMap">Купить</button></li>' +
-                '<li> <button class="btn leaveFromNagur">Уйти</button></li>' +
-                '</ul>'
-            );
-        } else {
-            $('.db-onar .dinamicTxt').html(' ');
-            $('.db-onar .dinamicTxt').append(
-                '<div class="NagurDB"><p><b>Нагур:</b> У меня для тебя больше ничего нет</p></div>' +
-                '<ul class="HeroQuestionsList" style="display:flex; padding-top:10px;">' +
-                '<li> <button class="btn leaveFromNagur">Уйти</button></li>' +
-                '</ul>'
-            );
-        }
-        $('.buyTheMap').click(function () {
-            var mapPrice = 100;
-            if (HeroGoldInner >= mapPrice) {
-                var NagurMap = '<span>' + 'Карта Нагура' + '</span>';
-                var NagurQuestTxt = '<li>' + ' - Таинственный Нагур продал мне карту топей, теперь я могу исследовать туманную лощину!' + '</li>';
-                QuestListArr(NagurMap, NagurQuestTxt, '.LostPeopleQuest');
-                HeroGoldInner = HeroGoldInner - mapPrice;
-                HeroGold.innerHTML = HeroGoldInner;
-                $('.NagurDB').html('<p><b>Нагур:</b> Удачи!</p>');
-                MapHollow = true;
-            }
-            if (HeroGoldInner < mapPrice && MapHollow != true) {
-                $('.NagurDB').html('<p><b>Нагур:</b> Возвращайся когда будешь достаточно богат для клочка карты</p>');
-            }
-        });
-
-
-        $('.leaveFromNagur').click(function () {
-            $('.OnarDialogBox').fadeOut();
-            $('.overlay').fadeOut();
-        });
-
-        $('.db-onar').fadeIn();
-        DialogBox('.OnarDialogBox');
-    });
-
     function tabsDialog() {
         $('.tab a').click(function (e) {
             e.preventDefault();
@@ -1575,33 +1417,10 @@ $(document).ready(function() {
 
     // Ферма ================================================
     var BtnOnar = document.getElementById('btn_onar');
-    var BtnWorkFarm = document.getElementById('btn_workFarm');
-    // BtnOnar.disabled = true;
-    // BtnWorkFarm.disabled = true;
 
     // Разговор с охраной
-    var BtnFarmeGuard = document.getElementById('btn_farmeGuard');
-    var BtnPaySenteza = document.getElementById('btn_pay_senteza');
-    var BtnNotPaySenteza = document.getElementById('btn_not_pay_senteza');
     var dinamicTxtSenteza = document.getElementById('dinamicTxtSenteza');
     var btnNextSenteza = document.getElementById('btnNextSenteza');
-
-    // Флаг на оплату 100 зол Сентезе
-    var PaySenteza = false;
-    // BtnFarmeGuard.addEventListener('click', FarmeGuard);
-    // BtnNotPaySenteza.addEventListener('click', NotPaySenteza);
-    // BtnPaySenteza.addEventListener('click', PaySentezaTrue);
-    // Флаг на блокировку кнопки Онара, если квест на беседу с ним еще не получен от Сентезы
-    btnOnarDisabled = false;
-
-    // Разговор с Сентезой aboutMissing = false;
-    function FarmeGuard() {
-        FarmeGuardFalse();
-    }
-
-    function FarmeGuardFalse() {
-        SentezaDB1();
-    }
 
     // btn_farmeGuard
     $('#btn_farmeGuard').on('click', function () {
@@ -1731,15 +1550,6 @@ $(document).ready(function() {
         DinamicDBSenteza();
     }
 
-    function afterFirstDialog() {
-        AfterPaySentreza();
-        // Разговор с Сентезой aboutMissing == true;
-        //if (aboutMissing == true && PaySenteza == true) {
-        if (aboutMissing == true) {
-            dialogGuard();
-        }
-    }
-
     function dialogGuard2() {
         dinamicTxtSenteza.innerHTML = '<p>' + 'Что тебе опять?' + '</p>';
         btnNextSenteza.innerHTML = '<button class="btn GuardNext">' + 'Далее' + '</button>';
@@ -1774,15 +1584,10 @@ $(document).ready(function() {
                     complete: function (xhr) { },
                 }).done(function (dt) {
                     if (dt['success'] == 1) {
-
                         $('#btn_onar').removeClass('dn');
-
                         $('#dinamicDbSenteza').fadeOut();
-                        btnOnarDisabled = true;
                     }else{
                         $('#dinamicDbSenteza').fadeOut();
-                        btnOnarDisabled = true;
-
                     }
                 }).fail(function () {  });
             }
@@ -1792,47 +1597,7 @@ $(document).ready(function() {
 
     // Диалоговые окна с Сентезой ==============================================
 
-    // Сентеза требует оплатить 100 монет
-    function PaySentezaTrue() {
-        if (HeroGoldInner >= 100) {
-            PaySenteza = true;
-            dinamicTxtSenteza.innerHTML = '<p>' + 'Сентеза: Такой разговор мне по душе, можешь проходить :)' + '</p>';
-            HeroGoldInner = HeroGoldInner - 100;
-            HeroGold.innerHTML = HeroGoldInner;
-            DinamicDBSenteza();
-            BtnFarmeGuard.removeEventListener('click', FarmeGuard);
-            BtnFarmeGuard.addEventListener('click', afterFirstDialog);
-            BtnWorkFarm.disabled = false;
-            var FarmQuest = '<span class="QuestTitle">' + 'Ферма Онара' + '</span>';
-            var FarmQuestTxt = '<ul class="OnarsFarm">' + '<li>' + FarmQuest + '<br>' + ' - Меня пропустили на ферму, теперь я могу заработать немного денег в полях. Но для этого пришлось отвалить Сентезе 100 золотых, чертов ублюдок!' + '</li>' + '</ul>';
-            QuestListArr(FarmQuest, FarmQuestTxt, '#journal_box__inner');
-        } else if (HeroGoldInner < 100) {
-            dinamicTxtSenteza.innerHTML = '<p>' + 'Сентеза: У тебя и 100 монет не наберется, пошел прочь оборванец!' + '</p>';
-            DinamicDBSenteza();
-            return;
-        }
-    }
-
-    // Посылаем Сентезу к черту
-    function NotPaySenteza() {
-        PaySenteza = true;
-        $('.farm .db_1').fadeOut();
-        $('#dinamicDbSenteza #dinamicTxtSenteza').html('Сентеза избил тебя и забрал все деньги!');
-        $('#dinamicDbSenteza').fadeIn();
-        BtnFarmeGuard.removeEventListener('click', FarmeGuard);
-        BtnFarmeGuard.addEventListener('click', afterFirstDialog);
-        HeroGoldInner = 0;
-        HeroGold.innerHTML = HeroGoldInner;
-        var FarmQuest = '<span class="QuestTitle">' + 'Ферма Онара' + '</span>';
-        var FarmQuestTxt = '<ul class="OnarsFarm">' + '<li>' + FarmQuest + '<br>' + ' - Меня пропустили на ферму, теперь я могу заработать немного денег в полях. Этот ублюдок, Сентеза навалял мне по полной и отжал все бабло!' + '</li>' + '</ul>';
-        QuestListArr(FarmQuest, FarmQuestTxt, '#journal_box__inner');
-    }
-
     // Фраза после оплаты Сентезе
-    function AfterPaySentreza() {
-        dinamicTxtSenteza.innerHTML = '<p>' + 'Сентеза: С тобой приятно иметь дело :)' + '</p>';
-        DinamicDBSenteza();
-    }
 
     function SentezaDB1() {
         $('.farm .db_1').fadeIn();
@@ -1884,6 +1649,7 @@ $(document).ready(function() {
         $('.db_market').fadeOut();
     });
 
+    //
     function TalkToOnar()
     {
         var url = './ajax/user_get_stage.php';
@@ -1925,8 +1691,6 @@ $(document).ready(function() {
                     $('.HeroAnswear-8').click(function () {
                         $('.OnarDialogBox').fadeOut();
                         $('.overlay').fadeOut();
-                        //OnarQuestTaken = true;
-                        btnOnarDisabled = true;
                     });
                     $('.OnarDialogBox').fadeIn();
                     $('.overlay').fadeIn();
@@ -2004,8 +1768,6 @@ $(document).ready(function() {
                     $('.HeroAnswear-8').click(function () {
                         $('.OnarDialogBox').fadeOut();
                         $('.overlay').fadeOut();
-                        //OnarQuestTaken = true;
-                        btnOnarDisabled = true;
                     });
                     $('.db-onar').fadeIn();
                     DialogBox('.OnarDialogBox');
@@ -2017,120 +1779,9 @@ $(document).ready(function() {
 
     }
 
-    // old talk to oner
-    function TalkToOnar2() {
-
-        // if (btnOnarDisabled != true) {
-        //     $('.master_btn__box .tooltip').fadeIn();
-        // }
-        OnarQuestTaken = true;
-        if (OnarQuestTaken == true) {
-            $('.OnarDialogBox').css({
-                'background': 'url(./img/onar.jpg) no-repeat top center',
-                'background-size': 'cover'
-            });
-            $('.OnarDialogBox .db-onar').css('display', 'block');
-            $('.db-onar .dinamicTxt').html(' ');
-            $('.db-onar .dinamicTxt').html(
-                '<div class="BanditsAnswears ba-1"><p><b>Онар:</b> Хочешь еще разузнать о деле? </p></div>' +
-                '<div class="tab__box" id="tab-1"><p><b>Онар:</b> Борка и Дерек, два неразлучных собутыльника. Сначала исчез Дерек, через день сгинул Борка. Он нужен был мне утром, хотел задать пару вопросов, охрана доложила, что он ушел ближе к ночи и не вернулся, решили, как обычно идет нажираться в таверне. </p></div>' +
-                '<div class="tab__box" id="tab-2"><p><b>Онар:</b> Ты не должен об этом никому говорить, пропал мой сундук с золотом. Борка заправлял частью моей казны, Дерек его давнешний телохранитель, вместе они и провернули это дельце.</p></div>' +
-                '<div class="tab__box" id="tab-3"><p><b>Онар:</b> Кругом отвесные скалы, из этой долины только два выхода, по морю или через перевал. Ни там, ни там муха не пролезет без моего ведома. Мои люди обшарили все окрестности, есть только одно место где они могли спрятаться и куда мне не добраться, туманная лощина! Туда я своих людей не пошлю, в этих топях сгинуло не мало народу.</p></div>' +
-                '<div class="tab__box" id="tab-4"><p><b>Онар:</b> Они хорошо экипированы, Дерек искусен в обращении с двуручным мечом, ты должен быть хорошо подготовлен, если конечно не передумал браться за это дело. Я замолвлю за тебя словечко, Ларес тебя потренерует.</p></div>' +
-                '<div class="tab__box" id="tab-5"><p><b>Онар:</b> В обиде не останешься, 1000 золотых за их головы и еще 2000 за возврат сундука с содержимым.</p></div>' +
-                '<div class="tab__box" id="tab-6"><p><b>Онар:</b> (Усмехается) Как я и сказал, в этой долине ничего не происходит без моего ведома, король слаб, мои люди повсюду, я все вижу :)</p> </div>' +
-                '<ul class="HeroQuestionsList tab">' +
-                '<li> > <i class="HeroAnswear-3"><a href="#tab-2">Они ушли с пустыми руками?</a></i></li>' +
-                '<li> > <i class="HeroAnswear-4"><a href="#tab-3">Есть предположения куда они могли податься?</a></i></li>' +
-                '<li> > <i class="HeroAnswear-5"><a href="#tab-4">Чего мне стоит ожидать?</a></i></li>' +
-                '<li> > <i class="HeroAnswear-6"><a href="#tab-5">Сколько я получу за это дело?</a></i></li>' +
-                '<li> > <i class="HeroAnswear-7"><a href="#tab-6">Почему ты уверен, что я не сбегу с твоим золотом в случае успеха?</a></i></li>' +
-                '<li> > <i class="HeroAnswear-8"> <a style="cursor:pointer;">Покинуть ферму</a></i></li>' +
-                '</ul>'
-            );
-            $('.HeroAnswear-8').click(function () {
-                $('.OnarDialogBox').fadeOut();
-                $('.overlay').fadeOut();
-                //OnarQuestTaken = true;
-                btnOnarDisabled = true;
-            });
-            $('.OnarDialogBox').fadeIn();
-            $('.overlay').fadeIn();
-
-            $('.leave').click(function () {
-                $('.OnarDialogBox').fadeOut();
-                $('.overlay').fadeOut();
-            });
-            tabsDialog();
-        } else {
-            $('.OnarDialogBox').css({
-                'background': 'url(./img/onar.jpg) no-repeat top center',
-                'background-size': 'cover'
-            });
-            $('.db-onar .dinamicTxt').html(' ');
-            $('.db-onar .dinamicTxt').append(
-                '<div class="BanditsAnswears ba-1"><p><b>Онар:</b> Слышал ты из тех кто решает проблемы? </p></div>' +
-                '<div class="tab__box" id="tab-1"><p><b>Онар:</b> Борка и Дерек, два неразлучных собутыльника. Сначала исчез Дерек, через день сгинул Борка. Он нужен был мне утром, хотел задать пару вопросов, охрана доложила, что он ушел ближе к ночи и не вернулся, решили, как обычно идет нажираться в таверне. </p></div>' +
-                '<div class="tab__box" id="tab-2"><p><b>Онар:</b> Ты не должен об этом никому говорить, пропал мой сундук с золотом. Борка заправлял частью моей казны, Дерек его давнешний телохранитель, вместе они и провернули это дельце.</p></div>' +
-                '<div class="tab__box" id="tab-3"><p><b>Онар:</b> Кругом отвесные скалы, из этой долины только два выхода, по морю или через перевал. Ни там, ни там муха не пролезет без моего ведома. Мои люди обшарили все окрестности, есть только одно место где они могли спрятаться и куда мне не добраться, туманная лощина! Туда я своих людей не пошлю, в этих топях сгинуло не мало народу.</p></div>' +
-                '<div class="tab__box" id="tab-4"><p><b>Онар:</b> Они хорошо экипированы, Дерек искусен в обращении с двуручным мечом, ты должен быть хорошо подготовлен, если конечно не передумал браться за это дело. Я замолвлю за тебя словечко, Ларес тебя потренерует.</p></div>' +
-                '<div class="tab__box" id="tab-5"><p><b>Онар:</b> В обиде не останешься, 1000 золотых за их головы и еще 2000 за возврат сундука с содержимым.</p></div>' +
-                '<div class="tab__box" id="tab-6"><p><b>Онар:</b> (Усмехается) Как я и сказал, в этой долине ничего не происходит без моего ведома, король слаб, мои люди повсюду, я все вижу :)</p> </div>' +
-                '<ul class="HeroQuestionsList tab">' +
-                '<li> > <i class="HeroAnswear-2"><a href="#tab-1">Я готов расследовать это дело, что известно о пропавших людях?</i></a></li>' +
-                '<ul class="toogleHeroQuestions" style="display:none;">' +
-                '<li> > <i class="HeroAnswear-3"><a href="#tab-2">Они ушли с пустыми руками?</a></i></li>' +
-                '<li> > <i class="HeroAnswear-4"><a href="#tab-3">Есть предположения куда они могли податься?</a></i></li>' +
-                '<li> > <i class="HeroAnswear-5"><a href="#tab-4">Чего мне стоит ожидать?</a></i></li>' +
-                '<li> > <i class="HeroAnswear-6"><a href="#tab-5">Сколько я получу за это дело?</a></i></li>' +
-                '<li> > <i class="HeroAnswear-7"><a href="#tab-6">Почему ты уверен, что я не сбегу с твоим золотом в случае успеха?</a></i></li>' +
-                '<li> > <i class="HeroAnswear-8"> <a style="cursor:pointer;">Покинуть ферму</a></i></li>' +
-                '</ul>' +
-                '</ul>'
-            );
-
-            $('.HeroAnswear-2').click(function () {
-                // мы взялись за Задание Онара!
-                echo('Onar task is go to work!');
-                trainResolution = true;
-                $('#btn_nagur').css('display', 'inline-block');
-                var OnarQuest = '<span>' + 'Задание Онара' + '</span>';
-                var OnarQuestTxt = '<li>' + ' - Пропавшие Борка и Дерек вовсе не пропали, захватили с собой сундук с золотом Онара и скрылись. Онар уверен, что они прячутся в туманной лощине. Нужно найти их живыми или мертвыми и вернуть сундук с золотом' + '</li>' + '<li>' + ' - Онар за меня поручился, теперь я могу тренироваться у Лареса' + '</li>';
-                QuestListArr(OnarQuest, OnarQuestTxt, '.LostPeopleQuest');
-            });
-
-            $('.HeroAnswear-8').click(function () {
-                $('.OnarDialogBox').fadeOut();
-                $('.overlay').fadeOut();
-                //OnarQuestTaken = true;
-                btnOnarDisabled = true;
-            });
-            $('.db-onar').fadeIn();
-            DialogBox('.OnarDialogBox');
-            tabsDialog();
-        }
-    }
-
     // Отдых ===================================================================
     var rest = document.getElementById('toRest');
-    rest.addEventListener('click', ToRest);
-
-    function ToRest() {
-
-        // if (HeroHPInner < 50) {
-        //     TimerFunc(15, HeroHP, 50, 'Отдых: ', 'Часть здоровья восстановлена');
-        //     dialogBg('url(./img/bad.jpg) no-repeat top center');
-        //     HeroHPInner = 50;
-        //     $('#hero_hp').html(HeroHPInner);
-        // } else {
-        //     var heroHPnow = $('#hero_hp').html();
-        //     TimerFunc(15, HeroHP, heroHPnow, 'Отдых: ', 'Ты отдохнул. Сон восстанавливает не более 50% здоровья');
-        //     dialogBg('url(./img/bad.jpg) no-repeat top center');
-        //     $('#hero_hp').html(HeroHPInner);
-        // }
-        go2Rest();
-
-    }
+    rest.addEventListener('click', go2Rest);
 
     // Функция смены фона у больших диалоговых окон
     function dialogBg(bgUrl) {
@@ -2846,7 +2497,6 @@ $(document).ready(function() {
     $('#getHeroPower').on('click', function () {
         console.log(HeroChars);
     })
-
 
     /// # debug right block
     // user_reload_debug_block.php

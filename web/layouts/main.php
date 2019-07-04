@@ -424,10 +424,10 @@
 				<div class="npc_name"><b>Харальд (Кузнец)</b></div>
 				<div class="bg_inner bg_inner__forge">
 					<label for="shortSword">
-						<input id="shortSword" name="forgeItem" value="Доспех Ворона" type="radio"> Доспех Ворона - <span class="priceItemHero">1000</span> (Броня <em>20</em>)
+						<input id="shortSword" name="forgeItem" value="Доспех Ворона" type="radio" data-itemid="9"> Доспех Ворона -  <span class="priceItemHero">1000</span> (Броня <em>20</em>)
 					</label><br>
 					<label for="dragonSword">
-						<input id="dragonSword" name="forgeItem" value="Потрошитель Дракона" type="radio"> Фростморн - <span class="priceItemHero">800</span> (Урон <em>25</em>)
+						<input id="dragonSword" name="forgeItem" value="Потрошитель Дракона" type="radio" data-itemid="8" > Фростморн -  <span class="priceItemHero">800</span> (Урон <em>25</em>)
 					</label>
 				</div>
 				<div class="npc harald"><img src="img/harald.png" alt=""></div>

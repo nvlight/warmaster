@@ -1698,3 +1698,101 @@ function equipment_drop_item_in_fight_by_type($dbh, $i_user, $i_item_type)
 
     return $edbi;
 }
+
+
+/// function inventory_get_stalAndRogOfMrakoris($dbh, $i_user){
+///
+///
+function inventory_get_stalAndRogOfMrakoris($dbh, $i_user)
+{
+    //
+    $sql = <<<SQL
+SELECT
+    shop_item.id,
+    shop_item.name,
+    shop_item.cost,
+    shop_item.i_item_type,
+    inventory.count
+FROM inventory
+     LEFT JOIN shop_item on shop_item.id = inventory.i_item
+     left JOIN shop on shop.id = shop_item.i_shop
+WHERE
+    inventory.i_user = {$i_user} and (i_item_type = 3 )
+    or inventory.i_user = {$i_user} and (i_item_type = 7 );
+SQL;
+
+    try{
+        $sql_rs1  = $dbh->query($sql);
+        $sql_rs2 = ($sql_rs1->fetchAll(MYSQLI_NUM));
+        //echo Debug::d($sql);
+        //echo Debug::d($sql_rs1,'',2);
+        //echo Debug::d($sql_rs2,'',2);
+        if (count($sql_rs2)){
+            $rs = [
+                'success' => 1,
+                'message' => 'Запрос выполнен, ресурсы найдены!',
+                'result' => $sql_rs2,
+                'count' => count($sql_rs2)
+            ];
+        }else{
+            $rs = [
+                'success' => 2,
+                'message' => 'Запрос выполнен, ресурсы НЕ найдены!',
+            ];
+        }
+    }catch (Exception $e){
+        $rs = [
+            'success' => 0,
+            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
+            'message' => 'Ошибка при запросе. Попробуйте позднее.'
+        ];
+    }
+
+    return $rs;
+}
+
+/// function inventory_get_itemById($dbh, $i_user){
+///
+///
+function inventory_get_itemById($dbh, $item_id)
+{
+    //
+    $sql = <<<SQL
+SELECT
+    shop_item.id,
+    shop_item.name,
+    shop_item.cost,
+    shop_item.i_item_type
+FROM shop_item
+WHERE
+    (shop_item.id = $item_id )
+SQL;
+
+    try{
+        $sql_rs1  = $dbh->query($sql);
+        $sql_rs2 = ($sql_rs1->fetchAll(MYSQLI_NUM));
+        //echo Debug::d($sql);
+        //echo Debug::d($sql_rs1,'',2);
+        //echo Debug::d($sql_rs2,'',2);
+        if (count($sql_rs2)){
+            $rs = [
+                'success' => 1,
+                'message' => 'Запрос выполнен, ресурсы найдены!',
+                'result' => $sql_rs2[0],
+            ];
+        }else{
+            $rs = [
+                'success' => 2,
+                'message' => 'Запрос выполнен, ресурсы НЕ найдены!',
+            ];
+        }
+    }catch (Exception $e){
+        $rs = [
+            'success' => 0,
+            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
+            'message' => 'Ошибка при запросе. Попробуйте позднее.'
+        ];
+    }
+
+    return $rs;
+}

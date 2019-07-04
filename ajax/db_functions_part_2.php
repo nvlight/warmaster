@@ -852,6 +852,7 @@ MESSAGE;
         $msgs .= $v['message'];
     }
     $rs['msgs'] = $msgs;
+    $rs['lares_msgs'] = 'Ларес: Ну что жe, мои поздравления, ты теперь гражданин Хориниса!';
     return $rs;
 }
 
@@ -944,5 +945,153 @@ function inventory_clear_zeroItemCounts($dbh, $i_user){
             'message' => 'Ошибка при запросе. Попробуйте позднее.'
         ];
     }
+    return $rs;
+}
+
+
+/// Харадь кузнец - теперь добрался и до него
+
+///
+///
+///
+function blacksmith_talk($dbh, $i_user)
+{
+    //
+    $stage = hero_get_chars($dbh, $i_user);
+    if ($stage['success'] === 0) { return $stage; }
+
+    $stager = intval($stage['res']['stage']);
+
+    switch($stager){
+        case 1: case 2: case 3: case 4: case 5: case 6: case 7:
+            // добавлю сообщение в журнал
+            $msg_out = <<<MESSAGE
+    <p>Харальд: Наша кузница производит снаряжение только для ополчения и граждан этого города! Тебя я не знаю.</p>
+MESSAGE;
+            $rs = ['message' => $msg_out, 'success' => 1, 'stage' => $stager];
+            return $rs;
+            break;
+
+        case 8:
+            $msg_out = <<<MESSAGE
+<p>Говоришь нужно легендарное оружие? Изготовка оружия такого уровня это ритуал в высшем смысле этого слова, требуется особый состав для обработки стали. Добудь мне рог Мракориса! 
+<button class="btn" id="questHaraldTake">Взять задание!</button> </p>
+MESSAGE;
+            $rs = ['message' => $msg_out, 'success' => 1, 'stage' => $stager];
+            return $rs;
+            break;
+
+        case 9:
+
+            $msg_out = "ya eshe podumau nad etim...";
+
+            $rs = ['message' => $msg_out, 'success' => 1,'stage' => $stager];
+            return $rs;
+            break;
+    }
+}
+
+/// blacksmith_teak_mrakkoris_quest
+///
+///
+function blacksmith_teak_mrakkoris_quest($dbh, $i_user)
+{
+    //
+    $stage = hero_get_chars($dbh, $i_user);
+    if ($stage['success'] === 0) { return $stage; }
+
+    $stager = intval($stage['res']['stage']);
+
+    switch($stager){
+        case 1: case 2: case 3: case 4: case 5: case 6: case 7:
+        // добавлю сообщение в журнал
+        $msg_out = "невозможно взять задание на столь низком уровне";
+        $rs = ['message' => $msg_out, 'success' => 1];
+        return $rs;
+        break;
+
+        case 8:
+
+            $new_stage = 9;
+            $uss = user_set_stage($dbh, $i_user, $new_stage);
+            if ($uss['success'] === 0) return $uss;
+
+            // добавлю сообщение в журнал
+            $msg2journal = <<<MESSAGE
+<ul class="HaraldQuestWeapon">
+	<li><span class="QuestTitle">Оружие и броня из кузницы</span>
+		<br>
+		 - Харальд может изготовить мне уникальное оружие и броню. Чтобы приготовить состав для обработки стали требуется вытащить рог из опасного зверя, конечно же перед этим убив его, но как убить Мракориса?
+	</li>
+</ul>
+MESSAGE;
+            $rs = journal_add_message($dbh, $i_user, $msg2journal);
+            if ($rs['success'] === 0 ) die(json_encode($rs));
+
+            $rs = journal_get_all_messages($dbh, $i_user);
+            if ($rs['success'] === 0 ) die(json_encode($rs));
+
+            // сборка всех сообщений в 1
+            $msgs = '';
+            foreach($rs['result'] as $k => $v){
+                $msgs .= $v['message'];
+            }
+            $rs['msgs'] = $msgs;
+            return $rs;
+
+        default:
+            $msg_out = "невозможно взять задание на столь высоком уровне!!!";
+            $rs = ['message' => $msg_out, 'success' => 1];
+        return $rs;
+    }
+}
+
+/// blacksmith_do_forge.php
+///
+///
+function blacksmith_do_forge($dbh, $i_user, $i_item)
+{
+    // проверка, есть ли сырая сталь?
+    // проверка, есть ли рог мракориса
+    $igsarom = inventory_get_stalAndRogOfMrakoris($dbh, $i_user);
+    if ($igsarom['success'] !== 1) return $igsarom;
+
+    if ($igsarom['count'] !== 2) {
+        $message = "Не хватает сырой стали и/или рога Мракориса!";
+        return ['message' => $message, 'success' => 2];
+    }
+
+    // проверка, хватает ли денег на предмет
+    $curr_gold = user_get_gold($dbh, $i_user);
+    if ($curr_gold['success'] === 0){ return $curr_gold; }
+    $gold = intval($curr_gold['res'][0]['gold']);
+
+    // узнаем цену нашего предмета
+    $igibi = inventory_get_itemById($dbh, $i_item);
+    if ($igibi['success'] !== 1) return $igibi;
+    $item_cost = intval($igibi['result']['cost']);
+
+    if ($item_cost > $gold){
+        $rs = ['success' => 2, 'message' => 'Не хватает денег на ковку предмета! :)'];
+        return $rs;
+    }
+
+    // если все хорошо, отнимаем деньги, отнимаем сырую сталь и рог мракориса,
+    // также добавляем выбранный для ковки предмент в инвентарь
+    $new_gold = $gold - $item_cost;
+    $usg = user_set_gold($dbh, $i_user, $new_gold);
+    if ($usg['success'] === 0 ) return $usg;
+
+    $uidi1 = user_inventory_del_item($dbh, 7);
+    if ($uidi1['success'] === 0) return $uidi1;
+    $uidi2 = user_inventory_del_item($dbh, 12);
+    if ($uidi2['success'] === 0) return $uidi2;
+
+    // добавим итем в инвентарь!
+    // itemid 8 or 9
+    $yiai = user_inventory_add_item($dbh, $i_item);
+    if ($yiai['success'] === 0 ) return $yiai;
+
+    $rs = ['success' => 1, 'message' => 'Предмет выкован и уже в инвентаре!', 'gold' => $new_gold];
     return $rs;
 }
