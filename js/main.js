@@ -54,8 +54,6 @@ $(document).ready(function() {
     // logout
     $('#user_logout').on('click', function (e) {
         e.preventDefault();
-        console.log('user_logout...');
-        var user_logout = $(this);
         var url = './ajax/user_logout.php';
         $.ajax({
             url: url,
@@ -69,7 +67,6 @@ $(document).ready(function() {
                 window.location.reload();
             }
         }).fail(function () { console.log('error'); });
-        return false;
     });
 
     //
@@ -82,15 +79,9 @@ $(document).ready(function() {
             method: 'POST',
             data: '',
             dataType: 'json', // ! important string!
-            beforeSend: function (xhr) {
-                
-
-            },
-            complete: function (xhr) {
-                
-            },
+            beforeSend: function (xhr) {},
+            complete: function (xhr) {},
         }).done(function (dt) {
-            
             if (dt['success'] == 1) {
                 user_stage = dt['res'][0]['stage'];
                 //console.log('in Done function - user_stage: ' + user_stage);
@@ -98,13 +89,12 @@ $(document).ready(function() {
                     gameStart();
                 } else {
                     $('.main_div').removeClass('dn');
+                    $('.user-top-menu').removeClass('dn');
+                    $('.user-top-menu').css('display', 'flex');
                     $('.main_div, h3.user_bottom_dev_caption').removeClass('dn');
                 }
             }
-        }).fail(function () {
-            console.log('error');
-        });
-        //console.log('before return - user_stage: ' + user_stage);
+        }).fail(function () { console.log('error'); });
         return user_stage;
     }
 
@@ -121,7 +111,6 @@ $(document).ready(function() {
             beforeSend: function (xhr) {},
             complete: function (xhr) {},
         }).done(function (dt) {
-            
             if (dt['success'] == 1) {
                 //console.log(dt['message']);
             }
@@ -179,6 +168,8 @@ $(document).ready(function() {
                 // !
                 user_set_stage(1);
 
+                $('.user-top-menu').removeClass('dn');
+                $('.user-top-menu').css('display', 'flex');
                 $('.main_div, h3.user_bottom_dev_caption').removeClass('dn');
                 // теперь нужно сделать для героя стартовые характеристики
 
@@ -201,9 +192,7 @@ $(document).ready(function() {
                 }).fail(function () {
                     console.log('error');
                 });
-
             });
-
         });
         $('.db-onar').fadeIn();
         DialogBox('.OnarDialogBox');
@@ -230,8 +219,7 @@ $(document).ready(function() {
     }
 
     // user_hero_chars
-    function user_set_user_chars_html() {
-        
+    function user_set_user_chars_html(){
         var url = './ajax/user_get_hero_chars.php';
         $.ajax({
             url: url,
@@ -322,10 +310,8 @@ $(document).ready(function() {
 
     //
     function go2Hollow() {
-
         // позднее нужно будет сюда записать записимость этой части от текущего уровня прохождения
         var url = './ajax/user_go2Hollow.php';
-        //var url = './ajax/user_get_stage.php';
         $.ajax({
             url: url,
             method: 'POST',
@@ -381,8 +367,8 @@ $(document).ready(function() {
 
     //
     $('a.go2city').on('click', function () {
-        $('.main_div').removeClass('dn');
-        console.log('go2 city');
+        $('.main_div, .user-top-menu').removeClass('dn');
+        //console.log('go2 city');
     });
 
     // start - go to Horinis
@@ -390,8 +376,26 @@ $(document).ready(function() {
 
     // perehod na level 0
     $('#set_stage_0').on('click', function () {
-        user_set_stage(0);
-        window.location.reload();
+        let areYouSure = confirm('Вы действительно хотите начать игру заново?');
+        if (areYouSure){
+            echo('im sure');
+            var url = './ajax/game_restart.php';
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: '',
+                dataType: 'json', // ! important string!
+                beforeSend: function (xhr) {},
+                complete: function (xhr) {},
+            }).done(function (dt) {
+                if (dt['success'] == 1) {
+                    echo(dt['message']);
+                    window.location.reload();
+                }
+            }).fail(function () { console.log('error'); });
+        }else{
+            echo('im not sure');
+        }
     });
 
     // set_gold_html
@@ -1088,6 +1092,33 @@ $(document).ready(function() {
                                 $('.master .db .dinamicTxt').html('<p>' + 'Ты должен проявить себя в каком либо деле, скажем охотничем... Добудь мне три хвоста болотной крысы и две волчьи шкуры.' + '</p>');
                                 $('#journal_box__inner').html('').html(dt['msgs']);
                                 $('.lares_btn').append('<button class="btn" id="PassLarsQuest">Сдать задание</button>');
+                                // сразу же добавим обработчик...
+                                $('#PassLarsQuest').on('click',function ()
+                                {
+                                    var url = './ajax/lares_sdat_zadanie.php';
+                                    $.ajax({
+                                        url: url,
+                                        method: 'POST',
+                                        data: '',
+                                        dataType: 'json', // ! important string!
+                                        beforeSend: function (xhr) {},
+                                        complete: function (xhr) {},
+                                    }).done(function (dt) {
+                                        if (dt['success'] === 1) {
+                                            $('.master .db .dinamicTxt').html(dt['lares_msgs']);
+                                            $('.db_lares').fadeIn();
+                                            $("#PassLarsQuest").remove();
+                                            $('#journal_box__inner').html('').html(dt['msgs']);
+                                            inventory_update();
+                                        } else {
+                                            $('.master .db .dinamicTxt').html('Там что, было слишком много крыс и волков?');
+                                            $('.db_lares').fadeIn();
+                                        }
+                                    }).fail(function () {
+                                        console.log('error');
+                                    });
+
+                                });
                             }
                         }).fail(function () {
                             console.log('error');
@@ -2287,7 +2318,7 @@ $(document).ready(function() {
     }
 
     $('#FoggyHollow').click(function() {
-        MapHollow = true; DefeatOrk = true;
+        //MapHollow = true; DefeatOrk = true;
         if (MapHollow == false && DefeatOrk == false) {
             $('#dinamicTxtHollow').html('<p>Кругом сплошные болота! Ты не знаешь эти места, нужна карта или проводник, иначе рискуешь угодить в трясину!</p> <button class="btn GoToHollow">Пройти дальше</button> <button class="btn close_db-hollow">Вернуться</button>');
             $('.db-hollow').fadeIn();
@@ -2492,11 +2523,6 @@ $(document).ready(function() {
         $('.overlay').fadeIn(300);
     }
     // Конец туманная лощина ===================================================
-
-    //
-    $('#getHeroPower').on('click', function () {
-        console.log(HeroChars);
-    })
 
     /// # debug right block
     // user_reload_debug_block.php

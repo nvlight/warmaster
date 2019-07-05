@@ -10,7 +10,6 @@
 <!--	<link href="https://fonts.googleapis.com/css?family=Kurale&amp;subset=cyrillic,cyrillic-ext" rel="stylesheet">-->
     <script src="js/jquery-3.3.1.min.js"></script>
 
-
 </head>
 
 <body>
@@ -65,13 +64,10 @@
         }
         ?>
     </div>
-    <div class="user-top-menu">
+    <div class="user-top-menu dn">
         <div class="logo">
             <button id="set_stage_0">
                 Начать игру заново
-            </button>
-            <button id="getHeroPower">
-                getHeroChars
             </button>
         </div>
 
@@ -82,8 +78,6 @@
                 <span class="dollar1">Gold: </span>
                 <span id="hero_gold">
                     <?php
-
-
                     $curr_gold = user_get_gold($dbh, $user_id);
                     //echo Debug::d($curr_gold,'',2);
                     //echo $curr_gold['res'][0]['gold'];

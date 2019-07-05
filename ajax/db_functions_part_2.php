@@ -551,6 +551,7 @@ function lares_training($dbh, $i_user)
         case 6:
         case 7:
         case 8:
+        case 9:
             /// сначала узнаем кол-во силы, если сила >= 5 то выходим,
             $power = get_hero_chars($dbh, $i_user);
             if ($power['success'] === 0) { return $power;}
@@ -595,7 +596,7 @@ function lares_training($dbh, $i_user)
             $gold = intval($curr_gold['res'][0]['gold']);
             $train_price = 200;
             if ($gold < $train_price){
-                $msgs = '<p>Ларес: Тренировка стоит 200 монет, возваращайся когда будет чем платить!</p>';
+                $msgs = '<p>Ларес: Тренировка стоит 200 монет, возвращайся когда будет чем платить!</p>';
                 $rs = ['success' => 1, 'message' => $msgs, 'gold' => $gold];
                 break;
             }else{
@@ -659,6 +660,9 @@ function lares_real_training($dbh, $i_user)
         $rs = ['success' => 1, 'message' => $msg];
         break;
         case 6:
+        case 7:
+        case 8:
+        case 9:
             /// сначала узнаем кол-во силы, если сила >= 5 то выходим,
             $power = get_hero_chars($dbh, $i_user);
             if ($power['success'] === 0) { return $power;}
@@ -1054,7 +1058,10 @@ function blacksmith_do_forge($dbh, $i_user, $i_item)
     // проверка, есть ли сырая сталь?
     // проверка, есть ли рог мракориса
     $igsarom = inventory_get_stalAndRogOfMrakoris($dbh, $i_user);
-    if ($igsarom['success'] !== 1) return $igsarom;
+    if ($igsarom['success'] !== 1) {
+        $message = "Не хватает сырой стали и/или рога Мракориса!";
+        return ['message' => $message, 'success' => 2];
+    }
 
     if ($igsarom['count'] !== 2) {
         $message = "Не хватает сырой стали и/или рога Мракориса!";
@@ -1093,5 +1100,141 @@ function blacksmith_do_forge($dbh, $i_user, $i_item)
     if ($yiai['success'] === 0 ) return $yiai;
 
     $rs = ['success' => 1, 'message' => 'Предмет выкован и уже в инвентаре!', 'gold' => $new_gold];
+    return $rs;
+}
+
+/// game_restart
+///
+///
+function game_restart($dbh, $i_user)
+{
+    // нужно сделать
+    // inventory = null ; equipment = null ; game_journal = null ; hero_chars = default ;
+
+    $hssc = hero_set_startup_chars($dbh, $i_user);
+    if ($hssc === 0) return $hssc;
+
+    $ic = inventory_clear($dbh, $i_user);
+    if ($ic === 0) return $ic;
+
+    $ec = equipment_clear($dbh, $i_user);
+    if ($ec === 0) return $ec;
+
+    $gjc = gameJournal_clear($dbh, $i_user);
+    if ($gjc === 0) return $gjc;
+
+    $out_msg = 'Все данные героя пользователя сброшены!';
+    $rs = ['message' => $out_msg, 'success' => 1];
+    return $rs;
+}
+
+/// hero_set_startup_chars
+///
+///
+function hero_set_startup_chars($dbh, $i_user)
+{
+    //
+    $sql = <<<SQL
+UPDATE 
+    hero_info 
+SET 
+     gold = 200,
+     stage = 0,
+     attack = 10,
+     armor = 0,
+     health = 100,
+     critical = 20,
+     power = 0
+WHERE 
+    hero_info.i_user = {$i_user};
+SQL;
+    try{
+        $dbh->exec($sql);
+        $rs = ['success' => 1, 'message' => 'Запрос выполнен!',];
+    }catch (Exception $e){
+        $rs = [
+            'success' => 0,
+            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
+            'message' => 'Ошибка при запросе. Попробуйте позднее.'
+        ];
+    }
+    return $rs;
+}
+
+/// inventory_clear
+///
+///
+function inventory_clear($dbh, $i_user)
+{
+    //
+    $sql = <<<SQL
+DELETE 
+FROM 
+    inventory 
+WHERE 
+    i_user = {$i_user};
+SQL;
+    try{
+        $dbh->exec($sql);
+        $rs = ['success' => 1, 'message' => 'Запрос выполнен!',];
+    }catch (Exception $e){
+        $rs = [
+            'success' => 0,
+            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
+            'message' => 'Ошибка при запросе. Попробуйте позднее.'
+        ];
+    }
+    return $rs;
+}
+
+/// equipment_clear
+///
+///
+function equipment_clear($dbh, $i_user)
+{
+    //
+    $sql = <<<SQL
+DELETE 
+FROM 
+    equipment
+WHERE 
+    equipment.i_user = {$i_user};
+SQL;
+    try{
+        $dbh->exec($sql);
+        $rs = ['success' => 1, 'message' => 'Запрос выполнен!',];
+    }catch (Exception $e){
+        $rs = [
+            'success' => 0,
+            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
+            'message' => 'Ошибка при запросе. Попробуйте позднее.'
+        ];
+    }
+    return $rs;
+}
+
+/// gameJournal_clear
+///
+///
+function gameJournal_clear($dbh, $i_user)
+{
+    //
+    $sql = <<<SQL
+DELETE 
+FROM 
+    game_journal
+WHERE 
+    i_user = {$i_user};
+SQL;
+    try{
+        $dbh->exec($sql);
+        $rs = ['success' => 1, 'message' => 'Запрос выполнен!',];
+    }catch (Exception $e){
+        $rs = [
+            'success' => 0,
+            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
+            'message' => 'Ошибка при запросе. Попробуйте позднее.'
+        ];
+    }
     return $rs;
 }
