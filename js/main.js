@@ -2580,6 +2580,7 @@ $(document).ready(function() {
                             });
                         }else if(user_stage === 11){
                             // если мы на 11 левеле и с картой, то...
+                            // DefeatOrk = true;
                             if (DefeatOrk == false) {
                                 $('#dinamicTxtHollow').html('<p>Битый час ты петлял по тропам указаным на карте, пока не наткнулся на пещеру в большом холме. Из пещеры исходит свет играющего пламени, что ты предпримешь?</p> <button class="btn AtackTheCave">Ворваться внутрь!</button> <button class="btn FollowTheCave">Наблюдать</button>');
                                 $('.db-hollow').fadeIn();

@@ -197,7 +197,7 @@ function chessImWin(){
         complete: function (xhr) {},
     }).done(function (dt) {
         if (dt['success'] == 1){
-            $('#journal_box__inner').html('').html(dt['msgs']);
+
         }
     }).fail(function () {
         console.log('error');
@@ -207,6 +207,7 @@ function chessImWin(){
 $('#chessGo2End').on('click', function () {
     var winner = 1;
     if (winner === 1){
+        chessImWin();
         var out_short = '<p><b>Нагур:</b> Ты выйграл!</p>';
         var out_txt = '<p><b>Нагур:</b> Ты выйграл! Ладно, зайди ко мне потом еще раз, продам карту топей</p>';
         $('.OnarDialogBox .dinamicTxt .NagurDB').html(out_txt);
@@ -214,9 +215,7 @@ $('#chessGo2End').on('click', function () {
         setTimeout(chessQuitAfterWinOrLoose, 1500);
         $('#btn_chess_game_start').addClass('dn');
         $('.board_button button').addClass('dn');
-
         //
-        chessImWin();
 
     }else{
         var out_short = '<p><b>Нагур:</b> Ты проиграл!</p>';
@@ -244,6 +243,7 @@ function myChessGameOver(){
 
     //
     if (winner === 1){
+        chessImWin();
         var out_txt = '<p><b>Нагур:</b> Ты выйграл! Ладно, зайди ко мне потом еще раз, продам карту топей</p>';
         $('.OnarDialogBox .dinamicTxt .NagurDB').html(out_txt);
         $('p.chessIfDraw').removeClass('dn').html(out_txt);

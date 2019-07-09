@@ -17,7 +17,7 @@
 
 	<div id="melody-1" class="player" data-src="audio/gothic.mp3"></div>
 	<audio id="my-hidden-player" loop></audio>
-    <div class="debug__right-menu">
+    <div class="debug__right-menu dn">
         <p class="mb10"><a href="#" id="hero_data-right-debug-block">Обновить героя!</a></p>
         <p class="mb10"><a href="#" id="hero_journal-right-debug-block">Обновить журнал!</a></p>
         <div id="hero_data">
