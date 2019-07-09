@@ -438,7 +438,9 @@ MESSAGE;
             $uss['msgs'] = $msgs;
             return die(json_encode($uss));
             break;
-        //case 6:
+        case 12:
+            return ['success' => 1, 'message' => 'Онар куда-то сбежал...'];
+            break;
         default: return die(json_encode(['success' => 0, 'message' => 'default']));
     };
 
@@ -644,6 +646,7 @@ function lares_training($dbh, $i_user)
         case 9:
         case 10:
         case 11:
+        case 12:
             /// сначала узнаем кол-во силы, если сила >= 5 то выходим,
             $power = get_hero_chars($dbh, $i_user);
             if ($power['success'] === 0) { return $power;}
@@ -730,6 +733,7 @@ function lares_soviet($dbh, $i_user)
         case 9:
         case 10:
         case 11:
+        case 12:
             $rs = ['success' => 2, 'message' => 'Soviet...', 'stage' => $real_stage];
             break;
         default:
@@ -1082,6 +1086,9 @@ MESSAGE;
             break;
 
         case 9:
+        case 10:
+        case 11:
+        case 12:
 
             $msg_out = "ya eshe podumau nad etim...";
 
@@ -1406,4 +1413,18 @@ function chess_im_win($dbh, $i_user)
     $uss = user_set_stage($dbh, $i_user, $new_stage);
 
     return $uss;
+}
+
+/// hollow_end
+/// просто перейдем на уровень 12 - это будет означать, что основная миссия закончена.
+///
+function hollow_end($dbh, $i_user)
+{
+    $new_stage = 12;
+    $uss = user_set_stage($dbh, $i_user, $new_stage);
+
+    $gold_for_job = 1000;
+    $usgwi = user_set_gold_withInc($dbh, $i_user, $gold_for_job);
+
+    return $usgwi;
 }

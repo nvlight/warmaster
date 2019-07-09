@@ -89,10 +89,16 @@ try{
         case 5:
             /// тут сначала нужно определить с картой, если у нас есть карта, то идем дальше
             /// иначе как обычно, сбрасываем итемы если есть
-        case 6:$rs = drop_items($dbh, $user_id, $min_health); die(json_encode($rs)); break;
-//            $rs = ['success' => 1, 'message' => 'Тут должен быть орк и тдп'];
-//            die(json_encode($rs));
-//            break;
+        case 6:
+        case 7:
+        case 8:
+        case 9:
+        case 10:
+        case 11:
+            $rs = drop_items($dbh, $user_id, $min_health);
+            die(json_encode($rs));
+            //$rs = ['success' => 1, 'message' => 'Тут должен быть орк и тдп'];
+            //die(json_encode($rs));
         // тут нужно добавлять stage пока у нас не будет карта )
         default:
             $rs = ['success' => 1, 'message' => 'default'];

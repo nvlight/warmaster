@@ -607,14 +607,18 @@ button:hover {
     border: 3px solid white;
     background: white;
     position: absolute;
-    left: 10%;
-    top: 20px;
-    width: 80%;
-    /*transform: translate(-50%, -50%);*/
+    /*left: 10%;*/
+    /*top: 20px;*/
+    /*width: 80%;*/
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
     background: url(../img/bg-pop.jpg) no-repeat top center;
     background-size: cover;
     z-index: 9999;
     display: none;
+
+
 }
 
 .messWindow .dinamicTxt {

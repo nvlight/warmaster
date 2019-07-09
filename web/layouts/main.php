@@ -71,6 +71,7 @@
             <button id="set_stage_0">
                 Начать игру заново
             </button>
+<!--            <button id="testTrigger">testTrigger</button>-->
         </div>
 
         <div class="user-items">
@@ -367,7 +368,7 @@
                 <div class="master_btn__box" id="div">
                     <button class="btn" id="btn_farmeGuard" type="button">Сентеза (Охрана)</button>
                     <button class="btn <?php if ($stage <= 4) echo 'dn'; ?>"  id="btn_onar" type="button">Онар</button>
-                    <button class="btn <?php if ($stage === 1) echo 'dn'; ?>" id="btn_workFarm2" type="button">Работать</button>
+                    <button class="btn <?php if ($stage <= 1) echo 'dn'; ?>" id="btn_workFarm2" type="button">Работать</button>
                     <button class="btn dn" id="btn_workFarm" type="button">Работать</button>
                 </div>
                 <div class="dialog_box db_1 min_db" id="static-db">
