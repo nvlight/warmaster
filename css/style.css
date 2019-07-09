@@ -4,6 +4,7 @@
     margin: 0;
 }
 
+
 .reg-cont {
     display: -webkit-flex;
     display: -ms-flex;
@@ -255,6 +256,7 @@ body {
 img {
     width: 100%;
     height: auto;
+    z-index: 10000;
 }
 
 .HollowDB .dinamicTxt{
@@ -605,9 +607,10 @@ button:hover {
     border: 3px solid white;
     background: white;
     position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
+    left: 10%;
+    top: 20px;
+    width: 80%;
+    /*transform: translate(-50%, -50%);*/
     background: url(../img/bg-pop.jpg) no-repeat top center;
     background-size: cover;
     z-index: 9999;
@@ -1060,3 +1063,60 @@ button:hover {
 .mb10{
     margin-bottom: 10px;
 }
+
+.board {
+    width: 400px;
+    margin: auto
+}
+
+.info {
+    width: 400px;
+    margin: auto;
+}
+
+.move-history {
+    max-height: 100px;
+    overflow-y: scroll;
+}
+
+#board_container{
+    background-color: rgba(131, 131, 138, 0.7);
+    padding-top: 100px;
+    /*background-image: url(../img/top-bg-1.png);*/
+    background-color: rgba(10, 9, 10, 0.9);
+
+    position: fixed;
+    height: 100%;
+    left: 0;
+    width: 100%;
+    top: 0;
+    z-index: 10000;
+
+    display: flex;
+    vertical-align: middle;
+    flex-direction: column;
+    justify-content: space-between;
+}
+#board img{
+    z-index: 10000;
+}
+
+.board_button{
+    margin: 20px auto;
+    text-align: center;
+}
+
+.noscroll{
+    margin: 0;
+    height: 100%;
+    overflow: hidden;
+}
+
+.chessIfDraw{
+    margin: 10px 0;
+    font-size: 17px;
+    color: #fff;
+    transition: top 1s ease-out 0.5s;
+}
+
+

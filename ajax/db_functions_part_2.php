@@ -471,7 +471,91 @@ function nagur_buy_map($dbh, $i_user){
     if ($curr_stage['success'] === 0) return $curr_stage;
     $real_stage = intval($curr_stage['res'][0]['stage']);
 
-    if ($real_stage < 6){
+    //
+    switch ($real_stage){
+        case 1:case 2:case 3:case 4:case 6:case 6:case 7:case 8:
+            return ['success' => 2, 'Как вы сюда попали то?! Это закрытая территория!'];
+            break;
+        case 9:
+            /// появилась идея сюда добавить игру в шахматы, если герой выйграет увеличиваем stage
+            /// нужно опять таки привязать это дело к stage - если 10 то можно покупать, иначе должен играть
+            /// если выйграет увеличиваем stage
+            return ['success' => 3, 'message' => '<p><b>Нагур:</b> Правда для начала придется выйграть у меня в шахматы!</p>',
+                'btn_chess_start' => '<li style="margin-right:10px;"><button class="btn" id="btn_chess_start">Принять вызов!</button></li>'];
+
+            break;
+        case 10:
+            return ['success' => 4, 'message' => '<p><b>Нагур:</b> Ну давай, посмотрим что ты можешь, старый королевский солдатишка!</p>',
+                'btn_chess_game_start' => '<li style="margin-right:10px;"><button class="btn" id="btn_chess_game_start">Начать игру!</button></li>'];
+            break;
+        case 11:
+
+            $curr_gold = user_get_gold($dbh, $i_user);
+            if ($curr_gold['success'] !== 1) return $curr_gold;
+
+            $real_gold = intval($curr_gold['res'][0]['gold']);
+            if ($real_gold < $map_price){
+                return ['success' => 2, 'message' => '<p><b>Нагур:</b> Возвращайся когда будешь достаточно богат для клочка карты</p>'];
+            }else{
+
+                $nagur_map_exists = nagur_map_exists($dbh, $i_user);
+                if ($nagur_map_exists['success'] === 0) return $nagur_map_exists;
+                if ($nagur_map_exists['success'] === 1) {
+                    return ['success' => 2,
+                        //'message' => 'Карта топей уже у вас имеется, незачем его еще раз попупать, да и она так не продается!'
+                        //'message' => '<p><b>Нагур:</b> У меня больше ничего для тебя нет</p>'
+                        'message' => '<p><b>Нагур:</b> У тебя уже есть карта топей! Или ты думаешь что 2 карты увеличат твои поиски в 2 раза?!</p>'
+                    ];
+                }
+
+                /// нужно отнять цену карты -> UPD gold
+                $hero_upd_column = 'gold'; $gold2set = $real_gold - $map_price;
+                $ushc = hero_set_char_byDec($dbh, $i_user, $hero_upd_column, $map_price);
+                if ($ushc['success'] === 0) return $ushc;
+
+                /// нужно занести в журнал, что Нагур продал нам карту, -> UPD zhournal
+                $nagurMessage = <<<MESSAGE
+<ul class="NagurMapBuyed">
+	<li><span class="QuestTitle">Карта топей</span>
+		<br>
+		- Таинственный Нагур продал мне карту топей, теперь я могу исследовать туманную лощину!	
+	</li>
+</ul>
+MESSAGE;
+                $rs = journal_add_message($dbh, $i_user, $nagurMessage);
+                if ($rs['success'] === 0 ) die(json_encode($rs));
+
+                /// нужно в инвентарь занести карту -> add Map 2 Inventory! -> UPD again
+                $iaim = inventory_add_item_map($dbh);
+                if ($iaim['success'] === 0) return $iaim;
+
+                $new_rs = ['success' => 1, 'message' => '<p><b>Нагур:</b> Удачи!</p>'];
+                $new_rs['gold'] = $gold2set;
+
+                return $new_rs;
+            }
+
+            break;
+        default:
+            return ['success' => 2, 'default...'];
+    }
+
+
+
+}
+
+/// nagur_buy_map
+///
+///
+function nagur_buy_map2($dbh, $i_user){
+
+    $map_price = 100;
+
+    $curr_stage = user_get_stage($dbh, $i_user);
+    if ($curr_stage['success'] === 0) return $curr_stage;
+    $real_stage = intval($curr_stage['res'][0]['stage']);
+
+    if ($real_stage <= 8){
         return ['success' => 2, 'Как вы сюда попали то?! Это закрытая территория!'];
     }
 
@@ -488,6 +572,12 @@ function nagur_buy_map($dbh, $i_user){
     if ($real_gold < $map_price){
         return ['success' => 2, 'message' => '<p><b>Нагур:</b> Возвращайся когда будешь достаточно богат для клочка карты</p>'];
     }else{
+        /// появилась идея сюда добавить игру в шахматы, если герой выйграет увеличиваем stage
+        /// нужно опять таки привязать это дело к stage - если 10 то можно покупать, иначе должен играть
+        /// если выйграет увеличиваем stage
+        return ['success' => 3, 'message' => '<p><b>Нагур:</b> Правда для начала придется выйграть у меня в шахматы</p>',
+            'btn_chess_start' => '<li style="margin-right:10px;"><button class="btn" id="btn_chess_start">Принять вызов!</button></li>'];
+
         /// нужно отнять цену карты -> UPD gold
         $hero_upd_column = 'gold'; $gold2set = $real_gold - $map_price;
         $ushc = hero_set_char_byDec($dbh, $i_user, $hero_upd_column, $map_price);
@@ -552,6 +642,8 @@ function lares_training($dbh, $i_user)
         case 7:
         case 8:
         case 9:
+        case 10:
+        case 11:
             /// сначала узнаем кол-во силы, если сила >= 5 то выходим,
             $power = get_hero_chars($dbh, $i_user);
             if ($power['success'] === 0) { return $power;}
@@ -636,6 +728,8 @@ function lares_soviet($dbh, $i_user)
         case 7:
         case 8:
         case 9:
+        case 10:
+        case 11:
             $rs = ['success' => 2, 'message' => 'Soviet...', 'stage' => $real_stage];
             break;
         default:
@@ -663,6 +757,8 @@ function lares_real_training($dbh, $i_user)
         case 7:
         case 8:
         case 9:
+        case 10:
+        case 11:
             /// сначала узнаем кол-во силы, если сила >= 5 то выходим,
             $power = get_hero_chars($dbh, $i_user);
             if ($power['success'] === 0) { return $power;}
@@ -1237,4 +1333,77 @@ SQL;
         ];
     }
     return $rs;
+}
+
+/// nagur_accept_challenge
+///
+///
+function nagur_accept_challenge($dbh, $i_user)
+{
+    //
+    $mssggg = <<<MESSAGE
+<ul class="NagurAcceptTheChallenge">
+	<li> 
+		<span class="QuestTitle">Обыграть в шахматы Нагура?!</span> 
+		<br>
+		 - Нагур, таинственный незнакомец, которого я встретил в таверне продаст мне карту топей, но для этого я должен его обыграть в шахматы, но что это вообще за игра - шахматы?! 		 
+	</li>
+</ul>
+MESSAGE;
+
+    $curr_stage = user_get_stage($dbh, $i_user);
+    if ($curr_stage['success'] === 0) return $curr_stage;
+    $real_stage = intval($curr_stage['res'][0]['stage']);
+
+    if ($real_stage < 9){
+        return ['success' => 2, 'Как вы сюда попали то?! Это закрытая территория!'];
+    }
+    //
+    switch($real_stage){
+        case 9:
+            $new_stage = 10;
+            $uss = user_set_stage($dbh, $i_user, $new_stage);
+            if ($uss['success'] === 0) { return $uss; }
+            //
+            $rs = journal_add_message($dbh, $i_user, $mssggg);
+            if ($rs['success'] === 0 ) return $rs;
+
+            $rs['success'] = 2;
+            $rs['message'] = 'Ну давай, посмотрим что ты можешь, старый королевский солдатишка!';
+            $rs['btn_chess_game_start'] = '<li style="margin-right:10px;"><button class="btn" id="btn_chess_game_start">Начать игру!</button></li>';
+
+            return $rs;
+            break;
+        default:
+            return ['success' => 0, 'message' => 'default'];
+    };
+}
+
+/// journal_get
+/// получилось дублирование данной функции, ибо уже есть user_
+///
+function journal_get($dbh, $i_user)
+{
+    $rs = journal_get_all_messages($dbh, $i_user);
+    if ($rs['success'] === 0 ) die(json_encode($rs));
+
+    // сборка всех сообщений в 1
+    $msgs = '';
+    foreach($rs['result'] as $k => $v){
+        $msgs .= $v['message'];
+    }
+    $rs['msgs'] = $msgs;
+    return ($rs);
+}
+
+/// chess_im_win
+///
+///
+function chess_im_win($dbh, $i_user)
+{
+    // мы выйграли у Нагура!
+    $new_stage = 11;
+    $uss = user_set_stage($dbh, $i_user, $new_stage);
+
+    return $uss;
 }

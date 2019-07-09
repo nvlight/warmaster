@@ -7,6 +7,7 @@
 	<title>Warmaster</title>
     <link rel="shortcut icon" href="img/favicon.png" type="image/x-icon">
 	<link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/chessboard-0.3.0.css">
 <!--	<link href="https://fonts.googleapis.com/css?family=Kurale&amp;subset=cyrillic,cyrillic-ext" rel="stylesheet">-->
     <script src="js/jquery-3.3.1.min.js"></script>
 
@@ -17,7 +18,8 @@
 	<div id="melody-1" class="player" data-src="audio/gothic.mp3"></div>
 	<audio id="my-hidden-player" loop></audio>
     <div class="debug__right-menu">
-        <p class="mb10"><a href="#" id="hero_data-right-debug-block">Обновить!</a></p>
+        <p class="mb10"><a href="#" id="hero_data-right-debug-block">Обновить героя!</a></p>
+        <p class="mb10"><a href="#" id="hero_journal-right-debug-block">Обновить журнал!</a></p>
         <div id="hero_data">
             <?php if ($user_data['success'] !== 0): ?>
                 <?php foreach($user_data['res'] as $hk => $hv ): ?>
@@ -405,7 +407,7 @@
                     <?php
                         // $('#btn_nagur')
                     ?>
-					<button class="btn <?php if ($stage <= 5) echo 'dn'; else echo 'dib' ?>" id="btn_nagur" type="button">Нагур</button>
+					<button class="btn <?php if ($stage <= 8) echo 'dn'; else echo 'dib' ?>" id="btn_nagur" type="button">Нагур</button>
 				</div>
 				<div class="dialog_box db_1 bg-img selinaDB">
 					<div class="db_close">х</div>
@@ -530,19 +532,54 @@
 
 <!--    <script src="js/ajax_functions.js" defer></script>-->
 
+    <div id="board_container" class="dn">
+        <div id="board" class="board"></div>
+        <div class="info dn">
+            Search depth:
+            <select id="search-depth">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3" selected>3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+
+            <br>
+            <span>Positions evaluated: <span id="position-count"></span></span>
+            <br>
+            <span>Time: <span id="time"></span></span>
+            <br>
+            <span>Positions/s: <span id="positions-per-s"></span> </span>
+            <br>
+            <br>
+            <div id="move-history" class="move-history">
+            </div>
+        </div>
+        <div class="board_button">
+            <p class="chessIfDraw dn">Я играю только на победу!</p>
+
+<!--            <button class="btn" id="chessGo2End">Закончить игру!</button>-->
+            <button class="btn" id="chessBtn_goDraw">Предложить ничью</button>
+            <button class="btn" id="chessBtn_goSurrender">Сдаться</button>
+            <button class="btn" id="chessBtn_imGone">Уйти</button>
+        </div>
+    </div>
+
+    <?php //echo "$js1"; ?>
+    <script src="js/chess.js"></script>
+    <script src="js/chessboard-0.3.0.js"></script>
+    <script src="js/chess_script.js"></script>
     <script src="js/main.js"></script>
     <script src="js/main2.js"></script>
-
-
     <!-- Таймер -->
     <script src="js/timer.js"></script>
 
-    <?php //echo "$js1"; ?>
 
     <h3 class="user_bottom_dev_caption dn">&copy; <span class="s_year"></span> All rights reserved
         <br>
         <span class="devs_span">Martin German && Aslan Bers@rk</span>
     </h3>
+
 
 
 </body>
