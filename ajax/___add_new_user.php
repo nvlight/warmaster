@@ -6,11 +6,12 @@ require '../db/mysql.connect.php';
 
 //echo Debug::d($mysql);
 
-$user_data = ['ivan','iPaa@@Sss1', 'ivi@gmail.com'];
+$user_data = ['ivan','iPaa@@Sss1', 'ivi@gmail.com',2];
 $result = add_new_warmaster_user($mysql, $user_data);
 
 function add_new_warmaster_user($mysql, $user_data){
-    $sql = $mysql['connect']->prepare('INSERT INTO user (username, userpassword, mail) VALUES (?,?,?)' );
+    $sql = $mysql['connect']->prepare('INSERT INTO user (username, userpassword, mail,i_group) 
+        VALUES (?,?,?,?)' );
     try{
         $rs = $sql->execute($user_data);
         $rs = [

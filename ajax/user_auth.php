@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST'){
 
 // prepare need form keys and patterns for checking...
 $need_form_keys = [
-    ['User mail','mail','^[a-zA-Z_]+@[a-zA-Z\d_]+\.[a-zA-Z\d_]+', 'Мейл'],
+    ['User mail','mail','^[a-zA-Z_]+[a-zA-Z_\d]*@[a-zA-Z\d_]+\.[a-zA-Z\d_]+', 'Мейл'],
     ['User password','userpassword','^([a-zA-Z\d@!_-]+){4,33}$', 'Пароль'],
     //['Captcha','sup_captcha','^[a-z\d]+$'],
 ];

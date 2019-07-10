@@ -160,6 +160,7 @@ function mySendMailMessage($subject, $msg_header, $need_form_keys, $additional_f
 //
 function add_new_warmaster_user($mysql, $user_data, $need_form_keys, $additional_form_keys, $subject, $msg_header)
 {
+    //echo Debug::d($user_data);
     $sql = $mysql->prepare('INSERT INTO `user` (username, userpassword, mail, i_group) VALUES (?,?,?,?)' );
     try{
         //$rs = $sql->execute(['ivan','iPaa@@Sss1', 'ivi@gmail.com']);
@@ -176,7 +177,8 @@ function add_new_warmaster_user($mysql, $user_data, $need_form_keys, $additional
         $rs = [
             'success' => 0,
             'message2' => $e->getMessage() . ' : ' . $e->getCode(),
-            'message' => 'Ошибка. Попробуйте позднее.'
+            'message' => 'Ошибка. Попробуйте позднее.',
+            //'user_data' => $user_data
         ];
     }
     return $rs;
@@ -383,7 +385,7 @@ function zhournal_get($dbh, $user_id){
 function user_set_startup_chars($dbh, $user_id)
 {
     //
-    $sql = "INSERT INTO hero_info VALUE(NULL,$user_id,700,0,100,0,20,0)";
+    $sql = "INSERT INTO hero_info VALUE(NULL,$user_id,700,0,10,0,100,0,20)";
     try{
         $dbh->exec($sql);
         $rs = ['success' => 1, 'message' => 'Запрос выполнен, стартовые характеристики героя заданы!',];
@@ -392,7 +394,8 @@ function user_set_startup_chars($dbh, $user_id)
         $rs = [
             'success' => 0,
             'message2' => $e->getMessage() . ' : ' . $e->getCode(),
-            'message' => 'Ошибка при запросе. Попробуйте позднее.'
+            'message' => 'Ошибка при запросе. Попробуйте позднее.',
+            'im here' => 'hpand'
         ];
     }
     return $rs;

@@ -55,7 +55,7 @@
             <input type="password" name="userpassword_re" required pattern="^([a-zA-Z\d_@!#$+\d-]+){4,33}$" title="some_password_re_enter" value=""/>
 
             <label>mail:</label>
-            <input type="text" name="mail" required pattern="^[a-zA-Z_]+@[a-zA-Z\d_]+\.[a-zA-Z\d_]+" title="some_mail@gmail.yes" value=""/>
+            <input type="text" name="mail" required pattern="^[a-zA-Z_]+[a-zA-Z_\d]*@[a-zA-Z\d_]+\.[a-zA-Z\d_]+" title="some_mail@gmail.yes" value=""/>
 
             <div class="msgs_show">
                 <p class="success_message"></p>
@@ -78,7 +78,7 @@
         <h1>Авторизация</h1>
         <form method="POST" id="warmaster_user_auth">
             <label>Емейл:</label>
-            <input type="text" name="mail" autofocus required pattern="^[a-zA-Z_]+@[a-zA-Z\d_]+\.[a-zA-Z\d_]+" title="some_mail@gmail.yes" value=""/>
+            <input type="text" name="mail" autofocus required pattern="^[a-zA-Z_]+[a-zA-Z_\d]*@[a-zA-Z\d_]+\.[a-zA-Z\d_]+" title="some_mail@gmail.yes" value=""/>
 
             <label>Пароль:</label>
             <input type="password" name="userpassword" required pattern="^([a-zA-Z\d_@!#$+\d-]+){4,33}$" title="some_password" value="" />

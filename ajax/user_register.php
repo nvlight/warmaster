@@ -23,7 +23,7 @@ $need_form_keys = [
     ['User name','username','^[a-zA-Z_]+([a-zA-Z\d_]+){1,32}$', 'Имя пользователя'],
     ['User password','userpassword','^([a-zA-Z\d@!_-]+){4,33}$', 'Пароль'],
     ['User password re','userpassword_re','^([a-zA-Z\d@!_-]+){4,33}$', 'Повтор пароля'],
-    ['User mail','mail','^[a-zA-Z_]+@[a-zA-Z\d_]+\.[a-zA-Z\d_]+', 'Емейл'],
+    ['User mail','mail','^[a-zA-Z_]+[a-zA-Z_\d]*@[a-zA-Z\d_]+\.[a-zA-Z\d_]+', 'Емейл'],
     //['Captcha','sup_captcha','^[a-z\d]+$'],
 ];
 $additional_form_keys = [
@@ -50,7 +50,7 @@ if ($_POST['userpassword'] !== $_POST['userpassword_re']){
 }
 
 $is_email_duplicate = is_email_duplicate($mysql, $_POST['mail']);
-//
+////
 if ($is_email_duplicate['success'] === 0){
     die(json_encode($is_email_duplicate));
 }
@@ -74,7 +74,9 @@ $user_id = get_user_by_mail($dbh, $mail)['res'][0]['id'];
 
 $set_st_chars = user_set_startup_chars($dbh, $user_id);
 //echo Debug::d($set_st_chars);
+if ($set_st_chars['success'] === 0) return $set_st_chars;
 
-die(json_encode($set_st_chars));
+$result['success'] = 1; $result['message'] = 'Зарегистрировались!';
+die(json_encode($result));
 
 ?>

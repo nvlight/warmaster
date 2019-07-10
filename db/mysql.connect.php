@@ -14,6 +14,21 @@ try{
     $mysql['message'] = $e->getMessage();
 }
 
+$out_str = <<<OS
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<h1><p>Ошибка соединения с БД</p></h1>
+</body>
+</html>
+OS;
+
+if ($mysql['success'] === 0) die($out_str);
+
 // с двойными кавычками не работает !
 $mysql['connect']->query('SET NAMES \'utf8\'');
 

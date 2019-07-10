@@ -1,5 +1,8 @@
 <?php
 
+ini_set('display_errors', 'On');
+ini_set('error_reporting', E_ALL);
+
 session_start();
 //unset($_SESSION['user']);
 defined('app_start') or define('app_start', 1);

@@ -2782,6 +2782,7 @@ $(document).ready(function() {
         });
     }
 
+    //
     function DialogBox(ClassName) {
         $(ClassName).fadeIn(300);
         $('.overlay').fadeIn(300);
