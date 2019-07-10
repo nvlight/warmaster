@@ -1123,4 +1123,15 @@ button:hover {
     transition: top 1s ease-out 0.5s;
 }
 
-
+.captcha-field .input{
+    position: relative;
+}
+.captcha-field input[name='sup_captcha']{
+    padding: 17px;
+}
+.captcha-field .captcha_main,.captcha-field .captcha_main2{
+    width: auto;
+    position: absolute;
+    right: 15px;
+    top: -4px;
+}

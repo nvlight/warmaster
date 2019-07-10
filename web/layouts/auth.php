@@ -19,21 +19,11 @@
 
 
 <div class="dn">
-
-    <div id="melody-1" class="player" data-src="audio/gothic.mp3"></div>
-    <audio id="my-hidden-player" loop></audio>
     <div style="background-color: #fff;">
         <?php
-        echo Debug::d($_SESSION,'SESSION');
+            echo Debug::d($_SESSION,'SESSION');
         ?>
     </div>
-    <div>
-        <button id="set_stage_0">
-            go to start!
-        </button>
-
-    </div>
-
 </div>
 
 
@@ -56,6 +46,15 @@
 
             <label>mail:</label>
             <input type="text" name="mail" required pattern="^[a-zA-Z_]+[a-zA-Z_\d]*@[a-zA-Z\d_]+\.[a-zA-Z\d_]+" title="some_mail@gmail.yes" value=""/>
+
+            <div class="captcha-field">
+                <label class="label">Капча</label>
+                <label class="input">
+                    <i class="icon-append icon asterisk"></i>
+                    <input name="sup_captcha" type="text" placeholder="" required pattern="^[a-zA-Z\d]+$" title='1999'>
+                    <img class='captcha_main2' src="./lib/captcha_inner2.php" alt="" style="" />
+                </label>
+            </div>
 
             <div class="msgs_show">
                 <p class="success_message"></p>
@@ -83,10 +82,21 @@
             <label>Пароль:</label>
             <input type="password" name="userpassword" required pattern="^([a-zA-Z\d_@!#$+\d-]+){4,33}$" title="some_password" value="" />
 
+            <div class="captcha-field">
+                <label class="label">Капча</label>
+                <label class="input">
+                    <i class="icon-append icon asterisk"></i>
+                    <input name="sup_captcha" type="text" placeholder="" required pattern="^[a-zA-Z\d]+$" title='1999'>
+                    <img class='captcha_main' src="./lib/captcha_inner.php" alt="" style="" />
+                </label>
+            </div>
+
             <div class="msgs_show">
                 <p class="success_message"></p>
                 <p class="last_error"></p>
             </div>
+
+
 
             <div class="form-block_inner">
                 <button class="form-block_btn" type="submit" name="loginSubmit">Войти</button>

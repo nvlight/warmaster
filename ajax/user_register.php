@@ -24,7 +24,7 @@ $need_form_keys = [
     ['User password','userpassword','^([a-zA-Z\d@!_-]+){4,33}$', 'Пароль'],
     ['User password re','userpassword_re','^([a-zA-Z\d@!_-]+){4,33}$', 'Повтор пароля'],
     ['User mail','mail','^[a-zA-Z_]+[a-zA-Z_\d]*@[a-zA-Z\d_]+\.[a-zA-Z\d_]+', 'Емейл'],
-    //['Captcha','sup_captcha','^[a-z\d]+$'],
+    ['Captcha','sup_captcha','^[a-zA-Z\d]+$'],
 ];
 $additional_form_keys = [
 // empty
@@ -66,6 +66,15 @@ $i_user_group = 2; // pust budet 2!
 $user_data = [ $_POST['username'], $_POST['userpassword'], $_POST['mail'], $i_user_group ];
 
 $dbh = $mysql['connect'];
+
+$captchaIsRight = $_SESSION['captcha2'] === $_POST['sup_captcha'];
+if (!$captchaIsRight) {
+    $res = ['success' => 0, 'message' => 'Неверная капча!',
+        //'captcha' => $_SESSION['captcha2'],
+        //'captcha_res' => $captchaIsRight
+    ];
+    die(json_encode($res));
+}
 
 $result = add_new_warmaster_user($dbh, $user_data, $need_form_keys, $additional_form_keys, $subject, $msg_header);
 

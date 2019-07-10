@@ -103,4 +103,17 @@ $(document).ready(function () {
         $('.form-block').toggleClass('dn');
    });
 
+    $('.captcha_main').on('click', function(){
+        console.log('we in: ' + $(this).attr('class'));
+
+        $(this).attr('src', 'lib/captcha_inner.php');
+
+    });
+    $('.captcha_main2').on('click', function(){
+        console.log('we in: ' + $(this).attr('class'));
+
+        $(this).attr('src', 'lib/captcha_inner2.php');
+
+    });
+
 });

@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST'){
 $need_form_keys = [
     ['User mail','mail','^[a-zA-Z_]+[a-zA-Z_\d]*@[a-zA-Z\d_]+\.[a-zA-Z\d_]+', 'Мейл'],
     ['User password','userpassword','^([a-zA-Z\d@!_-]+){4,33}$', 'Пароль'],
-    //['Captcha','sup_captcha','^[a-z\d]+$'],
+    ['Captcha','sup_captcha','^[a-zA-Z\d]+$'],
 ];
 $additional_form_keys = [
 // empty
@@ -40,12 +40,20 @@ $userpassword = $_POST['userpassword'];
 //$userpassword = '1111';
 
 $logined = login($mysql, $mail, $userpassword);
-if ($logined['success'] === 1){
+if ($logined['success'] !== 1){
+    die(json_encode($logined));
+}
+
+if ( ($logined['success'] === 1) && ( $_SESSION['captcha'] === $_POST['sup_captcha'] ) ){
     foreach($logined['rs'] as $k => $v){
         $_SESSION['user'][$k] = $v;
     }
+}else{
+    $logined['success'] = 0;
+    $logined['message'] = 'Неверный логин, пароль или капча!';
+    $logined['rs'] = '';
 }
-
+//$logined['captcha'] = $_SESSION['captcha'];
 //echo Debug::d($logined,'logined', 1);
 die(json_encode($logined));
 

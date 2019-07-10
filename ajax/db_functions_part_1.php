@@ -279,7 +279,7 @@ function login($mysql, $mail, $userpassword){
         if (count($rs_sql) === 0){
             $rs = [
                 'success' => 0,
-                'message' => 'Неверный логин и/или пароль!',
+                'message' => 'Неверный логин, пароль или капча!',
             ];
         }else{
             $rs = ['success' => 1, 'message' => 'Авторизовались!', 'rs' => $rs_sql[0], ];
