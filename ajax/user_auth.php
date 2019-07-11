@@ -40,19 +40,33 @@ $userpassword = $_POST['userpassword'];
 //$userpassword = '1111';
 
 $logined = login($mysql, $mail, $userpassword);
-if ($logined['success'] !== 1){
+if ($logined['success'] === 0){
     die(json_encode($logined));
 }
 
-if ( ($logined['success'] === 1) && ( $_SESSION['captcha'] === $_POST['sup_captcha'] ) ){
-    foreach($logined['rs'] as $k => $v){
-        $_SESSION['user'][$k] = $v;
-    }
-}else{
+if ( ( $_SESSION['captcha'] !== $_POST['sup_captcha'] ) )
+{
     $logined['success'] = 0;
     $logined['message'] = 'Неверный логин, пароль или капча!';
     $logined['rs'] = '';
+    die(json_encode($logined));
 }
+
+
+/// test logined, try check for is_active flag
+$is_active = intval($logined['rs']['is_active']);
+if ($is_active === 0){
+    $logined['success'] = 2;
+    $logined['message'] = 'Ваша учетная запись не активирована. Для активации учетной записи пройдите по ссылке с подтверждением в сообщении, которое было выслано на вашу почту';
+    die(json_encode($logined));
+}
+
+
+/// прописываем в сессию все найденные поля...
+foreach($logined['rs'] as $k => $v){
+    $_SESSION['user'][$k] = $v;
+}
+
 //$logined['captcha'] = $_SESSION['captcha'];
 //echo Debug::d($logined,'logined', 1);
 die(json_encode($logined));

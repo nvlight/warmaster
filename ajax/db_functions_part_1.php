@@ -157,11 +157,71 @@ function mySendMailMessage($subject, $msg_header, $need_form_keys, $additional_f
     }
 }
 
+/// new mailSendMessage function !
+///
+///
+function mailSendMessage($mailData, $need_form_keys, $additional_form_keys)
+{
+    $myParams = require '../config/params.php'; $params = $myParams;
+    $myConfig = require '../config/swift_mailer_config.php';
+
+    try {
+        // Create the SMTP Transport
+        $transport = (new Swift_SmtpTransport($myConfig['mailer']['transport']['host'],
+            $myConfig['mailer']['transport']['port']))
+            ->setUsername($myConfig['mailer']['transport']['username'])
+            ->setPassword($myConfig['mailer']['transport']['password'])
+            ->setEncryption($myParams['sw_enc']);
+
+        // Create the Mailer using your created Transport
+        $mailer = new Swift_Mailer($transport);
+
+        // Create a message
+        $message = new Swift_Message();
+
+        // Set a "subject"
+        $message->setSubject($mailData['subject']);
+
+        // Set the "From address"
+        $message->setFrom([$myParams['sw_frommail'] => $myParams['my_name']]);
+
+        // Set the "To address" [Use setTo method for multiple recipients, argument should be array]
+        $message->addTo( $mailData['where_mail'], $mailData['whom_title']);
+
+        foreach($mailData['header_title'] as $k => $v){
+            $message->addPart($v, 'text/html');
+        }
+
+        // обход данных формы и их упаковка в письмо
+        foreach($need_form_keys as $k => $v){
+            $clear_val = Debug::encode($_POST[$v[1]]);
+            $message->addPart($v[0] . ': ' . $clear_val, 'text/html');
+        }
+        foreach($additional_form_keys as $k => $v){
+            if (array_key_exists($v[1], $_POST)) {
+                $clear_val = Debug::encode($_POST[$v[1]]);
+                $message->addPart($v[0] . ': ' . $clear_val, 'text/html');
+            }
+        }
+
+        // Send the message
+        $result = $mailer->send($message);
+        $rs2 = ['success' => 0, 'message' => 'we send the message!',
+            'add_info' => $result,
+        ];
+
+        //die(json_encode($rs2));
+    } catch (Exception $e) {
+        $rs2 = ['success' => 0, 'message' => $e->getMessage() ];
+        //die(json_encode($rs2));
+    }
+}
+
 //
-function add_new_warmaster_user($mysql, $user_data, $need_form_keys, $additional_form_keys, $subject, $msg_header)
+function add_new_warmaster_user($mysql, $user_data)
 {
     //echo Debug::d($user_data);
-    $sql = $mysql->prepare('INSERT INTO `user` (username, userpassword, mail, i_group) VALUES (?,?,?,?)' );
+    $sql = $mysql->prepare('INSERT INTO `user` (username, userpassword, mail, i_group, reg_hash) VALUES (?,?,?,?,?)' );
     try{
         //$rs = $sql->execute(['ivan','iPaa@@Sss1', 'ivi@gmail.com']);
         $rs = $sql->execute($user_data);
@@ -171,7 +231,8 @@ function add_new_warmaster_user($mysql, $user_data, $need_form_keys, $additional
         ];
 
         // сюда же сразу ложим отправку сообщения на мейл!
-        mySendMailMessage($subject, $msg_header, $need_form_keys, $additional_form_keys);
+        // уже нет - хватит
+        // mySendMailMessage($subject, $msg_header, $need_form_keys, $additional_form_keys);
 
     }catch (Exception $e){
         $rs = [
@@ -266,7 +327,8 @@ function login($mysql, $mail, $userpassword){
 
     $sql = $dbh->prepare('SELECT 
             user.id, user.username, user.mail,
-            hi.armor, hi.critical, hi.gold, hi.health, hi.power, hi.stage, hi.attack
+            hi.armor, hi.critical, hi.gold, hi.health, hi.power, hi.stage, hi.attack,
+            user.is_active
         FROM user 
         LEFT JOIN `hero_info` hi on hi.i_user = user.id      
         WHERE mail = ? and userpassword = ?'
@@ -929,8 +991,9 @@ function user_inventory_get_all_childs($dbh, $i_user)
             ];
         }else{
             $rs = [
-                'success' => 0,
+                'success' => 2,
                 'message' => 'Запрос выполнен, НЕ найдено!',
+                'result' => []
             ];
         }
     }catch (Exception $e){

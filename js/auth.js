@@ -31,6 +31,9 @@ $(document).ready(function () {
                   warmaster_user_reg.css('opacity', '1');
                   $('.animation_form_1').toggleClass('dn');
               }, 700);
+              // надо закрыть эту форму и открыть форму с авторизацией.
+              $('.greeting .user-auth').click();
+              $('#warmaster_user_auth .msgs_show .success_message').html(dt['message']);
           }else{
               warmaster_user_reg.css('opacity', '1');
               $('.animation_form_1').toggleClass('dn');

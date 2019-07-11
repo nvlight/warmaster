@@ -17,6 +17,4 @@ return [
     'hallow_min_health' => 5,
     'max_rest_health' => 50,
 
-
-
 ];

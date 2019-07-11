@@ -18,10 +18,34 @@
 <body>
 
 
-<div class="dn">
+<div class="">
     <div style="background-color: #fff;">
         <?php
-            echo Debug::d($_SESSION,'SESSION');
+            //echo Debug::d($_SESSION,'SESSION');
+            //echo Debug::d($_SERVER);
+
+            // prepare link for approuve hash
+//            $phpself = $_SERVER['PHP_SELF'];
+//            if (mb_strpos($phpself ,'.php')){
+//                $exp = explode('/', $phpself);
+//                unset($exp[count($exp)-1]);
+//                //echo Debug::d($exp,'',2);
+//                $new_str = '';
+//                foreach($exp as $k => $v){
+//                    if ($v === ''){
+//                        $new_str .= '/';
+//                    }else{
+//                        $new_str .= $v;
+//                    }
+//                }
+//                $new_str .= '/';
+//                //echo Debug::d($new_str);
+//                $phpself = $new_str;
+//            }
+//            $restore_link = $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['HTTP_HOST'] . $phpself . 'restore.php?hash='.'sdklfjldksfjio23jr89j2389fuhj239';
+//            echo $restore_link;
+
+
         ?>
     </div>
 </div>

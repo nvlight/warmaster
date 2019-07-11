@@ -37,9 +37,13 @@ $additional_form_keys = [
 ];
 
 /////
-
-$subject = "Message from main_site"; 
-$msg_header = 'Запрос - получить консультацию!';
-
 check_params($need_form_keys, $additional_form_keys);
-mySendMailMessage($subject, $msg_header, $need_form_keys, $additional_form_keys);
+//1mySendMailMessage($subject, $msg_header, $need_form_keys, $additional_form_keys);
+
+$mailData = [
+    'subject' => 'WarMaster v102 - регистрация',
+    'header_title' => 'Поздравляем, вы успешно зарегистрировались на сайте WarMaster',
+    'where_mail' => 'iduso@mail.ru', // this mail need be a real!
+    'whom_title' => 'новоиспеченному игроку',
+];
+mailSendMessage($mailData, $msg_header, $need_form_keys, $additional_form_keys);
