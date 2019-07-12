@@ -1428,3 +1428,84 @@ function hollow_end($dbh, $i_user)
 
     return $usgwi;
 }
+
+
+///
+///
+///
+/// # Debug right block
+///
+function confirmation_userreg_isExistsHash($dbh, $hash)
+{
+    $sql = <<<SQL
+SELECT
+    usr.id,
+    usr.username,
+    usr.is_active
+FROM 
+    user usr
+where 
+    usr.reg_hash = ?
+LIMIT 1; 
+SQL;
+    try{
+        $sth = $dbh->prepare($sql);
+        $sth->execute([$hash]);
+        $sql_rs2 = $sth->fetchAll(MYSQLI_NUM);
+        //echo Debug::d($sql_rs2,'',2);
+        if (count($sql_rs2)){
+            $rs = [
+                'success' => 1,
+                'message' => 'Запрос выполнен, хеш найден!',
+                'res' => $sql_rs2[0]
+            ];
+        }else{
+            $rs = [
+                'success' => 2,
+                'message' => 'Запрос выполнен, хеш НЕ найден!',
+            ];
+        }
+    }catch (Exception $e){
+        $rs = [
+            'success' => 0,
+            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
+            'message' => 'Ошибка при запросе. Попробуйте позднее.'
+        ];
+    }
+
+    return $rs;
+}
+
+/// confirmation_userreg_doConfirm($dbh, $i_user)
+///
+///
+function confirmation_userreg_doConfirm($dbh, $i_user)
+{
+    //
+    $sql = <<<SQL
+UPDATE 
+    user
+SET 
+    user.is_active = 1
+where 
+    user.id = {$i_user}
+LIMIT 1; 
+SQL;
+    try{
+        $sth = $dbh->prepare($sql);
+        $sth->execute([$i_user]);
+
+        $rs = [
+            'success' => 1,
+            'message' => 'Запрос выполнен, регистрация подтверждена!',
+        ];
+    }catch (Exception $e){
+        $rs = [
+            'success' => 0,
+            'message2' => $e->getMessage() . ' : ' . $e->getCode(),
+            'message' => 'Ошибка при запросе. Попробуйте позднее.'
+        ];
+    }
+
+    return $rs;
+}
